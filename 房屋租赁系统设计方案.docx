@@ -1,0 +1,990 @@
+# 房屋租赁系统详细设计方案
+
+## 一、技术栈架构设计
+
+### 1. 系统架构
+```
+┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
+│  微信小程序客户端    │◄───►│   Spring Boot后端服务  │◄───►│    SQL Server数据库  │
+│  - UniApp框架        │     │  - Spring Boot 2.7+  │     │  - SQL Server 2019+ │
+│  - Vue 3.0+          │     │  - MyBatis-Plus 3.5+ │     │                     │
+│  - uView UI组件库     │     │  - Shiro 1.9+        │     └─────────────────────┘
+└─────────────────────┘     │  - Spring Security   │
+         ▲                  │  - JWT认证            │
+         │                  └─────────────────────┘
+         │                           ▲
+         │                           │
+         ▼                           ▼
+┌─────────────────────┐     ┌─────────────────────┐
+│  Vue.js后台管理系统   │◄───►│   Nginx反向代理      │
+│  - Vue 3.0+         │     │                     │
+│  - Ant Design Vue   │     └─────────────────────┘
+│  - Axios            │
+└─────────────────────┘
+```
+
+### 2. 技术选型说明
+| 分类 | 技术 | 版本 | 选型理由 |
+|------|------|------|----------|
+| 前端框架 | Vue.js | 3.0+ | 轻量级框架，组件化开发，适合后台管理系统 |
+| UI组件库 | Ant Design Vue | 3.0+ | 蚂蚁金服出品，丰富的组件，美观的界面，适合企业级应用 |
+| 前端HTTP客户端 | Axios | 1.0+ | 支持Promise API，拦截器，适合前后端分离 |
+| 后端框架 | Spring Boot | 2.7+ | 快速开发，自动配置，适合RESTful API开发 |
+| ORM框架 | MyBatis-Plus | 3.5+ | 增强MyBatis，简化CRUD操作，支持代码生成 |
+| 安全框架 | Shiro | 1.9+ | 轻量级安全框架，支持认证和授权 |
+| 数据库 | SQL Server | 2019+ | 企业级数据库，支持复杂查询和事务 |
+| 认证 | JWT | - | 无状态认证，适合分布式系统 |
+| 小程序框架 | UniApp | 3.0+ | 跨平台框架，一套代码多端运行，支持微信小程序 |
+| 小程序UI组件库 | uView UI | 3.0+ | 基于Vue的小程序UI库，丰富的组件，适合小程序开发 |
+
+## 二、功能设计
+
+### 1. 后台管理系统功能
+
+#### 1.1 用户管理
+- **管理员管理**：添加、编辑、删除管理员账号，分配角色
+- **租户管理**：查看租户信息，审核租户注册，管理租户状态
+- **房东管理**：查看房东信息，审核房东资质，管理房东状态
+- **中介管理**：查看中介机构和中介人员信息，审核资质，管理状态
+- **黑名单管理**：管理黑名单用户，添加/移除黑名单，查看黑名单记录
+  - **实现场景**：当用户存在恶意行为（如拖欠租金、破坏房屋等）时，管理员可以将其加入黑名单，限制其使用系统功能
+
+#### 1.2 小区管理
+- **小区信息**：添加、编辑、删除小区信息，包括名称、地址、配套设施等
+- **楼栋管理**：管理小区内的楼栋信息，包括楼栋号、单元数等
+- **单元管理**：管理楼栋内的单元信息，包括单元号、层数等
+
+#### 1.3 房屋管理
+- **房屋信息**：添加、编辑、删除房屋信息，包括户型、面积、朝向、装修情况等
+- **房屋状态**：管理房屋状态（空置、已租、维护中）
+- **房屋上下架**：管理房屋的上架和下架状态
+  - **实现场景**：房东或中介可以将房屋上架进行出租或出售，也可以在房屋已租或不需要出租时将其下架
+- **房屋图片**：上传、管理房屋图片
+- **房屋设施**：管理房屋配套设施
+- **房屋标签**：管理房屋标签，如冰箱、洗衣机、交通方便等
+  - **实现场景**：通过标签可以更直观地展示房屋的特点和优势，方便租户快速筛选
+
+#### 1.4 租赁管理
+- **租赁合同**：创建、编辑、查看租赁合同
+- **租金管理**：设置租金标准，管理租金收取
+- **押金管理**：管理押金收取和退还
+- **续租管理**：处理租户续租申请
+- **退租管理**：处理租户退租申请，验收房屋
+- **支付频次管理**：设置租金支付频次（如每月、每季度、每年等）
+  - **实现场景**：根据租户和房东的协商，设置不同的支付频次，系统会根据设置的频次生成相应的账单
+
+#### 1.5 中介管理
+- **中介机构管理**：添加、编辑、删除中介机构信息，审核资质
+- **中介人员管理**：添加、编辑、删除中介人员信息，审核资质
+- **中介佣金管理**：设置佣金比例，管理佣金结算
+- **中介评价管理**：查看和管理中介评价
+- **批量导入房屋**：中介可以批量导入房屋信息
+  - **实现场景**：中介机构拥有大量房源时，可以通过Excel等格式批量导入房屋信息，提高工作效率
+- **批量导出房屋**：中介可以批量导出自己维护的房屋信息
+  - **实现场景**：中介需要对自己维护的房屋信息进行分析或备份时，可以批量导出房屋信息
+
+#### 1.6 权限管理
+- **角色管理**：创建、编辑、删除角色
+- **权限分配**：为角色分配权限
+- **用户权限**：为用户分配角色
+
+#### 1.7 财务管理
+- **收支管理**：记录系统收支情况
+- **账单管理**：生成、查看账单
+- **报表统计**：生成财务报表
+- **佣金管理**：管理中介佣金
+
+#### 1.8 维修管理
+- **维修申请**：查看、处理维修申请
+- **维修进度**：跟踪维修进度
+- **维修费用**：管理维修费用
+- **维修评价**：查看维修服务评价
+
+#### 1.9 系统管理
+- **系统配置**：配置系统参数
+- **日志管理**：查看系统操作日志
+- **数据备份**：定期备份系统数据
+- **公告管理**：发布和管理系统公告
+- **标签管理**：维护房屋标签，添加、编辑、删除标签
+  - **实现场景**：管理员可以根据需要添加新的房屋标签，如家电、交通、周边设施等，方便房东和中介对房屋进行标记
+
+#### 1.10 房源发布管理
+- **出租房源管理**：管理房东发布的出租房源
+- **出售房源管理**：管理房东发布的出售房源
+  - **实现场景**：房东可以根据自己的需求发布不同类型的房源，系统会根据房源类型进行分类管理
+
+#### 1.11 求租信息管理
+- **求租信息管理**：管理租户发布的求租信息
+- **合租信息管理**：管理租户发布的合租信息
+  - **实现场景**：租户可以发布求租或合租信息，房东和中介可以根据这些信息主动联系租户
+
+### 2. 微信小程序客户端功能
+
+#### 2.1 用户注册登录
+- **手机号注册**：通过手机号验证码注册
+- **微信登录**：通过微信账号登录
+- **密码找回**：通过手机号找回密码
+
+#### 2.2 房屋浏览搜索
+- **房屋列表**：查看可用房屋列表
+- **房屋详情**：查看房屋详细信息，包括图片、户型、设施等
+- **筛选搜索**：按价格、面积、户型、区域、标签等条件筛选
+  - **实现场景**：租户可以根据自己的需求，通过标签快速筛选符合条件的房屋，如带有冰箱、洗衣机或交通方便的房屋
+- **地图找房**：通过地图查看房屋位置
+
+#### 2.3 预约看房
+- **在线预约**：提交看房申请
+- **预约管理**：查看预约记录，修改预约时间
+
+#### 2.4 在线签约
+- **合同查看**：查看电子合同
+- **在线签约**：电子签名确认合同
+
+#### 2.5 租金支付
+- **在线支付**：通过微信支付缴纳租金
+- **支付记录**：查看历史支付记录
+- **账单提醒**：租金到期提醒
+- **支付频次设置**：设置租金支付频次
+  - **实现场景**：租户可以根据自己的情况，与房东协商设置合适的支付频次
+
+#### 2.6 维修申请
+- **提交申请**：在线提交维修申请
+- **进度查询**：查看维修进度
+- **评价服务**：对维修服务进行评价
+
+#### 2.7 中介服务
+- **中介查找**：查看附近的中介机构和中介人员
+- **中介沟通**：与中介人员进行在线沟通
+- **中介评价**：对中介服务进行评价
+
+#### 2.8 个人中心
+- **个人信息**：查看、修改个人信息
+- **我的房源**：房东查看自己的房源，发布出租、出售房源
+  - **实现场景**：房东可以在个人中心发布不同类型的房源，包括出租和出售
+- **我的租约**：租户查看自己的租约
+- **求租发布**：租户发布求租、合租信息
+  - **实现场景**：租户可以根据自己的需求发布求租或合租信息，等待房东或中介联系
+- **消息通知**：接收系统通知和消息
+- **设置**：账号安全、隐私设置、关于我们
+
+## 三、菜单设计
+
+### 1. 后台管理系统菜单
+
+#### 1.1 系统管理
+- **用户管理**
+  - 管理员管理
+  - 租户管理
+  - 房东管理
+  - 中介管理
+  - 黑名单管理
+- **权限管理**
+  - 角色管理
+  - 权限分配
+  - 用户权限
+- **系统配置**
+  - 基本设置
+  - 邮件配置
+  - 短信配置
+- **日志管理**
+  - 操作日志
+  - 登录日志
+  - 错误日志
+- **数据备份**
+  - 手动备份
+  - 备份计划
+  - 备份历史
+- **公告管理**
+  - 发布公告
+  - 公告列表
+- **标签管理**
+  - 标签列表
+  - 添加标签
+  - 编辑标签
+
+#### 1.2 小区管理
+- **小区信息**
+  - 小区列表
+  - 添加小区
+  - 小区详情
+- **楼栋管理**
+  - 楼栋列表
+  - 添加楼栋
+  - 楼栋详情
+- **单元管理**
+  - 单元列表
+  - 添加单元
+  - 单元详情
+
+#### 1.3 房屋管理
+- **房屋信息**
+  - 房屋列表
+  - 添加房屋
+  - 房屋详情
+- **房屋状态**
+  - 空置房屋
+  - 已租房屋
+  - 维护中房屋
+- **房屋上下架**
+  - 上架房屋
+  - 下架房屋
+- **房屋图片**
+  - 图片管理
+  - 批量上传
+- **房屋设施**
+  - 设施类型
+  - 设施管理
+- **房屋标签**
+  - 标签管理
+  - 标签分配
+
+#### 1.4 租赁管理
+- **租赁合同**
+  - 合同列表
+  - 创建合同
+  - 合同详情
+- **租金管理**
+  - 租金列表
+  - 租金收取
+  - 租金统计
+- **押金管理**
+  - 押金列表
+  - 押金收取
+  - 押金退还
+- **续租管理**
+  - 续租申请
+  - 续租处理
+- **退租管理**
+  - 退租申请
+  - 退租处理
+  - 房屋验收
+- **支付频次管理**
+  - 频次设置
+  - 频次列表
+
+#### 1.5 中介管理
+- **中介机构管理**
+  - 机构列表
+  - 添加机构
+  - 机构详情
+  - 资质审核
+- **中介人员管理**
+  - 人员列表
+  - 添加人员
+  - 人员详情
+  - 资质审核
+- **中介佣金管理**
+  - 佣金设置
+  - 佣金结算
+  - 佣金记录
+- **中介评价管理**
+  - 评价列表
+  - 评价统计
+- **批量操作**
+  - 批量导入房屋
+  - 批量导出房屋
+
+#### 1.6 财务管理
+- **收支管理**
+  - 收入记录
+  - 支出记录
+  - 收支统计
+- **账单管理**
+  - 账单列表
+  - 生成账单
+  - 账单详情
+- **报表统计**
+  - 月度报表
+  - 季度报表
+  - 年度报表
+- **佣金管理**
+  - 佣金列表
+  - 佣金结算
+  - 佣金统计
+
+#### 1.7 维修管理
+- **维修申请**
+  - 申请列表
+  - 申请处理
+  - 申请详情
+- **维修进度**
+  - 处理中维修
+  - 已完成维修
+  - 维修详情
+- **维修费用**
+  - 费用列表
+  - 费用结算
+  - 费用统计
+- **维修评价**
+  - 评价列表
+  - 评价统计
+
+#### 1.8 房源发布管理
+- **出租房源管理**
+  - 房源列表
+  - 审核房源
+  - 房源详情
+- **出售房源管理**
+  - 房源列表
+  - 审核房源
+  - 房源详情
+
+#### 1.9 求租信息管理
+- **求租信息管理**
+  - 信息列表
+  - 信息详情
+- **合租信息管理**
+  - 信息列表
+  - 信息详情
+
+### 2. 微信小程序客户端菜单
+
+#### 2.1 首页
+- **房屋推荐**
+- **热门小区**
+- **地图找房**
+- **筛选搜索**
+
+#### 2.2 房屋列表
+- **全部房屋**
+- **出租房屋**
+- **出售房屋**
+- **推荐房屋**
+- **最新发布**
+- **价格排序**
+- **面积排序**
+
+#### 2.3 房屋详情
+- **基本信息**
+- **房屋图片**
+- **配套设施**
+- **房屋标签**
+- **小区信息**
+- **联系中介**
+- **预约看房**
+
+#### 2.4 发布中心
+- **发布房源**
+  - 出租房源
+  - 出售房源
+- **发布求租**
+  - 求租信息
+  - 合租信息
+
+#### 2.5 个人中心
+- **我的信息**
+  - 个人资料
+  - 实名认证
+- **我的房源**
+  - 出租房源
+  - 出售房源
+  - 房源管理
+- **我的租约**
+  - 当前租约
+  - 历史租约
+- **维修服务**
+  - 维修申请
+  - 维修记录
+- **中介服务**
+  - 找中介
+  - 中介评价
+- **求租信息**
+  - 我的求租
+  - 我的合租
+- **消息通知**
+  - 系统通知
+  - 业务通知
+- **设置**
+  - 账号安全
+  - 隐私设置
+  - 关于我们
+
+## 四、数据库设计
+
+### 1. 核心数据表
+
+#### 1.1 用户表（users）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 用户ID |
+| `username` | `VARCHAR` | 50 | `NOT NULL UNIQUE` | 用户名 |
+| `password` | `VARCHAR` | 100 | `NOT NULL` | 密码（加密存储） |
+| `name` | `VARCHAR` | 50 | `NOT NULL` | 真实姓名 |
+| `phone` | `VARCHAR` | 20 | `NOT NULL UNIQUE` | 手机号 |
+| `id_card` | `VARCHAR` | 18 | `UNIQUE` | 身份证号 |
+| `user_type` | `INT` | 2 | `NOT NULL` | 用户类型（1:管理员, 2:租户, 3:房东, 4:中介） |
+| `status` | `INT` | 2 | `NOT NULL` | 状态（1:启用, 0:禁用） |
+| `is_blacklisted` | `BIT` | 1 | `NOT NULL DEFAULT 0` | 是否黑名单 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.2 角色表（roles）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 角色ID |
+| `role_name` | `VARCHAR` | 50 | `NOT NULL UNIQUE` | 角色名称 |
+| `description` | `VARCHAR` | 200 | - | 角色描述 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+
+#### 1.3 权限表（permissions）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 权限ID |
+| `permission_name` | `VARCHAR` | 100 | `NOT NULL UNIQUE` | 权限名称 |
+| `permission_code` | `VARCHAR` | 100 | `NOT NULL UNIQUE` | 权限代码 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+
+#### 1.4 角色权限表（role_permissions）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `role_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES roles(id)` | 角色ID |
+| `permission_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES permissions(id)` | 权限ID |
+| `PRIMARY KEY` | - | - | `(role_id, permission_id)` | 联合主键 |
+
+#### 1.5 用户角色表（user_roles）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `user_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES users(id)` | 用户ID |
+| `role_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES roles(id)` | 角色ID |
+| `PRIMARY KEY` | - | - | `(user_id, role_id)` | 联合主键 |
+
+#### 1.6 小区表（communities）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 小区ID |
+| `community_name` | `VARCHAR` | 100 | `NOT NULL` | 小区名称 |
+| `address` | `VARCHAR` | 200 | `NOT NULL` | 地址 |
+| `description` | `VARCHAR` | 500 | - | 描述 |
+| `facilities` | `VARCHAR` | 500 | - | 配套设施 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.7 楼栋表（buildings）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 楼栋ID |
+| `community_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES communities(id)` | 小区ID |
+| `building_name` | `VARCHAR` | 50 | `NOT NULL` | 楼栋名称 |
+| `unit_count` | `INT` | 4 | `NOT NULL` | 单元数 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.8 单元表（units）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 单元ID |
+| `building_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES buildings(id)` | 楼栋ID |
+| `unit_name` | `VARCHAR` | 50 | `NOT NULL` | 单元名称 |
+| `floor_count` | `INT` | 4 | `NOT NULL` | 层数 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.9 房屋表（houses）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 房屋ID |
+| `unit_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES units(id)` | 单元ID |
+| `house_number` | `VARCHAR` | 50 | `NOT NULL` | 门牌号 |
+| `area` | `DECIMAL` | 10,2 | `NOT NULL` | 面积 |
+| `layout` | `VARCHAR` | 50 | `NOT NULL` | 户型 |
+| `direction` | `VARCHAR` | 20 | `NOT NULL` | 朝向 |
+| `decoration` | `VARCHAR` | 50 | `NOT NULL` | 装修情况 |
+| `facilities` | `VARCHAR` | 500 | - | 配套设施 |
+| `rent` | `DECIMAL` | 10,2 | - | 租金 |
+| `deposit` | `DECIMAL` | 10,2 | - | 押金 |
+| `price` | `DECIMAL` | 10,2 | - | 售价 |
+| `status` | `INT` | 2 | `NOT NULL` | 状态（1:空置, 2:已租, 3:维护中） |
+| `is_online` | `BIT` | 1 | `NOT NULL DEFAULT 1` | 是否上架 |
+| `house_type` | `INT` | 2 | `NOT NULL` | 房屋类型（1:出租, 2:出售） |
+| `description` | `VARCHAR` | 500 | - | 描述 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.10 房屋图片表（house_images）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 图片ID |
+| `house_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES houses(id)` | 房屋ID |
+| `image_url` | `VARCHAR` | 500 | `NOT NULL` | 图片URL |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+
+#### 1.11 租赁合同表（lease_contracts）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 合同ID |
+| `house_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES houses(id)` | 房屋ID |
+| `tenant_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES users(id)` | 租户ID |
+| `landlord_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES users(id)` | 房东ID |
+| `intermediary_id` | `BIGINT` | 20 | `FOREIGN KEY REFERENCES users(id)` | 中介ID |
+| `start_date` | `DATE` | - | `NOT NULL` | 起始日期 |
+| `end_date` | `DATE` | - | `NOT NULL` | 结束日期 |
+| `rent` | `DECIMAL` | 10,2 | `NOT NULL` | 租金 |
+| `deposit` | `DECIMAL` | 10,2 | `NOT NULL` | 押金 |
+| `payment_frequency` | `INT` | 2 | `NOT NULL` | 支付频次（1:月付, 2:季付, 3:年付） |
+| `status` | `INT` | 2 | `NOT NULL` | 状态（1:待签, 2:已签, 3:已到期, 4:已解约） |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.12 支付记录表（payment_records）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 支付记录ID |
+| `contract_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES lease_contracts(id)` | 合同ID |
+| `user_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES users(id)` | 用户ID |
+| `amount` | `DECIMAL` | 10,2 | `NOT NULL` | 金额 |
+| `payment_type` | `INT` | 2 | `NOT NULL` | 支付类型（1:租金, 2:押金, 3:维修费用, 4:佣金） |
+| `payment_status` | `INT` | 2 | `NOT NULL` | 支付状态（1:待支付, 2:已支付, 3:已退款） |
+| `payment_time` | `DATETIME` | - | - | 支付时间 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+
+#### 1.13 维修申请表（maintenance_applications）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 申请ID |
+| `house_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES houses(id)` | 房屋ID |
+| `user_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES users(id)` | 用户ID |
+| `description` | `VARCHAR` | 500 | `NOT NULL` | 维修描述 |
+| `status` | `INT` | 2 | `NOT NULL` | 状态（1:待处理, 2:处理中, 3:已完成, 4:已拒绝） |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.14 维修处理表（maintenance_records）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 处理记录ID |
+| `application_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES maintenance_applications(id)` | 申请ID |
+| `handler_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES users(id)` | 处理人ID |
+| `handling_content` | `VARCHAR` | 500 | `NOT NULL` | 处理内容 |
+| `cost` | `DECIMAL` | 10,2 | - | 维修费用 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+
+#### 1.15 中介机构表（intermediary_agencies）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 机构ID |
+| `agency_name` | `VARCHAR` | 100 | `NOT NULL` | 机构名称 |
+| `contact_person` | `VARCHAR` | 50 | `NOT NULL` | 联系人 |
+| `contact_phone` | `VARCHAR` | 20 | `NOT NULL` | 联系电话 |
+| `address` | `VARCHAR` | 200 | `NOT NULL` | 地址 |
+| `business_license` | `VARCHAR` | 100 | `NOT NULL` | 营业执照编号 |
+| `status` | `INT` | 2 | `NOT NULL` | 状态（1:待审核, 2:已审核, 3:已禁用） |
+| `rating` | `DECIMAL` | 3,1 | `DEFAULT 0` | 评级 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.16 中介人员表（intermediary_staff）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 人员ID |
+| `agency_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES intermediary_agencies(id)` | 所属机构ID |
+| `user_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES users(id)` | 用户ID |
+| `name` | `VARCHAR` | 50 | `NOT NULL` | 姓名 |
+| `phone` | `VARCHAR` | 20 | `NOT NULL` | 电话 |
+| `id_card` | `VARCHAR` | 18 | `NOT NULL` | 身份证号 |
+| `status` | `INT` | 2 | `NOT NULL` | 状态（1:待认证, 2:已认证, 3:已禁用） |
+| `rating` | `DECIMAL` | 3,1 | `DEFAULT 0` | 评级 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.17 中介佣金表（intermediary_commissions）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 佣金ID |
+| `agency_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES intermediary_agencies(id)` | 中介机构ID |
+| `staff_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES intermediary_staff(id)` | 中介人员ID |
+| `contract_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES lease_contracts(id)` | 租赁合同ID |
+| `amount` | `DECIMAL` | 10,2 | `NOT NULL` | 佣金金额 |
+| `commission_rate` | `DECIMAL` | 5,2 | `NOT NULL` | 佣金比例 |
+| `status` | `INT` | 2 | `NOT NULL` | 状态（1:待结算, 2:已结算, 3:已支付） |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.18 中介评价表（intermediary_evaluations）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 评价ID |
+| `user_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES users(id)` | 评价用户ID |
+| `staff_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES intermediary_staff(id)` | 被评价中介人员ID |
+| `agency_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES intermediary_agencies(id)` | 被评价中介机构ID |
+| `rating` | `INT` | 1 | `NOT NULL` | 评分（1-5） |
+| `comment` | `VARCHAR` | 500 | - | 评价内容 |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+
+#### 1.19 公告表（notices）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 公告ID |
+| `title` | `VARCHAR` | 100 | `NOT NULL` | 标题 |
+| `content` | `TEXT` | - | `NOT NULL` | 内容 |
+| `type` | `INT` | 2 | `NOT NULL` | 类型（1:系统公告, 2:小区通知） |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+
+#### 1.20 标签表（tags）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 标签ID |
+| `tag_name` | `VARCHAR` | 50 | `NOT NULL UNIQUE` | 标签名称 |
+| `tag_type` | `INT` | 2 | `NOT NULL` | 标签类型（1:房屋设施, 2:交通便利, 3:周边配套, 4:其他） |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.21 房屋标签关联表（house_tags）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `house_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES houses(id)` | 房屋ID |
+| `tag_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES tags(id)` | 标签ID |
+| `PRIMARY KEY` | - | - | `(house_id, tag_id)` | 联合主键 |
+
+#### 1.22 支付频次表（payment_frequencies）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 频次ID |
+| `frequency_name` | `VARCHAR` | 50 | `NOT NULL UNIQUE` | 频次名称（如：月付、季付、年付） |
+| `frequency_value` | `INT` | 4 | `NOT NULL` | 频次值（如：1表示每月，3表示每季度） |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+#### 1.23 求租信息表（rental_requests）
+| 字段名 | 数据类型 | 长度 | 约束 | 描述 |
+|--------|---------|------|------|------|
+| `id` | `BIGINT` | 20 | `PRIMARY KEY IDENTITY` | 求租信息ID |
+| `user_id` | `BIGINT` | 20 | `NOT NULL FOREIGN KEY REFERENCES users(id)` | 用户ID |
+| `request_type` | `INT` | 2 | `NOT NULL` | 求租类型（1:求租, 2:合租） |
+| `budget` | `DECIMAL` | 10,2 | `NOT NULL` | 预算 |
+| `area_min` | `DECIMAL` | 10,2 | `NOT NULL` | 最小面积 |
+| `area_max` | `DECIMAL` | 10,2 | `NOT NULL` | 最大面积 |
+| `layout` | `VARCHAR` | 50 | - | 户型要求 |
+| `region` | `VARCHAR` | 100 | - | 区域要求 |
+| `description` | `VARCHAR` | 500 | - | 详细描述 |
+| `status` | `INT` | 2 | `NOT NULL` | 状态（1:有效, 0:已失效） |
+| `create_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 创建时间 |
+| `update_time` | `DATETIME` | - | `NOT NULL DEFAULT GETDATE()` | 更新时间 |
+
+### 2. 数据库关联关系
+
+```mermaid
+erDiagram
+    users ||--o{ user_roles : has
+    users ||--o{ lease_contracts : as_tenant
+    users ||--o{ lease_contracts : as_landlord
+    users ||--o{ lease_contracts : as_intermediary
+    users ||--o{ payment_records : made
+    users ||--o{ maintenance_applications : submitted
+    users ||--o{ maintenance_records : handled
+    users ||--o{ intermediary_staff : is
+    users ||--o{ intermediary_evaluations : made
+    users ||--o{ rental_requests : submitted
+    
+    roles ||--o{ user_roles : has
+    roles ||--o{ role_permissions : has
+    permissions ||--o{ role_permissions : has
+    
+    communities ||--o{ buildings : contains
+    buildings ||--o{ units : contains
+    units ||--o{ houses : contains
+    
+    houses ||--o{ house_images : has
+    houses ||--o{ lease_contracts : has
+    houses ||--o{ maintenance_applications : has
+    houses ||--o{ house_tags : has
+    
+    lease_contracts ||--o{ payment_records : has
+    lease_contracts ||--o{ intermediary_commissions : generates
+    
+    maintenance_applications ||--o{ maintenance_records : has
+    
+    intermediary_agencies ||--o{ intermediary_staff : employs
+    intermediary_agencies ||--o{ intermediary_commissions : receives
+    intermediary_agencies ||--o{ intermediary_evaluations : receives
+    
+    intermediary_staff ||--o{ intermediary_commissions : earns
+    intermediary_staff ||--o{ intermediary_evaluations : receives
+    
+    tags ||--o{ house_tags : has
+    
+    payment_frequencies ||--o{ lease_contracts : used
+```
+
+## 五、数据流向
+
+### 1. 后台管理系统数据流向
+
+#### 1.1 用户管理数据流向
+1. 管理员登录系统，访问用户管理模块
+2. 管理员添加/编辑/删除用户信息，管理黑名单
+3. 系统验证用户数据，更新数据库
+4. 系统返回操作结果给管理员
+
+#### 1.2 小区管理数据流向
+1. 管理员访问小区管理模块
+2. 管理员添加/编辑/删除小区、楼栋、单元信息
+3. 系统验证数据，更新数据库
+4. 系统返回操作结果给管理员
+
+#### 1.3 房屋管理数据流向
+1. 管理员、房东或中介访问房屋管理模块
+2. 添加/编辑/删除房屋信息，上传房屋图片，管理房屋标签
+3. 系统验证数据，更新数据库
+4. 系统返回操作结果给用户
+5. 中介批量导入房屋信息，系统验证并批量处理
+6. 中介批量导出房屋信息，系统生成导出文件
+
+#### 1.4 租赁管理数据流向
+1. 管理员、房东或中介访问租赁管理模块
+2. 创建/编辑租赁合同，设置支付频次，管理租金和押金
+3. 系统验证数据，更新数据库
+4. 系统返回操作结果给用户
+5. 租户通过小程序查看合同，进行在线签约
+
+#### 1.5 中介管理数据流向
+1. 管理员访问中介管理模块
+2. 审核中介机构和中介人员资质
+3. 系统验证数据，更新数据库
+4. 系统返回操作结果给管理员
+5. 中介人员通过小程序访问中介工作台，管理房源和客户
+
+#### 1.6 维修管理数据流向
+1. 租户通过小程序提交维修申请
+2. 管理员或维修人员访问维修管理模块
+3. 处理维修申请，更新维修进度
+4. 系统验证数据，更新数据库
+5. 系统返回操作结果给用户
+6. 租户通过小程序查看维修进度，评价维修服务
+
+#### 1.7 标签管理数据流向
+1. 管理员访问标签管理模块
+2. 添加/编辑/删除标签
+3. 系统验证数据，更新数据库
+4. 系统返回操作结果给管理员
+5. 房东或中介在发布房屋时选择标签
+6. 系统保存房屋标签关联关系
+
+#### 1.8 求租信息管理数据流向
+1. 租户通过小程序发布求租或合租信息
+2. 管理员访问求租信息管理模块
+3. 查看和管理求租信息
+4. 系统验证数据，更新数据库
+5. 房东或中介查看求租信息，联系租户
+
+### 2. 微信小程序客户端数据流向
+
+#### 2.1 用户注册登录数据流向
+1. 用户打开小程序，点击注册/登录
+2. 输入手机号，获取验证码
+3. 系统验证验证码，创建/登录用户账号
+4. 系统返回登录状态给用户
+
+#### 2.2 房屋浏览搜索数据流向
+1. 用户打开小程序，进入房屋列表页
+2. 系统从数据库获取房屋列表数据
+3. 用户进行筛选搜索，包括按标签筛选
+4. 系统根据筛选条件查询数据库，返回结果
+5. 用户点击房屋详情，系统返回房屋详细信息
+
+#### 2.3 预约看房数据流向
+1. 用户在房屋详情页点击预约看房
+2. 系统收集预约信息，保存到数据库
+3. 系统通知中介或房东
+4. 中介或房东确认预约，系统更新预约状态
+5. 系统通知用户预约结果
+
+#### 2.4 在线签约数据流向
+1. 用户在小程序查看租赁合同
+2. 用户确认合同内容，进行电子签名
+3. 系统保存签名信息，更新合同状态
+4. 系统通知房东和中介
+5. 系统返回签约结果给用户
+
+#### 2.5 租金支付数据流向
+1. 用户在小程序查看待支付账单
+2. 用户点击支付，跳转到微信支付
+3. 用户完成支付，微信回调系统
+4. 系统更新支付状态，记录支付记录
+5. 系统返回支付结果给用户
+
+#### 2.6 维修申请数据流向
+1. 用户在小程序提交维修申请
+2. 系统保存申请信息，通知管理员或维修人员
+3. 维修人员处理申请，更新维修进度
+4. 系统通知用户维修进度
+5. 用户评价维修服务，系统保存评价信息
+
+#### 2.7 房源发布数据流向
+1. 房东在小程序点击发布房源
+2. 选择发布类型（出租或出售）
+3. 填写房源信息，上传图片，选择标签
+4. 系统验证数据，保存到数据库
+5. 系统返回发布结果给房东
+
+#### 2.8 求租信息发布数据流向
+1. 租户在小程序点击发布求租
+2. 选择发布类型（求租或合租）
+3. 填写求租信息，包括预算、面积要求等
+4. 系统验证数据，保存到数据库
+5. 系统返回发布结果给租户
+
+## 六、功能思维导图
+
+### 1. 后台管理系统功能思维导图
+
+```mermaid
+graph TD
+    A[后台管理系统] --> B[系统管理]
+    A --> C[小区管理]
+    A --> D[房屋管理]
+    A --> E[租赁管理]
+    A --> F[中介管理]
+    A --> G[财务管理]
+    A --> H[维修管理]
+    A --> I[房源发布管理]
+    A --> J[求租信息管理]
+    
+    B --> B1[用户管理]
+    B --> B2[权限管理]
+    B --> B3[系统配置]
+    B --> B4[日志管理]
+    B --> B5[数据备份]
+    B --> B6[公告管理]
+    B --> B7[标签管理]
+    
+    B1 --> B11[管理员管理]
+    B1 --> B12[租户管理]
+    B1 --> B13[房东管理]
+    B1 --> B14[中介管理]
+    B1 --> B15[黑名单管理]
+    
+    B2 --> B21[角色管理]
+    B2 --> B22[权限分配]
+    B2 --> B23[用户权限]
+    
+    B7 --> B71[标签列表]
+    B7 --> B72[添加标签]
+    B7 --> B73[编辑标签]
+    
+    C --> C1[小区信息]
+    C --> C2[楼栋管理]
+    C --> C3[单元管理]
+    
+    D --> D1[房屋信息]
+    D --> D2[房屋状态]
+    D --> D3[房屋上下架]
+    D --> D4[房屋图片]
+    D --> D5[房屋设施]
+    D --> D6[房屋标签]
+    
+    E --> E1[租赁合同]
+    E --> E2[租金管理]
+    E --> E3[押金管理]
+    E --> E4[续租管理]
+    E --> E5[退租管理]
+    E --> E6[支付频次管理]
+    
+    F --> F1[中介机构管理]
+    F --> F2[中介人员管理]
+    F --> F3[中介佣金管理]
+    F --> F4[中介评价管理]
+    F --> F5[批量操作]
+    
+    F5 --> F51[批量导入房屋]
+    F5 --> F52[批量导出房屋]
+    
+    G --> G1[收支管理]
+    G --> G2[账单管理]
+    G --> G3[报表统计]
+    G --> G4[佣金管理]
+    
+    H --> H1[维修申请]
+    H --> H2[维修进度]
+    H --> H3[维修费用]
+    H --> H4[维修评价]
+    
+    I --> I1[出租房源管理]
+    I --> I2[出售房源管理]
+    
+    J --> J1[求租信息管理]
+    J --> J2[合租信息管理]
+```
+
+### 2. 微信小程序客户端功能思维导图
+
+```mermaid
+graph TD
+    A[微信小程序客户端] --> B[首页]
+    A --> C[房屋列表]
+    A --> D[房屋详情]
+    A --> E[发布中心]
+    A --> F[个人中心]
+    
+    B --> B1[房屋推荐]
+    B --> B2[热门小区]
+    B --> B3[地图找房]
+    B --> B4[筛选搜索]
+    
+    C --> C1[全部房屋]
+    C --> C2[出租房屋]
+    C --> C3[出售房屋]
+    C --> C4[推荐房屋]
+    C --> C5[最新发布]
+    C --> C6[价格排序]
+    C --> C7[面积排序]
+    
+    D --> D1[基本信息]
+    D --> D2[房屋图片]
+    D --> D3[配套设施]
+    D --> D4[房屋标签]
+    D --> D5[小区信息]
+    D --> D6[联系中介]
+    D --> D7[预约看房]
+    
+    E --> E1[发布房源]
+    E --> E2[发布求租]
+    
+    E1 --> E11[出租房源]
+    E1 --> E12[出售房源]
+    
+    E2 --> E21[求租信息]
+    E2 --> E22[合租信息]
+    
+    F --> F1[我的信息]
+    F --> F2[我的房源]
+    F --> F3[我的租约]
+    F --> F4[维修服务]
+    F --> F5[中介服务]
+    F --> F6[求租信息]
+    F --> F7[消息通知]
+    F --> F8[设置]
+    
+    F1 --> F11[个人资料]
+    F1 --> F12[实名认证]
+    
+    F2 --> F21[出租房源]
+    F2 --> F22[出售房源]
+    F2 --> F23[房源管理]
+    
+    F3 --> F31[当前租约]
+    F3 --> F32[历史租约]
+    
+    F4 --> F41[维修申请]
+    F4 --> F42[维修记录]
+    
+    F5 --> F51[找中介]
+    F5 --> F52[中介评价]
+    
+    F6 --> F61[我的求租]
+    F6 --> F62[我的合租]
+    
+    F7 --> F71[系统通知]
+    F7 --> F72[业务通知]
+    
+    F8 --> F81[账号安全]
+    F8 --> F82[隐私设置]
+    F8 --> F83[关于我们]
+```
+
+## 七、总结
+
+本设计方案详细描述了房屋租赁系统的功能设计、菜单设计、数据库字段设计、数据流向和功能思维导图。系统采用前后端分离架构，使用Vue.js、Spring Boot、MyBatis-Plus、Shiro和SQL Server等技术栈，实现了用户管理、小区管理、房屋管理、租赁管理、中介管理、财务管理、维修管理和系统管理等核心功能。
+
+通过本系统，管理员可以方便地管理房屋租赁业务，租户可以通过微信小程序轻松找到合适的房源并完成租赁流程，房东可以管理自己的房源并查看租赁情况，中介可以提供专业的中介服务并获得佣金。系统还提供了完善的安全性措施，确保数据安全和系统稳定运行。
+
+该设计方案可以根据实际需求进行调整和扩展，以满足不同规模和业务场景的需求。
