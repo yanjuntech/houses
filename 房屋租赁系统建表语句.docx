@@ -1,0 +1,304 @@
+# 房屋租赁系统建表语句
+
+## 1. 用户表（users）
+```sql
+CREATE TABLE users (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    phone VARCHAR(20) NOT NULL UNIQUE,
+    id_card VARCHAR(18) UNIQUE,
+    user_type INT NOT NULL,
+    status INT NOT NULL,
+    is_blacklisted BIT NOT NULL DEFAULT 0,
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 2. 角色表（roles）
+```sql
+CREATE TABLE roles (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(200),
+    create_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 3. 权限表（permissions）
+```sql
+CREATE TABLE permissions (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    permission_name VARCHAR(100) NOT NULL UNIQUE,
+    permission_code VARCHAR(100) NOT NULL UNIQUE,
+    create_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 4. 角色权限表（role_permissions）
+```sql
+CREATE TABLE role_permissions (
+    role_id BIGINT NOT NULL FOREIGN KEY REFERENCES roles(id),
+    permission_id BIGINT NOT NULL FOREIGN KEY REFERENCES permissions(id),
+    PRIMARY KEY (role_id, permission_id)
+);
+```
+
+## 5. 用户角色表（user_roles）
+```sql
+CREATE TABLE user_roles (
+    user_id BIGINT NOT NULL FOREIGN KEY REFERENCES users(id),
+    role_id BIGINT NOT NULL FOREIGN KEY REFERENCES roles(id),
+    PRIMARY KEY (user_id, role_id)
+);
+```
+
+## 6. 小区表（communities）
+```sql
+CREATE TABLE communities (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    community_name VARCHAR(100) NOT NULL,
+    address VARCHAR(200) NOT NULL,
+    description VARCHAR(500),
+    facilities VARCHAR(500),
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 7. 楼栋表（buildings）
+```sql
+CREATE TABLE buildings (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    community_id BIGINT NOT NULL FOREIGN KEY REFERENCES communities(id),
+    building_name VARCHAR(50) NOT NULL,
+    unit_count INT NOT NULL,
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 8. 单元表（units）
+```sql
+CREATE TABLE units (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    building_id BIGINT NOT NULL FOREIGN KEY REFERENCES buildings(id),
+    unit_name VARCHAR(50) NOT NULL,
+    floor_count INT NOT NULL,
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 9. 房屋表（houses）
+```sql
+CREATE TABLE houses (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    unit_id BIGINT NOT NULL FOREIGN KEY REFERENCES units(id),
+    house_number VARCHAR(50) NOT NULL,
+    area DECIMAL(10,2) NOT NULL,
+    layout VARCHAR(50) NOT NULL,
+    direction VARCHAR(20) NOT NULL,
+    decoration VARCHAR(50) NOT NULL,
+    facilities VARCHAR(500),
+    rent DECIMAL(10,2),
+    deposit DECIMAL(10,2),
+    price DECIMAL(10,2),
+    status INT NOT NULL,
+    is_online BIT NOT NULL DEFAULT 1,
+    house_type INT NOT NULL,
+    description VARCHAR(500),
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 10. 房屋图片表（house_images）
+```sql
+CREATE TABLE house_images (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    house_id BIGINT NOT NULL FOREIGN KEY REFERENCES houses(id),
+    image_url VARCHAR(500) NOT NULL,
+    create_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 11. 租赁合同表（lease_contracts）
+```sql
+CREATE TABLE lease_contracts (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    house_id BIGINT NOT NULL FOREIGN KEY REFERENCES houses(id),
+    tenant_id BIGINT NOT NULL FOREIGN KEY REFERENCES users(id),
+    landlord_id BIGINT NOT NULL FOREIGN KEY REFERENCES users(id),
+    intermediary_id BIGINT FOREIGN KEY REFERENCES users(id),
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    rent DECIMAL(10,2) NOT NULL,
+    deposit DECIMAL(10,2) NOT NULL,
+    payment_frequency INT NOT NULL,
+    status INT NOT NULL,
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 12. 支付记录表（payment_records）
+```sql
+CREATE TABLE payment_records (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    contract_id BIGINT NOT NULL FOREIGN KEY REFERENCES lease_contracts(id),
+    user_id BIGINT NOT NULL FOREIGN KEY REFERENCES users(id),
+    amount DECIMAL(10,2) NOT NULL,
+    payment_type INT NOT NULL,
+    payment_status INT NOT NULL,
+    payment_time DATETIME,
+    create_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 13. 维修申请表（maintenance_applications）
+```sql
+CREATE TABLE maintenance_applications (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    house_id BIGINT NOT NULL FOREIGN KEY REFERENCES houses(id),
+    user_id BIGINT NOT NULL FOREIGN KEY REFERENCES users(id),
+    description VARCHAR(500) NOT NULL,
+    status INT NOT NULL,
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 14. 维修处理表（maintenance_records）
+```sql
+CREATE TABLE maintenance_records (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    application_id BIGINT NOT NULL FOREIGN KEY REFERENCES maintenance_applications(id),
+    handler_id BIGINT NOT NULL FOREIGN KEY REFERENCES users(id),
+    handling_content VARCHAR(500) NOT NULL,
+    cost DECIMAL(10,2),
+    create_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 15. 中介机构表（intermediary_agencies）
+```sql
+CREATE TABLE intermediary_agencies (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    agency_name VARCHAR(100) NOT NULL,
+    contact_person VARCHAR(50) NOT NULL,
+    contact_phone VARCHAR(20) NOT NULL,
+    address VARCHAR(200) NOT NULL,
+    business_license VARCHAR(100) NOT NULL,
+    status INT NOT NULL,
+    rating DECIMAL(3,1) DEFAULT 0,
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 16. 中介人员表（intermediary_staff）
+```sql
+CREATE TABLE intermediary_staff (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    agency_id BIGINT NOT NULL FOREIGN KEY REFERENCES intermediary_agencies(id),
+    user_id BIGINT NOT NULL FOREIGN KEY REFERENCES users(id),
+    name VARCHAR(50) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    id_card VARCHAR(18) NOT NULL,
+    status INT NOT NULL,
+    rating DECIMAL(3,1) DEFAULT 0,
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 17. 中介佣金表（intermediary_commissions）
+```sql
+CREATE TABLE intermediary_commissions (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    agency_id BIGINT NOT NULL FOREIGN KEY REFERENCES intermediary_agencies(id),
+    staff_id BIGINT NOT NULL FOREIGN KEY REFERENCES intermediary_staff(id),
+    contract_id BIGINT NOT NULL FOREIGN KEY REFERENCES lease_contracts(id),
+    amount DECIMAL(10,2) NOT NULL,
+    commission_rate DECIMAL(5,2) NOT NULL,
+    status INT NOT NULL,
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 18. 中介评价表（intermediary_evaluations）
+```sql
+CREATE TABLE intermediary_evaluations (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    user_id BIGINT NOT NULL FOREIGN KEY REFERENCES users(id),
+    staff_id BIGINT NOT NULL FOREIGN KEY REFERENCES intermediary_staff(id),
+    agency_id BIGINT NOT NULL FOREIGN KEY REFERENCES intermediary_agencies(id),
+    rating INT NOT NULL,
+    comment VARCHAR(500),
+    create_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 19. 公告表（notices）
+```sql
+CREATE TABLE notices (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    content TEXT NOT NULL,
+    type INT NOT NULL,
+    create_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 20. 标签表（tags）
+```sql
+CREATE TABLE tags (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    tag_name VARCHAR(50) NOT NULL UNIQUE,
+    tag_type INT NOT NULL,
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 21. 房屋标签关联表（house_tags）
+```sql
+CREATE TABLE house_tags (
+    house_id BIGINT NOT NULL FOREIGN KEY REFERENCES houses(id),
+    tag_id BIGINT NOT NULL FOREIGN KEY REFERENCES tags(id),
+    PRIMARY KEY (house_id, tag_id)
+);
+```
+
+## 22. 支付频次表（payment_frequencies）
+```sql
+CREATE TABLE payment_frequencies (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    frequency_name VARCHAR(50) NOT NULL UNIQUE,
+    frequency_value INT NOT NULL,
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
+
+## 23. 求租信息表（rental_requests）
+```sql
+CREATE TABLE rental_requests (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    user_id BIGINT NOT NULL FOREIGN KEY REFERENCES users(id),
+    request_type INT NOT NULL,
+    budget DECIMAL(10,2) NOT NULL,
+    area_min DECIMAL(10,2) NOT NULL,
+    area_max DECIMAL(10,2) NOT NULL,
+    layout VARCHAR(50),
+    region VARCHAR(100),
+    description VARCHAR(500),
+    status INT NOT NULL,
+    create_time DATETIME NOT NULL DEFAULT GETDATE(),
+    update_time DATETIME NOT NULL DEFAULT GETDATE()
+);
+```
