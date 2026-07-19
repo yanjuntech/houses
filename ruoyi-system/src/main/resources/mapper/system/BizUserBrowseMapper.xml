@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizUserBrowseMapper">
+
+	<resultMap type="BizUserBrowse" id="BizUserBrowseResult">
+		<id     property="browseId"        column="browse_id"        />
+		<result property="userId"          column="user_id"          />
+		<result property="houseId"         column="house_id"         />
+		<result property="houseTitle"      column="house_title"      />
+		<result property="browseTime"      column="browse_time"      />
+		<result property="createBy"        column="create_by"        />
+		<result property="createTime"      column="create_time"      />
+	</resultMap>
+
+	<sql id="selectBizUserBrowseVo">
+		select browse_id, user_id, house_id, house_title, browse_time, create_by, create_time
+		from biz_user_browse
+	</sql>
+
+	<select id="selectBizUserBrowseList" parameterType="BizUserBrowse" resultMap="BizUserBrowseResult">
+		<include refid="selectBizUserBrowseVo"/>
+		<where>
+			<if test="userId != null">
+				AND user_id = #{userId}
+			</if>
+			<if test="houseId != null">
+				AND house_id = #{houseId}
+			</if>
+			<if test="houseTitle != null and houseTitle != ''">
+				AND house_title like concat('%', #{houseTitle}, '%')
+			</if>
+		</where>
+		order by browse_time desc
+	</select>
+
+	<select id="selectBizUserBrowseByBrowseId" parameterType="Long" resultMap="BizUserBrowseResult">
+		<include refid="selectBizUserBrowseVo"/>
+		where browse_id = #{browseId}
+	</select>
+
+	<select id="selectLatestByUserIdAndHouseId" parameterType="BizUserBrowse" resultMap="BizUserBrowseResult">
+		<include refid="selectBizUserBrowseVo"/>
+		where user_id = #{userId} and house_id = #{houseId}
+		order by browse_time desc limit 1
+	</select>
+
+	<insert id="insertBizUserBrowse" parameterType="BizUserBrowse" useGeneratedKeys="true" keyProperty="browseId">
+		insert into biz_user_browse(
+			<if test="userId != null">user_id,</if>
+			<if test="houseId != null">house_id,</if>
+			<if test="houseTitle != null and houseTitle != ''">house_title,</if>
+			<if test="browseTime != null">browse_time,</if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			create_time
+		)values(
+			<if test="userId != null">#{userId},</if>
+			<if test="houseId != null">#{houseId},</if>
+			<if test="houseTitle != null and houseTitle != ''">#{houseTitle},</if>
+			<if test="browseTime != null">#{browseTime},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			sysdate()
+		)
+	</insert>
+
+	<update id="updateBizUserBrowse" parameterType="BizUserBrowse">
+ 		update biz_user_browse
+ 		<set>
+ 			<if test="userId != null">user_id = #{userId},</if>
+ 			<if test="houseId != null">house_id = #{houseId},</if>
+ 			<if test="houseTitle != null">house_title = #{houseTitle},</if>
+ 			browse_time = sysdate()
+ 		</set>
+ 		where browse_id = #{browseId}
+	</update>
+
+	<delete id="deleteBizUserBrowseByBrowseId" parameterType="Long">
+		delete from biz_user_browse where browse_id = #{browseId}
+	</delete>
+
+	<delete id="deleteByUserIdAndHouseId" parameterType="BizUserBrowse">
+		delete from biz_user_browse where user_id = #{userId} and house_id = #{houseId}
+	</delete>
+
+</mapper>

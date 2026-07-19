@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizRentalContractMapper">
+
+	<resultMap type="BizRentalContract" id="BizRentalContractResult">
+		<id     property="rentalId"          column="rental_id"          />
+		<result property="houseId"           column="house_id"           />
+		<result property="houseTitle"        column="house_title"        />
+		<result property="communityName"     column="community_name"     />
+		<result property="contractId"        column="contract_id"        />
+		<result property="contractNo"        column="contract_no"        />
+		<result property="landlordId"        column="landlord_id"        />
+		<result property="landlordName"      column="landlord_name"      />
+		<result property="landlordPhone"     column="landlord_phone"     />
+		<result property="tenantId"          column="tenant_id"          />
+		<result property="tenantName"        column="tenant_name"        />
+		<result property="tenantPhone"       column="tenant_phone"       />
+		<result property="startDate"         column="start_date"         />
+		<result property="endDate"           column="end_date"           />
+		<result property="monthlyRent"       column="monthly_rent"       />
+		<result property="deposit"           column="deposit"            />
+		<result property="rentPeriod"        column="rent_period"        />
+		<result property="expireStatus"      column="expire_status"      />
+		<result property="status"            column="status"             />
+		<result property="createBy"          column="create_by"          />
+		<result property="createTime"        column="create_time"        />
+		<result property="updateBy"          column="update_by"          />
+		<result property="updateTime"        column="update_time"        />
+		<result property="remark"            column="remark"             />
+	</resultMap>
+
+	<sql id="selectBizRentalContractVo">
+		select rental_id, house_id, house_title, community_name, contract_id, contract_no,
+		       landlord_id, landlord_name, landlord_phone, tenant_id, tenant_name, tenant_phone,
+		       start_date, end_date, monthly_rent, deposit, rent_period, expire_status, status,
+		       create_by, create_time, update_by, update_time, remark
+		from biz_rental_contract
+	</sql>
+
+	<select id="selectBizRentalContractList" parameterType="BizRentalContract" resultMap="BizRentalContractResult">
+		<include refid="selectBizRentalContractVo"/>
+		<where>
+			<if test="houseTitle != null and houseTitle != ''">
+				AND house_title like concat('%', #{houseTitle}, '%')
+			</if>
+			<if test="communityName != null and communityName != ''">
+				AND community_name like concat('%', #{communityName}, '%')
+			</if>
+			<if test="landlordName != null and landlordName != ''">
+				AND landlord_name like concat('%', #{landlordName}, '%')
+			</if>
+			<if test="landlordPhone != null and landlordPhone != ''">
+				AND landlord_phone = #{landlordPhone}
+			</if>
+			<if test="tenantName != null and tenantName != ''">
+				AND tenant_name like concat('%', #{tenantName}, '%')
+			</if>
+			<if test="tenantPhone != null and tenantPhone != ''">
+				AND tenant_phone = #{tenantPhone}
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+			<if test="expireStatus != null and expireStatus != ''">
+				AND expire_status = #{expireStatus}
+			</if>
+			<if test="params.expireRange != null and params.expireRange == '7'">
+				AND end_date &gt;= CURDATE() AND end_date &lt;= DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+			</if>
+			<if test="params.expireRange != null and params.expireRange == '30'">
+				AND end_date &gt;= CURDATE() AND end_date &lt;= DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+			</if>
+			<if test="params.expireRange != null and params.expireRange == 'overdue'">
+				AND end_date &lt; CURDATE()
+			</if>
+		</where>
+		order by end_date asc
+	</select>
+
+	<select id="selectBizRentalContractByRentalId" parameterType="Long" resultMap="BizRentalContractResult">
+		<include refid="selectBizRentalContractVo"/>
+		where rental_id = #{rentalId}
+	</select>
+
+	<select id="selectExpiringSoon" parameterType="int" resultMap="BizRentalContractResult">
+		<include refid="selectBizRentalContractVo"/>
+		where status = '0'
+		  and end_date &gt;= CURDATE()
+		  and end_date &lt;= DATE_ADD(CURDATE(), INTERVAL #{days} DAY)
+		order by end_date asc
+	</select>
+
+	<select id="selectExpired" resultMap="BizRentalContractResult">
+		<include refid="selectBizRentalContractVo"/>
+		where status = '0'
+		  and end_date &lt; CURDATE()
+		order by end_date asc
+	</select>
+
+	<insert id="insertBizRentalContract" parameterType="BizRentalContract" useGeneratedKeys="true" keyProperty="rentalId">
+		insert into biz_rental_contract(
+			<if test="houseId != null">house_id,</if>
+			<if test="houseTitle != null and houseTitle != ''">house_title,</if>
+			<if test="communityName != null and communityName != ''">community_name,</if>
+			<if test="contractId != null">contract_id,</if>
+			<if test="contractNo != null and contractNo != ''">contract_no,</if>
+			<if test="landlordId != null">landlord_id,</if>
+			<if test="landlordName != null and landlordName != ''">landlord_name,</if>
+			<if test="landlordPhone != null and landlordPhone != ''">landlord_phone,</if>
+			<if test="tenantId != null">tenant_id,</if>
+			<if test="tenantName != null and tenantName != ''">tenant_name,</if>
+			<if test="tenantPhone != null and tenantPhone != ''">tenant_phone,</if>
+			<if test="startDate != null">start_date,</if>
+			<if test="endDate != null">end_date,</if>
+			<if test="monthlyRent != null">monthly_rent,</if>
+			<if test="deposit != null">deposit,</if>
+			<if test="rentPeriod != null">rent_period,</if>
+			<if test="expireStatus != null and expireStatus != ''">expire_status,</if>
+			<if test="status != null and status != ''">status,</if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+			create_time
+		)values(
+			<if test="houseId != null">#{houseId},</if>
+			<if test="houseTitle != null and houseTitle != ''">#{houseTitle},</if>
+			<if test="communityName != null and communityName != ''">#{communityName},</if>
+			<if test="contractId != null">#{contractId},</if>
+			<if test="contractNo != null and contractNo != ''">#{contractNo},</if>
+			<if test="landlordId != null">#{landlordId},</if>
+			<if test="landlordName != null and landlordName != ''">#{landlordName},</if>
+			<if test="landlordPhone != null and landlordPhone != ''">#{landlordPhone},</if>
+			<if test="tenantId != null">#{tenantId},</if>
+			<if test="tenantName != null and tenantName != ''">#{tenantName},</if>
+			<if test="tenantPhone != null and tenantPhone != ''">#{tenantPhone},</if>
+			<if test="startDate != null">#{startDate},</if>
+			<if test="endDate != null">#{endDate},</if>
+			<if test="monthlyRent != null">#{monthlyRent},</if>
+			<if test="deposit != null">#{deposit},</if>
+			<if test="rentPeriod != null">#{rentPeriod},</if>
+			<if test="expireStatus != null and expireStatus != ''">#{expireStatus},</if>
+			<if test="status != null and status != ''">#{status},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			sysdate()
+		)
+	</insert>
+
+	<update id="updateBizRentalContract" parameterType="BizRentalContract">
+ 		update biz_rental_contract
+ 		<set>
+ 			<if test="houseId != null">house_id = #{houseId},</if>
+ 			<if test="houseTitle != null and houseTitle != ''">house_title = #{houseTitle},</if>
+ 			<if test="communityName != null">community_name = #{communityName},</if>
+ 			<if test="contractId != null">contract_id = #{contractId},</if>
+ 			<if test="contractNo != null">contract_no = #{contractNo},</if>
+ 			<if test="landlordId != null">landlord_id = #{landlordId},</if>
+ 			<if test="landlordName != null">landlord_name = #{landlordName},</if>
+ 			<if test="landlordPhone != null">landlord_phone = #{landlordPhone},</if>
+ 			<if test="tenantId != null">tenant_id = #{tenantId},</if>
+ 			<if test="tenantName != null">tenant_name = #{tenantName},</if>
+ 			<if test="tenantPhone != null">tenant_phone = #{tenantPhone},</if>
+ 			<if test="startDate != null">start_date = #{startDate},</if>
+ 			<if test="endDate != null">end_date = #{endDate},</if>
+ 			<if test="monthlyRent != null">monthly_rent = #{monthlyRent},</if>
+ 			<if test="deposit != null">deposit = #{deposit},</if>
+ 			<if test="rentPeriod != null">rent_period = #{rentPeriod},</if>
+ 			<if test="expireStatus != null and expireStatus != ''">expire_status = #{expireStatus},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where rental_id = #{rentalId}
+	</update>
+
+	<update id="updateExpireStatus">
+ 		update biz_rental_contract
+ 		set expire_status = case
+ 			when end_date &lt; CURDATE() then '2'
+ 			when end_date &gt;= CURDATE() and end_date &lt;= DATE_ADD(CURDATE(), INTERVAL 7 DAY) then '1'
+ 			else '0'
+ 		end,
+ 		update_time = sysdate()
+ 		where status = '0'
+	</update>
+
+	<delete id="deleteBizRentalContractByRentalId" parameterType="Long">
+		delete from biz_rental_contract where rental_id = #{rentalId}
+	</delete>
+
+	<delete id="deleteBizRentalContractByRentalIds" parameterType="Long">
+ 		delete from biz_rental_contract where rental_id in
+ 		<foreach collection="array" item="rentalId" open="(" separator="," close=")">
+ 			#{rentalId}
+        </foreach>
+ 	</delete>
+
+</mapper>

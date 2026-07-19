@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizHouseRepairMapper">
+
+	<resultMap type="BizHouseRepair" id="BizHouseRepairResult">
+		<id     property="repairId"           column="repair_id"             />
+		<result property="houseId"            column="house_id"              />
+		<result property="houseTitle"         column="house_title"           />
+		<result property="tenantId"           column="tenant_id"             />
+		<result property="tenantName"         column="tenant_name"           />
+		<result property="landlordId"         column="landlord_id"           />
+		<result property="landlordName"       column="landlord_name"         />
+		<result property="repairType"         column="repair_type"           />
+		<result property="description"        column="description"           />
+		<result property="images"             column="images"                />
+		<result property="status"             column="status"                />
+		<result property="receiptImages"      column="receipt_images"        />
+		<result property="receiptAmount"      column="receipt_amount"        />
+		<result property="confirmTime"        column="confirm_time"          />
+		<result property="completeTime"       column="complete_time"         />
+		<result property="tenantConfirmTime"  column="tenant_confirm_time"   />
+		<result property="reimburseTime"      column="reimburse_time"        />
+		<result property="createBy"           column="create_by"             />
+		<result property="createTime"         column="create_time"           />
+		<result property="updateBy"           column="update_by"             />
+		<result property="updateTime"         column="update_time"           />
+		<result property="remark"             column="remark"                />
+	</resultMap>
+
+	<sql id="selectBizHouseRepairVo">
+		select repair_id, house_id, house_title, tenant_id, tenant_name, landlord_id, landlord_name, repair_type,
+		       description, images, status, receipt_images, receipt_amount, confirm_time, complete_time,
+		       tenant_confirm_time, reimburse_time, create_by, create_time, update_by, update_time, remark
+		from biz_house_repair
+	</sql>
+
+	<select id="selectBizHouseRepairList" parameterType="BizHouseRepair" resultMap="BizHouseRepairResult">
+		<include refid="selectBizHouseRepairVo"/>
+		<where>
+			<if test="houseTitle != null and houseTitle != ''">
+				AND house_title like concat('%', #{houseTitle}, '%')
+			</if>
+			<if test="tenantName != null and tenantName != ''">
+				AND tenant_name like concat('%', #{tenantName}, '%')
+			</if>
+			<if test="landlordName != null and landlordName != ''">
+				AND landlord_name like concat('%', #{landlordName}, '%')
+			</if>
+			<if test="repairType != null and repairType != ''">
+				AND repair_type = #{repairType}
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectBizHouseRepairByRepairId" parameterType="Long" resultMap="BizHouseRepairResult">
+		<include refid="selectBizHouseRepairVo"/>
+		where repair_id = #{repairId}
+	</select>
+
+	<insert id="insertBizHouseRepair" parameterType="BizHouseRepair" useGeneratedKeys="true" keyProperty="repairId">
+		insert into biz_house_repair(
+			<if test="houseId != null">house_id,</if>
+			<if test="houseTitle != null and houseTitle != ''">house_title,</if>
+			<if test="tenantId != null">tenant_id,</if>
+			<if test="tenantName != null and tenantName != ''">tenant_name,</if>
+			<if test="landlordId != null">landlord_id,</if>
+			<if test="landlordName != null and landlordName != ''">landlord_name,</if>
+			<if test="repairType != null and repairType != ''">repair_type,</if>
+			<if test="description != null and description != ''">description,</if>
+			<if test="images != null and images != ''">images,</if>
+			<if test="status != null and status != ''">status,</if>
+			<if test="receiptImages != null and receiptImages != ''">receipt_images,</if>
+			<if test="receiptAmount != null">receipt_amount,</if>
+			<if test="confirmTime != null">confirm_time,</if>
+			<if test="completeTime != null">complete_time,</if>
+			<if test="tenantConfirmTime != null">tenant_confirm_time,</if>
+			<if test="reimburseTime != null">reimburse_time,</if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+			create_time
+		)values(
+			<if test="houseId != null">#{houseId},</if>
+			<if test="houseTitle != null and houseTitle != ''">#{houseTitle},</if>
+			<if test="tenantId != null">#{tenantId},</if>
+			<if test="tenantName != null and tenantName != ''">#{tenantName},</if>
+			<if test="landlordId != null">#{landlordId},</if>
+			<if test="landlordName != null and landlordName != ''">#{landlordName},</if>
+			<if test="repairType != null and repairType != ''">#{repairType},</if>
+			<if test="description != null and description != ''">#{description},</if>
+			<if test="images != null and images != ''">#{images},</if>
+			<if test="status != null and status != ''">#{status},</if>
+			<if test="receiptImages != null and receiptImages != ''">#{receiptImages},</if>
+			<if test="receiptAmount != null">#{receiptAmount},</if>
+			<if test="confirmTime != null">#{confirmTime},</if>
+			<if test="completeTime != null">#{completeTime},</if>
+			<if test="tenantConfirmTime != null">#{tenantConfirmTime},</if>
+			<if test="reimburseTime != null">#{reimburseTime},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			sysdate()
+		)
+	</insert>
+
+	<update id="updateBizHouseRepair" parameterType="BizHouseRepair">
+ 		update biz_house_repair
+ 		<set>
+ 			<if test="houseId != null">house_id = #{houseId},</if>
+ 			<if test="houseTitle != null and houseTitle != ''">house_title = #{houseTitle},</if>
+ 			<if test="tenantId != null">tenant_id = #{tenantId},</if>
+ 			<if test="tenantName != null and tenantName != ''">tenant_name = #{tenantName},</if>
+ 			<if test="landlordId != null">landlord_id = #{landlordId},</if>
+ 			<if test="landlordName != null and landlordName != ''">landlord_name = #{landlordName},</if>
+ 			<if test="repairType != null and repairType != ''">repair_type = #{repairType},</if>
+ 			<if test="description != null">description = #{description},</if>
+ 			<if test="images != null">images = #{images},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="receiptImages != null">receipt_images = #{receiptImages},</if>
+ 			<if test="receiptAmount != null">receipt_amount = #{receiptAmount},</if>
+ 			<if test="confirmTime != null">confirm_time = #{confirmTime},</if>
+ 			<if test="completeTime != null">complete_time = #{completeTime},</if>
+ 			<if test="tenantConfirmTime != null">tenant_confirm_time = #{tenantConfirmTime},</if>
+ 			<if test="reimburseTime != null">reimburse_time = #{reimburseTime},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where repair_id = #{repairId}
+	</update>
+
+	<update id="updateStatus" parameterType="BizHouseRepair">
+ 		update biz_house_repair
+ 		<set>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="receiptImages != null">receipt_images = #{receiptImages},</if>
+ 			<if test="receiptAmount != null">receipt_amount = #{receiptAmount},</if>
+ 			<if test="confirmTime != null">confirm_time = #{confirmTime},</if>
+ 			<if test="completeTime != null">complete_time = #{completeTime},</if>
+ 			<if test="tenantConfirmTime != null">tenant_confirm_time = #{tenantConfirmTime},</if>
+ 			<if test="reimburseTime != null">reimburse_time = #{reimburseTime},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where repair_id = #{repairId}
+	</update>
+
+	<delete id="deleteBizHouseRepairByRepairId" parameterType="Long">
+		delete from biz_house_repair where repair_id = #{repairId}
+	</delete>
+
+	<delete id="deleteBizHouseRepairByRepairIds" parameterType="Long">
+ 		delete from biz_house_repair where repair_id in
+ 		<foreach collection="array" item="repairId" open="(" separator="," close=")">
+ 			#{repairId}
+        </foreach>
+ 	</delete>
+
+</mapper>

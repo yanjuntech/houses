@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizUserFavoriteMapper">
+
+	<resultMap type="BizUserFavorite" id="BizUserFavoriteResult">
+		<id     property="favoriteId"      column="favorite_id"      />
+		<result property="userId"          column="user_id"          />
+		<result property="houseId"         column="house_id"         />
+		<result property="houseTitle"      column="house_title"      />
+		<result property="createBy"        column="create_by"        />
+		<result property="createTime"      column="create_time"      />
+		<result property="updateBy"        column="update_by"        />
+		<result property="updateTime"      column="update_time"      />
+		<result property="remark"          column="remark"           />
+	</resultMap>
+
+	<sql id="selectBizUserFavoriteVo">
+		select favorite_id, user_id, house_id, house_title, create_by, create_time, update_by, update_time, remark
+		from biz_user_favorite
+	</sql>
+
+	<select id="selectBizUserFavoriteList" parameterType="BizUserFavorite" resultMap="BizUserFavoriteResult">
+		<include refid="selectBizUserFavoriteVo"/>
+		<where>
+			<if test="userId != null">
+				AND user_id = #{userId}
+			</if>
+			<if test="houseId != null">
+				AND house_id = #{houseId}
+			</if>
+			<if test="houseTitle != null and houseTitle != ''">
+				AND house_title like concat('%', #{houseTitle}, '%')
+			</if>
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectBizUserFavoriteByFavoriteId" parameterType="Long" resultMap="BizUserFavoriteResult">
+		<include refid="selectBizUserFavoriteVo"/>
+		where favorite_id = #{favoriteId}
+	</select>
+
+	<select id="selectByUserIdAndHouseId" parameterType="BizUserFavorite" resultMap="BizUserFavoriteResult">
+		<include refid="selectBizUserFavoriteVo"/>
+		where user_id = #{userId} and house_id = #{houseId} limit 1
+	</select>
+
+	<insert id="insertBizUserFavorite" parameterType="BizUserFavorite" useGeneratedKeys="true" keyProperty="favoriteId">
+		insert into biz_user_favorite(
+			<if test="userId != null">user_id,</if>
+			<if test="houseId != null">house_id,</if>
+			<if test="houseTitle != null and houseTitle != ''">house_title,</if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+			create_time
+		)values(
+			<if test="userId != null">#{userId},</if>
+			<if test="houseId != null">#{houseId},</if>
+			<if test="houseTitle != null and houseTitle != ''">#{houseTitle},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			sysdate()
+		)
+	</insert>
+
+	<update id="updateBizUserFavorite" parameterType="BizUserFavorite">
+ 		update biz_user_favorite
+ 		<set>
+ 			<if test="userId != null">user_id = #{userId},</if>
+ 			<if test="houseId != null">house_id = #{houseId},</if>
+ 			<if test="houseTitle != null">house_title = #{houseTitle},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where favorite_id = #{favoriteId}
+	</update>
+
+	<delete id="deleteBizUserFavoriteByFavoriteId" parameterType="Long">
+		delete from biz_user_favorite where favorite_id = #{favoriteId}
+	</delete>
+
+	<delete id="deleteBizUserFavoriteByFavoriteIds" parameterType="Long">
+ 		delete from biz_user_favorite where favorite_id in
+ 		<foreach collection="array" item="favoriteId" open="(" separator="," close=")">
+ 			#{favoriteId}
+        </foreach>
+ 	</delete>
+
+	<delete id="deleteByUserIdAndHouseId" parameterType="BizUserFavorite">
+		delete from biz_user_favorite where user_id = #{userId} and house_id = #{houseId}
+	</delete>
+
+</mapper>

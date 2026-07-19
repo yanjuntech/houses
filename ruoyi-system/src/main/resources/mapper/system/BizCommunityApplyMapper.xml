@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizCommunityApplyMapper">
+
+    <resultMap type="BizCommunityApply" id="BizCommunityApplyResult">
+        <id     property="applyId"          column="apply_id"          />
+        <result property="communityName"    column="community_name"    />
+        <result property="province"         column="province"          />
+        <result property="city"             column="city"              />
+        <result property="district"         column="district"          />
+        <result property="address"          column="address"           />
+        <result property="applicantId"      column="applicant_id"      />
+        <result property="applicantName"    column="applicant_name"    />
+        <result property="applicantPhone"   column="applicant_phone"   />
+        <result property="applyStatus"      column="apply_status"      />
+        <result property="approveBy"        column="approve_by"        />
+        <result property="approveTime"      column="approve_time"      />
+        <result property="approveRemark"    column="approve_remark"    />
+        <result property="createBy"         column="create_by"         />
+        <result property="createTime"       column="create_time"       />
+        <result property="updateBy"         column="update_by"         />
+        <result property="updateTime"       column="update_time"       />
+        <result property="remark"           column="remark"            />
+    </resultMap>
+
+    <sql id="selectBizCommunityApplyVo">
+        select apply_id, community_name, province, city, district, address, applicant_id, applicant_name,
+            applicant_phone, apply_status, approve_by, approve_time, approve_remark,
+            create_by, create_time, update_by, update_time, remark
+        from biz_community_apply
+    </sql>
+
+    <select id="selectBizCommunityApplyList" parameterType="BizCommunityApply" resultMap="BizCommunityApplyResult">
+        <include refid="selectBizCommunityApplyVo"/>
+        <where>
+            <if test="communityName != null and communityName != ''">
+                AND community_name like concat('%', #{communityName}, '%')
+            </if>
+            <if test="applicantName != null and applicantName != ''">
+                AND applicant_name like concat('%', #{applicantName}, '%')
+            </if>
+            <if test="applicantPhone != null and applicantPhone != ''">
+                AND applicant_phone = #{applicantPhone}
+            </if>
+            <if test="applyStatus != null and applyStatus != ''">
+                AND apply_status = #{applyStatus}
+            </if>
+            <if test="applicantId != null">
+                AND applicant_id = #{applicantId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBizCommunityApplyByApplyId" parameterType="Long" resultMap="BizCommunityApplyResult">
+        <include refid="selectBizCommunityApplyVo"/>
+        where apply_id = #{applyId}
+    </select>
+
+    <insert id="insertBizCommunityApply" parameterType="BizCommunityApply" useGeneratedKeys="true" keyProperty="applyId">
+        insert into biz_community_apply(
+            <if test="communityName != null and communityName != ''">community_name,</if>
+            <if test="province != null and province != ''">province,</if>
+            <if test="city != null and city != ''">city,</if>
+            <if test="district != null and district != ''">district,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="applicantId != null">applicant_id,</if>
+            <if test="applicantName != null and applicantName != ''">applicant_name,</if>
+            <if test="applicantPhone != null and applicantPhone != ''">applicant_phone,</if>
+            <if test="applyStatus != null and applyStatus != ''">apply_status,</if>
+            <if test="approveBy != null and approveBy != ''">approve_by,</if>
+            <if test="approveTime != null">approve_time,</if>
+            <if test="approveRemark != null and approveRemark != ''">approve_remark,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            create_time
+        )values(
+            <if test="communityName != null and communityName != ''">#{communityName},</if>
+            <if test="province != null and province != ''">#{province},</if>
+            <if test="city != null and city != ''">#{city},</if>
+            <if test="district != null and district != ''">#{district},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="applicantId != null">#{applicantId},</if>
+            <if test="applicantName != null and applicantName != ''">#{applicantName},</if>
+            <if test="applicantPhone != null and applicantPhone != ''">#{applicantPhone},</if>
+            <if test="applyStatus != null and applyStatus != ''">#{applyStatus},</if>
+            <if test="approveBy != null and approveBy != ''">#{approveBy},</if>
+            <if test="approveTime != null">#{approveTime},</if>
+            <if test="approveRemark != null and approveRemark != ''">#{approveRemark},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            sysdate()
+        )
+    </insert>
+
+    <update id="updateBizCommunityApply" parameterType="BizCommunityApply">
+        update biz_community_apply
+        <set>
+            <if test="communityName != null and communityName != ''">community_name = #{communityName},</if>
+            <if test="province != null and province != ''">province = #{province},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="district != null and district != ''">district = #{district},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="applicantId != null">applicant_id = #{applicantId},</if>
+            <if test="applicantName != null and applicantName != ''">applicant_name = #{applicantName},</if>
+            <if test="applicantPhone != null">applicant_phone = #{applicantPhone},</if>
+            <if test="applyStatus != null and applyStatus != ''">apply_status = #{applyStatus},</if>
+            <if test="approveBy != null">approve_by = #{approveBy},</if>
+            <if test="approveTime != null">approve_time = #{approveTime},</if>
+            <if test="approveRemark != null">approve_remark = #{approveRemark},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where apply_id = #{applyId}
+    </update>
+
+    <delete id="deleteBizCommunityApplyByApplyId" parameterType="Long">
+        delete from biz_community_apply where apply_id = #{applyId}
+    </delete>
+
+</mapper>

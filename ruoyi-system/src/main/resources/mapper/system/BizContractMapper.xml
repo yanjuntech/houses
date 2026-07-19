@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizContractMapper">
+
+	<resultMap type="BizContract" id="BizContractResult">
+		<id     property="contractId"        column="contract_id"        />
+		<result property="contractNo"        column="contract_no"        />
+		<result property="contractTitle"     column="contract_title"     />
+		<result property="houseId"           column="house_id"           />
+		<result property="houseTitle"        column="house_title"        />
+		<result property="communityName"     column="community_name"     />
+		<result property="landlordId"        column="landlord_id"        />
+		<result property="landlordName"      column="landlord_name"      />
+		<result property="landlordPhone"     column="landlord_phone"     />
+		<result property="tenantId"          column="tenant_id"          />
+		<result property="tenantName"        column="tenant_name"        />
+		<result property="tenantPhone"       column="tenant_phone"       />
+		<result property="monthlyRent"       column="monthly_rent"       />
+		<result property="deposit"           column="deposit"            />
+		<result property="rentPeriod"        column="rent_period"        />
+		<result property="startDate"         column="start_date"         />
+		<result property="endDate"           column="end_date"           />
+		<result property="payCycle"          column="pay_cycle"          />
+		<result property="contractContent"   column="contract_content"   />
+		<result property="status"            column="status"             />
+		<result property="signTime"          column="sign_time"          />
+		<result property="pdfPath"           column="pdf_path"           />
+		<result property="createBy"          column="create_by"          />
+		<result property="createTime"        column="create_time"        />
+		<result property="updateBy"          column="update_by"          />
+		<result property="updateTime"        column="update_time"        />
+		<result property="remark"            column="remark"             />
+	</resultMap>
+
+	<sql id="selectBizContractVo">
+		select contract_id, contract_no, contract_title, house_id, house_title, community_name,
+		       landlord_id, landlord_name, landlord_phone, tenant_id, tenant_name, tenant_phone,
+		       monthly_rent, deposit, rent_period, start_date, end_date, pay_cycle, contract_content,
+		       status, sign_time, pdf_path, create_by, create_time, update_by, update_time, remark
+		from biz_contract
+	</sql>
+
+	<select id="selectBizContractList" parameterType="BizContract" resultMap="BizContractResult">
+		<include refid="selectBizContractVo"/>
+		<where>
+			<if test="contractTitle != null and contractTitle != ''">
+				AND contract_title like concat('%', #{contractTitle}, '%')
+			</if>
+			<if test="contractNo != null and contractNo != ''">
+				AND contract_no like concat('%', #{contractNo}, '%')
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+			<if test="landlordId != null">
+				AND landlord_id = #{landlordId}
+			</if>
+			<if test="tenantId != null">
+				AND tenant_id = #{tenantId}
+			</if>
+			<if test="houseId != null">
+				AND house_id = #{houseId}
+			</if>
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectBizContractByContractId" parameterType="Long" resultMap="BizContractResult">
+		<include refid="selectBizContractVo"/>
+		where contract_id = #{contractId}
+	</select>
+
+	<insert id="insertBizContract" parameterType="BizContract" useGeneratedKeys="true" keyProperty="contractId">
+		insert into biz_contract(
+			<if test="contractNo != null and contractNo != ''">contract_no,</if>
+			<if test="contractTitle != null and contractTitle != ''">contract_title,</if>
+			<if test="houseId != null">house_id,</if>
+			<if test="houseTitle != null and houseTitle != ''">house_title,</if>
+			<if test="communityName != null and communityName != ''">community_name,</if>
+			<if test="landlordId != null">landlord_id,</if>
+			<if test="landlordName != null and landlordName != ''">landlord_name,</if>
+			<if test="landlordPhone != null and landlordPhone != ''">landlord_phone,</if>
+			<if test="tenantId != null">tenant_id,</if>
+			<if test="tenantName != null and tenantName != ''">tenant_name,</if>
+			<if test="tenantPhone != null and tenantPhone != ''">tenant_phone,</if>
+			<if test="monthlyRent != null">monthly_rent,</if>
+			<if test="deposit != null">deposit,</if>
+			<if test="rentPeriod != null">rent_period,</if>
+			<if test="startDate != null">start_date,</if>
+			<if test="endDate != null">end_date,</if>
+			<if test="payCycle != null and payCycle != ''">pay_cycle,</if>
+			<if test="contractContent != null and contractContent != ''">contract_content,</if>
+			<if test="status != null and status != ''">status,</if>
+			<if test="signTime != null">sign_time,</if>
+			<if test="pdfPath != null and pdfPath != ''">pdf_path,</if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+			create_time
+		)values(
+			<if test="contractNo != null and contractNo != ''">#{contractNo},</if>
+			<if test="contractTitle != null and contractTitle != ''">#{contractTitle},</if>
+			<if test="houseId != null">#{houseId},</if>
+			<if test="houseTitle != null and houseTitle != ''">#{houseTitle},</if>
+			<if test="communityName != null and communityName != ''">#{communityName},</if>
+			<if test="landlordId != null">#{landlordId},</if>
+			<if test="landlordName != null and landlordName != ''">#{landlordName},</if>
+			<if test="landlordPhone != null and landlordPhone != ''">#{landlordPhone},</if>
+			<if test="tenantId != null">#{tenantId},</if>
+			<if test="tenantName != null and tenantName != ''">#{tenantName},</if>
+			<if test="tenantPhone != null and tenantPhone != ''">#{tenantPhone},</if>
+			<if test="monthlyRent != null">#{monthlyRent},</if>
+			<if test="deposit != null">#{deposit},</if>
+			<if test="rentPeriod != null">#{rentPeriod},</if>
+			<if test="startDate != null">#{startDate},</if>
+			<if test="endDate != null">#{endDate},</if>
+			<if test="payCycle != null and payCycle != ''">#{payCycle},</if>
+			<if test="contractContent != null and contractContent != ''">#{contractContent},</if>
+			<if test="status != null and status != ''">#{status},</if>
+			<if test="signTime != null">#{signTime},</if>
+			<if test="pdfPath != null and pdfPath != ''">#{pdfPath},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			sysdate()
+		)
+	</insert>
+
+	<update id="updateBizContract" parameterType="BizContract">
+ 		update biz_contract
+ 		<set>
+ 			<if test="contractNo != null and contractNo != ''">contract_no = #{contractNo},</if>
+ 			<if test="contractTitle != null and contractTitle != ''">contract_title = #{contractTitle},</if>
+ 			<if test="houseId != null">house_id = #{houseId},</if>
+ 			<if test="houseTitle != null">house_title = #{houseTitle},</if>
+ 			<if test="communityName != null">community_name = #{communityName},</if>
+ 			<if test="landlordId != null">landlord_id = #{landlordId},</if>
+ 			<if test="landlordName != null">landlord_name = #{landlordName},</if>
+ 			<if test="landlordPhone != null">landlord_phone = #{landlordPhone},</if>
+ 			<if test="tenantId != null">tenant_id = #{tenantId},</if>
+ 			<if test="tenantName != null">tenant_name = #{tenantName},</if>
+ 			<if test="tenantPhone != null">tenant_phone = #{tenantPhone},</if>
+ 			<if test="monthlyRent != null">monthly_rent = #{monthlyRent},</if>
+ 			<if test="deposit != null">deposit = #{deposit},</if>
+ 			<if test="rentPeriod != null">rent_period = #{rentPeriod},</if>
+ 			<if test="startDate != null">start_date = #{startDate},</if>
+ 			<if test="endDate != null">end_date = #{endDate},</if>
+ 			<if test="payCycle != null">pay_cycle = #{payCycle},</if>
+ 			<if test="contractContent != null">contract_content = #{contractContent},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="signTime != null">sign_time = #{signTime},</if>
+ 			<if test="pdfPath != null">pdf_path = #{pdfPath},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where contract_id = #{contractId}
+	</update>
+
+	<delete id="deleteBizContractByContractId" parameterType="Long">
+		delete from biz_contract where contract_id = #{contractId}
+	</delete>
+
+	<delete id="deleteBizContractByContractIds" parameterType="Long">
+ 		delete from biz_contract where contract_id in
+ 		<foreach collection="array" item="contractId" open="(" separator="," close=")">
+ 			#{contractId}
+        </foreach>
+ 	</delete>
+
+</mapper>

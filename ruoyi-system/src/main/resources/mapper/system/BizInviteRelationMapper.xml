@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizInviteRelationMapper">
+
+    <resultMap type="BizInviteRelation" id="BizInviteRelationResult">
+        <id     property="relationId"      column="relation_id"      />
+        <result property="inviterId"       column="inviter_id"       />
+        <result property="inviteeId"       column="invitee_id"       />
+        <result property="inviteCode"      column="invite_code"      />
+        <result property="inviteStatus"    column="invite_status"    />
+        <result property="inviteTime"      column="invite_time"      />
+        <result property="certifiedTime"   column="certified_time"   />
+        <result property="createBy"        column="create_by"        />
+        <result property="createTime"      column="create_time"      />
+        <result property="updateBy"        column="update_by"        />
+        <result property="updateTime"      column="update_time"      />
+        <result property="remark"          column="remark"           />
+    </resultMap>
+
+    <resultMap type="BizInviteRelation" id="BizInviteRelationExtendResult" extends="BizInviteRelationResult">
+        <result property="inviterName"     column="inviter_name"     />
+        <result property="inviterPhone"    column="inviter_phone"    />
+        <result property="inviteeName"     column="invitee_name"     />
+        <result property="inviteePhone"    column="invitee_phone"    />
+    </resultMap>
+
+    <sql id="selectBizInviteRelationVo">
+        select relation_id, inviter_id, invitee_id, invite_code, invite_status, invite_time, certified_time,
+            create_by, create_time, update_by, update_time, remark
+        from biz_invite_relation
+    </sql>
+
+    <select id="selectBizInviteRelationList" parameterType="BizInviteRelation" resultMap="BizInviteRelationExtendResult">
+        select r.relation_id, r.inviter_id, r.invitee_id, r.invite_code, r.invite_status, r.invite_time, r.certified_time,
+            r.create_by, r.create_time, r.update_by, r.update_time, r.remark,
+            inviter.nickname as inviter_name, inviter.phone as inviter_phone,
+            invitee.nickname as invitee_name, invitee.phone as invitee_phone
+        from biz_invite_relation r
+            left join biz_miniapp_user inviter on inviter.user_id = r.inviter_id
+            left join biz_miniapp_user invitee on invitee.user_id = r.invitee_id
+        <where>
+            <if test="inviterId != null">
+                AND r.inviter_id = #{inviterId}
+            </if>
+            <if test="inviteeId != null">
+                AND r.invitee_id = #{inviteeId}
+            </if>
+            <if test="inviteStatus != null and inviteStatus != ''">
+                AND r.invite_status = #{inviteStatus}
+            </if>
+            <if test="inviteCode != null and inviteCode != ''">
+                AND r.invite_code = #{inviteCode}
+            </if>
+        </where>
+        order by r.relation_id desc
+    </select>
+
+    <select id="selectBizInviteRelationByRelationId" parameterType="Long" resultMap="BizInviteRelationExtendResult">
+        select r.relation_id, r.inviter_id, r.invitee_id, r.invite_code, r.invite_status, r.invite_time, r.certified_time,
+            r.create_by, r.create_time, r.update_by, r.update_time, r.remark,
+            inviter.nickname as inviter_name, inviter.phone as inviter_phone,
+            invitee.nickname as invitee_name, invitee.phone as invitee_phone
+        from biz_invite_relation r
+            left join biz_miniapp_user inviter on inviter.user_id = r.inviter_id
+            left join biz_miniapp_user invitee on invitee.user_id = r.invitee_id
+        where r.relation_id = #{relationId}
+    </select>
+
+    <insert id="insertBizInviteRelation" parameterType="BizInviteRelation" useGeneratedKeys="true" keyProperty="relationId">
+        insert into biz_invite_relation(
+            <if test="inviterId != null">inviter_id,</if>
+            <if test="inviteeId != null">invitee_id,</if>
+            <if test="inviteCode != null and inviteCode != ''">invite_code,</if>
+            <if test="inviteStatus != null and inviteStatus != ''">invite_status,</if>
+            <if test="inviteTime != null">invite_time,</if>
+            <if test="certifiedTime != null">certified_time,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            create_time
+        )values(
+            <if test="inviterId != null">#{inviterId},</if>
+            <if test="inviteeId != null">#{inviteeId},</if>
+            <if test="inviteCode != null and inviteCode != ''">#{inviteCode},</if>
+            <if test="inviteStatus != null and inviteStatus != ''">#{inviteStatus},</if>
+            <if test="inviteTime != null">#{inviteTime},</if>
+            <if test="certifiedTime != null">#{certifiedTime},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            sysdate()
+        )
+    </insert>
+
+    <update id="updateBizInviteRelation" parameterType="BizInviteRelation">
+        update biz_invite_relation
+        <set>
+            <if test="inviterId != null">inviter_id = #{inviterId},</if>
+            <if test="inviteeId != null">invitee_id = #{inviteeId},</if>
+            <if test="inviteCode != null">invite_code = #{inviteCode},</if>
+            <if test="inviteStatus != null and inviteStatus != ''">invite_status = #{inviteStatus},</if>
+            <if test="inviteTime != null">invite_time = #{inviteTime},</if>
+            <if test="certifiedTime != null">certified_time = #{certifiedTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where relation_id = #{relationId}
+    </update>
+
+    <delete id="deleteBizInviteRelationByRelationId" parameterType="Long">
+        delete from biz_invite_relation where relation_id = #{relationId}
+    </delete>
+
+    <delete id="deleteBizInviteRelationByRelationIds" parameterType="Long">
+        delete from biz_invite_relation where relation_id in
+        <foreach collection="array" item="relationId" open="(" separator="," close=")">
+            #{relationId}
+        </foreach>
+    </delete>
+
+    <select id="selectByInviteeId" parameterType="Long" resultMap="BizInviteRelationResult">
+        <include refid="selectBizInviteRelationVo"/>
+        where invitee_id = #{inviteeId} limit 1
+    </select>
+
+    <select id="selectInviteCountByInviter" parameterType="Long" resultType="int">
+        select count(1) from biz_invite_relation
+        where inviter_id = #{inviterId} and invite_status = '1'
+    </select>
+
+    <select id="selectInviteListByInviter" parameterType="Long" resultMap="BizInviteRelationExtendResult">
+        select r.relation_id, r.inviter_id, r.invitee_id, r.invite_code, r.invite_status, r.invite_time, r.certified_time,
+            r.create_by, r.create_time, r.update_by, r.update_time, r.remark,
+            inviter.nickname as inviter_name, inviter.phone as inviter_phone,
+            invitee.nickname as invitee_name, invitee.phone as invitee_phone
+        from biz_invite_relation r
+            left join biz_miniapp_user inviter on inviter.user_id = r.inviter_id
+            left join biz_miniapp_user invitee on invitee.user_id = r.invitee_id
+        where r.inviter_id = #{inviterId}
+        order by r.relation_id desc
+    </select>
+
+</mapper>

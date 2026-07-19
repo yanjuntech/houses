@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizPhonebookApplyMapper">
+
+    <resultMap type="BizPhonebookApply" id="BizPhonebookApplyResult">
+        <id     property="applyId"          column="apply_id"           />
+        <result property="merchantName"     column="merchant_name"      />
+        <result property="ownerName"        column="owner_name"         />
+        <result property="phone"            column="phone"              />
+        <result property="category"         column="category"           />
+        <result property="address"          column="address"            />
+        <result property="businessLicense"  column="business_license"   />
+        <result property="applicantId"      column="applicant_id"       />
+        <result property="applicantName"    column="applicant_name"     />
+        <result property="applicantPhone"   column="applicant_phone"    />
+        <result property="applyStatus"      column="apply_status"       />
+        <result property="approveBy"        column="approve_by"         />
+        <result property="approveTime"      column="approve_time"       />
+        <result property="approveRemark"    column="approve_remark"     />
+        <result property="createBy"         column="create_by"          />
+        <result property="createTime"       column="create_time"        />
+        <result property="updateBy"         column="update_by"          />
+        <result property="updateTime"       column="update_time"        />
+        <result property="remark"           column="remark"             />
+    </resultMap>
+
+    <sql id="selectBizPhonebookApplyVo">
+        select apply_id, merchant_name, owner_name, phone, category, address, business_license,
+            applicant_id, applicant_name, applicant_phone, apply_status, approve_by, approve_time, approve_remark,
+            create_by, create_time, update_by, update_time, remark
+        from biz_phonebook_apply
+    </sql>
+
+    <select id="selectBizPhonebookApplyList" parameterType="BizPhonebookApply" resultMap="BizPhonebookApplyResult">
+        <include refid="selectBizPhonebookApplyVo"/>
+        <where>
+            <if test="merchantName != null and merchantName != ''">
+                AND merchant_name like concat('%', #{merchantName}, '%')
+            </if>
+            <if test="category != null and category != ''">
+                AND category = #{category}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone = #{phone}
+            </if>
+            <if test="applicantName != null and applicantName != ''">
+                AND applicant_name like concat('%', #{applicantName}, '%')
+            </if>
+            <if test="applicantPhone != null and applicantPhone != ''">
+                AND applicant_phone = #{applicantPhone}
+            </if>
+            <if test="applyStatus != null and applyStatus != ''">
+                AND apply_status = #{applyStatus}
+            </if>
+            <if test="applicantId != null">
+                AND applicant_id = #{applicantId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBizPhonebookApplyByApplyId" parameterType="Long" resultMap="BizPhonebookApplyResult">
+        <include refid="selectBizPhonebookApplyVo"/>
+        where apply_id = #{applyId}
+    </select>
+
+    <insert id="insertBizPhonebookApply" parameterType="BizPhonebookApply" useGeneratedKeys="true" keyProperty="applyId">
+        insert into biz_phonebook_apply(
+            <if test="merchantName != null and merchantName != ''">merchant_name,</if>
+            <if test="ownerName != null and ownerName != ''">owner_name,</if>
+            <if test="phone != null and phone != ''">phone,</if>
+            <if test="category != null and category != ''">category,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="businessLicense != null and businessLicense != ''">business_license,</if>
+            <if test="applicantId != null">applicant_id,</if>
+            <if test="applicantName != null and applicantName != ''">applicant_name,</if>
+            <if test="applicantPhone != null and applicantPhone != ''">applicant_phone,</if>
+            <if test="applyStatus != null and applyStatus != ''">apply_status,</if>
+            <if test="approveBy != null and approveBy != ''">approve_by,</if>
+            <if test="approveTime != null">approve_time,</if>
+            <if test="approveRemark != null and approveRemark != ''">approve_remark,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            create_time
+        )values(
+            <if test="merchantName != null and merchantName != ''">#{merchantName},</if>
+            <if test="ownerName != null and ownerName != ''">#{ownerName},</if>
+            <if test="phone != null and phone != ''">#{phone},</if>
+            <if test="category != null and category != ''">#{category},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="businessLicense != null and businessLicense != ''">#{businessLicense},</if>
+            <if test="applicantId != null">#{applicantId},</if>
+            <if test="applicantName != null and applicantName != ''">#{applicantName},</if>
+            <if test="applicantPhone != null and applicantPhone != ''">#{applicantPhone},</if>
+            <if test="applyStatus != null and applyStatus != ''">#{applyStatus},</if>
+            <if test="approveBy != null and approveBy != ''">#{approveBy},</if>
+            <if test="approveTime != null">#{approveTime},</if>
+            <if test="approveRemark != null and approveRemark != ''">#{approveRemark},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            sysdate()
+        )
+    </insert>
+
+    <update id="updateBizPhonebookApply" parameterType="BizPhonebookApply">
+        update biz_phonebook_apply
+        <set>
+            <if test="merchantName != null and merchantName != ''">merchant_name = #{merchantName},</if>
+            <if test="ownerName != null and ownerName != ''">owner_name = #{ownerName},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="category != null and category != ''">category = #{category},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="businessLicense != null">business_license = #{businessLicense},</if>
+            <if test="applicantId != null">applicant_id = #{applicantId},</if>
+            <if test="applicantName != null and applicantName != ''">applicant_name = #{applicantName},</if>
+            <if test="applicantPhone != null">applicant_phone = #{applicantPhone},</if>
+            <if test="applyStatus != null and applyStatus != ''">apply_status = #{applyStatus},</if>
+            <if test="approveBy != null">approve_by = #{approveBy},</if>
+            <if test="approveTime != null">approve_time = #{approveTime},</if>
+            <if test="approveRemark != null">approve_remark = #{approveRemark},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where apply_id = #{applyId}
+    </update>
+
+    <delete id="deleteBizPhonebookApplyByApplyId" parameterType="Long">
+        delete from biz_phonebook_apply where apply_id = #{applyId}
+    </delete>
+
+</mapper>

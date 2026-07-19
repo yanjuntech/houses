@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizMallProductMapper">
+
+	<resultMap type="BizMallProduct" id="BizMallProductResult">
+		<id     property="productId"       column="product_id"       />
+		<result property="productName"     column="product_name"    />
+		<result property="productType"      column="product_type"    />
+		<result property="description"     column="description"     />
+		<result property="requiredInvites"  column="required_invites" />
+		<result property="stock"           column="stock"           />
+		<result property="effectValue"     column="effect_value"    />
+		<result property="status"           column="status"          />
+		<result property="createBy"         column="create_by"       />
+		<result property="createTime"       column="create_time"     />
+		<result property="updateBy"         column="update_by"       />
+		<result property="updateTime"       column="update_time"     />
+		<result property="remark"           column="remark"          />
+	</resultMap>
+
+	<sql id="selectBizMallProductVo">
+		select product_id, product_name, product_type, description, required_invites, stock, effect_value,
+		       status, create_by, create_time, update_by, update_time, remark
+		from biz_mall_product
+	</sql>
+
+	<select id="selectBizMallProductList" parameterType="BizMallProduct" resultMap="BizMallProductResult">
+		<include refid="selectBizMallProductVo"/>
+		<where>
+			<if test="productName != null and productName != ''">
+				AND product_name like concat('%', #{productName}, '%')
+			</if>
+			<if test="productType != null and productType != ''">
+				AND product_type = #{productType}
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectBizMallProductByProductId" parameterType="Long" resultMap="BizMallProductResult">
+		<include refid="selectBizMallProductVo"/>
+		where product_id = #{productId}
+	</select>
+
+	<insert id="insertBizMallProduct" parameterType="BizMallProduct" useGeneratedKeys="true" keyProperty="productId">
+		insert into biz_mall_product(
+			<if test="productName != null and productName != ''">product_name,</if>
+			<if test="productType != null and productType != ''">product_type,</if>
+			<if test="description != null and description != ''">description,</if>
+			<if test="requiredInvites != null">required_invites,</if>
+			<if test="stock != null">stock,</if>
+			<if test="effectValue != null">effect_value,</if>
+			<if test="status != null and status != ''">status,</if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+			create_time
+		)values(
+			<if test="productName != null and productName != ''">#{productName},</if>
+			<if test="productType != null and productType != ''">#{productType},</if>
+			<if test="description != null and description != ''">#{description},</if>
+			<if test="requiredInvites != null">#{requiredInvites},</if>
+			<if test="stock != null">#{stock},</if>
+			<if test="effectValue != null">#{effectValue},</if>
+			<if test="status != null and status != ''">#{status},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			sysdate()
+		)
+	</insert>
+
+	<update id="updateBizMallProduct" parameterType="BizMallProduct">
+ 		update biz_mall_product
+ 		<set>
+ 			<if test="productName != null and productName != ''">product_name = #{productName},</if>
+ 			<if test="productType != null and productType != ''">product_type = #{productType},</if>
+ 			<if test="description != null">description = #{description},</if>
+ 			<if test="requiredInvites != null">required_invites = #{requiredInvites},</if>
+ 			<if test="stock != null">stock = #{stock},</if>
+ 			<if test="effectValue != null">effect_value = #{effectValue},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where product_id = #{productId}
+	</update>
+
+	<update id="updateBizMallProductStatus" parameterType="BizMallProduct">
+ 		update biz_mall_product
+ 		<set>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where product_id = #{productId}
+	</update>
+
+	<delete id="deleteBizMallProductByProductId" parameterType="Long">
+		delete from biz_mall_product where product_id = #{productId}
+	</delete>
+
+	<delete id="deleteBizMallProductByProductIds" parameterType="Long">
+ 		delete from biz_mall_product where product_id in
+ 		<foreach collection="array" item="productId" open="(" separator="," close=")">
+ 			#{productId}
+        </foreach>
+ 	</delete>
+
+</mapper>

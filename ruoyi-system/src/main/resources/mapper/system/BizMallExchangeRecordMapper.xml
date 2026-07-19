@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizMallExchangeRecordMapper">
+
+	<resultMap type="BizMallExchangeRecord" id="BizMallExchangeRecordResult">
+		<id     property="recordId"          column="record_id"          />
+		<result property="userId"            column="user_id"           />
+		<result property="userName"          column="user_name"         />
+		<result property="userPhone"         column="user_phone"        />
+		<result property="productId"         column="product_id"        />
+		<result property="productName"       column="product_name"      />
+		<result property="productType"       column="product_type"      />
+		<result property="costInvites"       column="cost_invites"      />
+		<result property="exchangeTime"      column="exchange_time"     />
+		<result property="effectStatus"      column="effect_status"     />
+		<result property="createBy"          column="create_by"         />
+		<result property="createTime"        column="create_time"       />
+		<result property="updateBy"          column="update_by"         />
+		<result property="updateTime"        column="update_time"       />
+		<result property="remark"            column="remark"             />
+	</resultMap>
+
+	<sql id="selectBizMallExchangeRecordVo">
+		select record_id, user_id, user_name, user_phone, product_id, product_name, product_type,
+		       cost_invites, exchange_time, effect_status, create_by, create_time, update_by, update_time, remark
+		from biz_mall_exchange_record
+	</sql>
+
+	<select id="selectBizMallExchangeRecordList" parameterType="BizMallExchangeRecord" resultMap="BizMallExchangeRecordResult">
+		<include refid="selectBizMallExchangeRecordVo"/>
+		<where>
+			<if test="userId != null">
+				AND user_id = #{userId}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND user_name like concat('%', #{userName}, '%')
+			</if>
+			<if test="userPhone != null and userPhone != ''">
+				AND user_phone = #{userPhone}
+			</if>
+			<if test="productId != null">
+				AND product_id = #{productId}
+			</if>
+			<if test="productType != null and productType != ''">
+				AND product_type = #{productType}
+			</if>
+			<if test="effectStatus != null and effectStatus != ''">
+				AND effect_status = #{effectStatus}
+			</if>
+		</where>
+		order by exchange_time desc
+	</select>
+
+	<select id="selectBizMallExchangeRecordByRecordId" parameterType="Long" resultMap="BizMallExchangeRecordResult">
+		<include refid="selectBizMallExchangeRecordVo"/>
+		where record_id = #{recordId}
+	</select>
+
+	<select id="selectBizMallExchangeRecordByUserId" parameterType="Long" resultMap="BizMallExchangeRecordResult">
+		<include refid="selectBizMallExchangeRecordVo"/>
+		where user_id = #{userId}
+		order by exchange_time desc
+	</select>
+
+	<insert id="insertBizMallExchangeRecord" parameterType="BizMallExchangeRecord" useGeneratedKeys="true" keyProperty="recordId">
+		insert into biz_mall_exchange_record(
+			<if test="userId != null">user_id,</if>
+			<if test="userName != null and userName != ''">user_name,</if>
+			<if test="userPhone != null and userPhone != ''">user_phone,</if>
+			<if test="productId != null">product_id,</if>
+			<if test="productName != null and productName != ''">product_name,</if>
+			<if test="productType != null and productType != ''">product_type,</if>
+			<if test="costInvites != null">cost_invites,</if>
+			<if test="exchangeTime != null">exchange_time,</if>
+			<if test="effectStatus != null and effectStatus != ''">effect_status,</if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+			create_time
+		)values(
+			<if test="userId != null">#{userId},</if>
+			<if test="userName != null and userName != ''">#{userName},</if>
+			<if test="userPhone != null and userPhone != ''">#{userPhone},</if>
+			<if test="productId != null">#{productId},</if>
+			<if test="productName != null and productName != ''">#{productName},</if>
+			<if test="productType != null and productType != ''">#{productType},</if>
+			<if test="costInvites != null">#{costInvites},</if>
+			<if test="exchangeTime != null">#{exchangeTime},</if>
+			<if test="effectStatus != null and effectStatus != ''">#{effectStatus},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			sysdate()
+		)
+	</insert>
+
+	<update id="updateBizMallExchangeRecord" parameterType="BizMallExchangeRecord">
+ 		update biz_mall_exchange_record
+ 		<set>
+ 			<if test="userId != null">user_id = #{userId},</if>
+ 			<if test="userName != null">user_name = #{userName},</if>
+ 			<if test="userPhone != null">user_phone = #{userPhone},</if>
+ 			<if test="productId != null">product_id = #{productId},</if>
+ 			<if test="productName != null">product_name = #{productName},</if>
+ 			<if test="productType != null">product_type = #{productType},</if>
+ 			<if test="costInvites != null">cost_invites = #{costInvites},</if>
+ 			<if test="exchangeTime != null">exchange_time = #{exchangeTime},</if>
+ 			<if test="effectStatus != null and effectStatus != ''">effect_status = #{effectStatus},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where record_id = #{recordId}
+	</update>
+
+	<delete id="deleteBizMallExchangeRecordByRecordId" parameterType="Long">
+		delete from biz_mall_exchange_record where record_id = #{recordId}
+	</delete>
+
+	<delete id="deleteBizMallExchangeRecordByRecordIds" parameterType="Long">
+ 		delete from biz_mall_exchange_record where record_id in
+ 		<foreach collection="array" item="recordId" open="(" separator="," close=")">
+ 			#{recordId}
+        </foreach>
+ 	</delete>
+
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizExchangeQuotaMapper">
+
+	<resultMap type="BizExchangeQuota" id="BizExchangeQuotaResult">
+		<id     property="quotaId"          column="quota_id"          />
+		<result property="userId"           column="user_id"          />
+		<result property="quotaType"        column="quota_type"        />
+		<result property="totalCount"        column="total_count"      />
+		<result property="usedCount"         column="used_count"       />
+		<result property="remainingCount"   column="remaining_count"  />
+		<result property="expireTime"        column="expire_time"      />
+		<result property="createBy"          column="create_by"        />
+		<result property="createTime"        column="create_time"      />
+		<result property="updateBy"          column="update_by"        />
+		<result property="updateTime"        column="update_time"      />
+		<result property="remark"            column="remark"            />
+	</resultMap>
+
+	<sql id="selectBizExchangeQuotaVo">
+		select quota_id, user_id, quota_type, total_count, used_count, remaining_count, expire_time,
+		       create_by, create_time, update_by, update_time, remark
+		from biz_exchange_quota
+	</sql>
+
+	<select id="selectBizExchangeQuotaList" parameterType="BizExchangeQuota" resultMap="BizExchangeQuotaResult">
+		<include refid="selectBizExchangeQuotaVo"/>
+		<where>
+			<if test="userId != null">
+				AND user_id = #{userId}
+			</if>
+			<if test="quotaType != null and quotaType != ''">
+				AND quota_type = #{quotaType}
+			</if>
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectByUserIdAndType" resultMap="BizExchangeQuotaResult">
+		<include refid="selectBizExchangeQuotaVo"/>
+		where user_id = #{userId} and quota_type = #{quotaType} limit 1
+	</select>
+
+	<insert id="insertBizExchangeQuota" parameterType="BizExchangeQuota" useGeneratedKeys="true" keyProperty="quotaId">
+		insert into biz_exchange_quota(
+			<if test="userId != null">user_id,</if>
+			<if test="quotaType != null and quotaType != ''">quota_type,</if>
+			<if test="totalCount != null">total_count,</if>
+			<if test="usedCount != null">used_count,</if>
+			<if test="remainingCount != null">remaining_count,</if>
+			<if test="expireTime != null">expire_time,</if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+			create_time
+		)values(
+			<if test="userId != null">#{userId},</if>
+			<if test="quotaType != null and quotaType != ''">#{quotaType},</if>
+			<if test="totalCount != null">#{totalCount},</if>
+			<if test="usedCount != null">#{usedCount},</if>
+			<if test="remainingCount != null">#{remainingCount},</if>
+			<if test="expireTime != null">#{expireTime},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			sysdate()
+		)
+	</insert>
+
+	<update id="updateBizExchangeQuota" parameterType="BizExchangeQuota">
+ 		update biz_exchange_quota
+ 		<set>
+ 			<if test="userId != null">user_id = #{userId},</if>
+ 			<if test="quotaType != null and quotaType != ''">quota_type = #{quotaType},</if>
+ 			<if test="totalCount != null">total_count = #{totalCount},</if>
+ 			<if test="usedCount != null">used_count = #{usedCount},</if>
+ 			<if test="remainingCount != null">remaining_count = #{remainingCount},</if>
+ 			<if test="expireTime != null">expire_time = #{expireTime},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where quota_id = #{quotaId}
+	</update>
+
+	<!-- 增加配额：不存在则插入，存在则累加（利用 user_id + quota_type 唯一索引做 ON DUPLICATE KEY UPDATE） -->
+	<insert id="addQuota">
+		insert into biz_exchange_quota (user_id, quota_type, total_count, used_count, remaining_count, create_time)
+		values (#{userId}, #{quotaType}, #{count}, 0, #{count}, sysdate())
+		on duplicate key update
+			total_count = total_count + #{count},
+			remaining_count = remaining_count + #{count},
+			update_time = sysdate()
+	</insert>
+
+	<!-- 扣减配额：used_count + count, remaining_count - count -->
+	<update id="deductQuota">
+		update biz_exchange_quota
+		set used_count = used_count + #{count},
+		    remaining_count = remaining_count - #{count},
+		    update_time = sysdate()
+		where user_id = #{userId} and quota_type = #{quotaType}
+	</update>
+
+</mapper>

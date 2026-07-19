@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizContractSignatureMapper">
+
+	<resultMap type="BizContractSignature" id="BizContractSignatureResult">
+		<id     property="signatureId"      column="signature_id"      />
+		<result property="contractId"       column="contract_id"       />
+		<result property="signerId"         column="signer_id"         />
+		<result property="signerName"       column="signer_name"       />
+		<result property="signerRole"       column="signer_role"       />
+		<result property="signatureImage"   column="signature_image"   />
+		<result property="signTime"         column="sign_time"         />
+		<result property="createBy"         column="create_by"         />
+		<result property="createTime"       column="create_time"       />
+	</resultMap>
+
+	<sql id="selectSignatureVo">
+		select signature_id, contract_id, signer_id, signer_name, signer_role, signature_image, sign_time, create_by, create_time
+		from biz_contract_signature
+	</sql>
+
+	<select id="selectSignatureListByContractId" parameterType="Long" resultMap="BizContractSignatureResult">
+		<include refid="selectSignatureVo"/>
+		where contract_id = #{contractId}
+		order by sign_time asc
+	</select>
+
+	<select id="selectSignatureById" parameterType="Long" resultMap="BizContractSignatureResult">
+		<include refid="selectSignatureVo"/>
+		where signature_id = #{signatureId}
+	</select>
+
+	<insert id="insertSignature" parameterType="BizContractSignature" useGeneratedKeys="true" keyProperty="signatureId">
+		insert into biz_contract_signature(
+			<if test="contractId != null">contract_id,</if>
+			<if test="signerId != null">signer_id,</if>
+			<if test="signerName != null and signerName != ''">signer_name,</if>
+			<if test="signerRole != null and signerRole != ''">signer_role,</if>
+			<if test="signatureImage != null and signatureImage != ''">signature_image,</if>
+			<if test="signTime != null">sign_time,</if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			create_time
+		)values(
+			<if test="contractId != null">#{contractId},</if>
+			<if test="signerId != null">#{signerId},</if>
+			<if test="signerName != null and signerName != ''">#{signerName},</if>
+			<if test="signerRole != null and signerRole != ''">#{signerRole},</if>
+			<if test="signatureImage != null and signatureImage != ''">#{signatureImage},</if>
+			<if test="signTime != null">#{signTime},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			sysdate()
+		)
+	</insert>
+
+</mapper>

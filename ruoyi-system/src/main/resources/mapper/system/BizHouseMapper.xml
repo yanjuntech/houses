@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BizHouseMapper">
+
+	<resultMap type="BizHouse" id="BizHouseResult">
+		<id     property="houseId"           column="house_id"            />
+		<result property="title"             column="title"               />
+		<result property="houseType"         column="house_type"          />
+		<result property="communityId"       column="community_id"        />
+		<result property="communityName"     column="community_name"      />
+		<result property="roomCount"         column="room_count"          />
+		<result property="hallCount"         column="hall_count"          />
+		<result property="bathCount"         column="bath_count"          />
+		<result property="area"              column="area"                />
+		<result property="floor"             column="floor"               />
+		<result property="totalFloor"        column="total_floor"         />
+		<result property="decoration"        column="decoration"          />
+		<result property="orientation"       column="orientation"         />
+		<result property="price"             column="price"               />
+		<result property="publishUserId"     column="publish_user_id"     />
+		<result property="publishUserType"   column="publish_user_type"   />
+		<result property="images"            column="images"              />
+		<result property="description"       column="description"         />
+		<result property="status"            column="status"              />
+		<result property="createBy"          column="create_by"           />
+		<result property="createTime"        column="create_time"        />
+		<result property="updateBy"          column="update_by"           />
+		<result property="updateTime"        column="update_time"        />
+		<result property="remark"            column="remark"              />
+	</resultMap>
+
+	<sql id="selectBizHouseVo">
+		select house_id, title, house_type, community_id, community_name, room_count, hall_count, bath_count,
+		       area, floor, total_floor, decoration, orientation, price, publish_user_id, publish_user_type,
+		       images, description, status, create_by, create_time, update_by, update_time, remark
+		from biz_house
+	</sql>
+
+	<select id="selectBizHouseList" parameterType="BizHouse" resultMap="BizHouseResult">
+		<include refid="selectBizHouseVo"/>
+		<where>
+			<if test="title != null and title != ''">
+				AND title like concat('%', #{title}, '%')
+			</if>
+			<if test="houseType != null and houseType != ''">
+				AND house_type = #{houseType}
+			</if>
+			<if test="communityId != null">
+				AND community_id = #{communityId}
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+			<if test="roomCount != null">
+				AND room_count = #{roomCount}
+			</if>
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectBizHouseByHouseId" parameterType="Long" resultMap="BizHouseResult">
+		<include refid="selectBizHouseVo"/>
+		where house_id = #{houseId}
+	</select>
+
+	<insert id="insertBizHouse" parameterType="BizHouse" useGeneratedKeys="true" keyProperty="houseId">
+		insert into biz_house(
+			<if test="title != null and title != ''">title,</if>
+			<if test="houseType != null and houseType != ''">house_type,</if>
+			<if test="communityId != null">community_id,</if>
+			<if test="communityName != null and communityName != ''">community_name,</if>
+			<if test="roomCount != null">room_count,</if>
+			<if test="hallCount != null">hall_count,</if>
+			<if test="bathCount != null">bath_count,</if>
+			<if test="area != null">area,</if>
+			<if test="floor != null">floor,</if>
+			<if test="totalFloor != null">total_floor,</if>
+			<if test="decoration != null and decoration != ''">decoration,</if>
+			<if test="orientation != null and orientation != ''">orientation,</if>
+			<if test="price != null">price,</if>
+			<if test="publishUserId != null">publish_user_id,</if>
+			<if test="publishUserType != null and publishUserType != ''">publish_user_type,</if>
+			<if test="images != null and images != ''">images,</if>
+			<if test="description != null and description != ''">description,</if>
+			<if test="status != null and status != ''">status,</if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+			create_time
+		)values(
+			<if test="title != null and title != ''">#{title},</if>
+			<if test="houseType != null and houseType != ''">#{houseType},</if>
+			<if test="communityId != null">#{communityId},</if>
+			<if test="communityName != null and communityName != ''">#{communityName},</if>
+			<if test="roomCount != null">#{roomCount},</if>
+			<if test="hallCount != null">#{hallCount},</if>
+			<if test="bathCount != null">#{bathCount},</if>
+			<if test="area != null">#{area},</if>
+			<if test="floor != null">#{floor},</if>
+			<if test="totalFloor != null">#{totalFloor},</if>
+			<if test="decoration != null and decoration != ''">#{decoration},</if>
+			<if test="orientation != null and orientation != ''">#{orientation},</if>
+			<if test="price != null">#{price},</if>
+			<if test="publishUserId != null">#{publishUserId},</if>
+			<if test="publishUserType != null and publishUserType != ''">#{publishUserType},</if>
+			<if test="images != null and images != ''">#{images},</if>
+			<if test="description != null and description != ''">#{description},</if>
+			<if test="status != null and status != ''">#{status},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			sysdate()
+		)
+	</insert>
+
+	<update id="updateBizHouse" parameterType="BizHouse">
+ 		update biz_house
+ 		<set>
+ 			<if test="title != null and title != ''">title = #{title},</if>
+ 			<if test="houseType != null and houseType != ''">house_type = #{houseType},</if>
+ 			<if test="communityId != null">community_id = #{communityId},</if>
+ 			<if test="communityName != null and communityName != ''">community_name = #{communityName},</if>
+ 			<if test="roomCount != null">room_count = #{roomCount},</if>
+ 			<if test="hallCount != null">hall_count = #{hallCount},</if>
+ 			<if test="bathCount != null">bath_count = #{bathCount},</if>
+ 			<if test="area != null">area = #{area},</if>
+ 			<if test="floor != null">floor = #{floor},</if>
+ 			<if test="totalFloor != null">total_floor = #{totalFloor},</if>
+ 			<if test="decoration != null">decoration = #{decoration},</if>
+ 			<if test="orientation != null">orientation = #{orientation},</if>
+ 			<if test="price != null">price = #{price},</if>
+ 			<if test="publishUserId != null">publish_user_id = #{publishUserId},</if>
+ 			<if test="publishUserType != null and publishUserType != ''">publish_user_type = #{publishUserType},</if>
+ 			<if test="images != null">images = #{images},</if>
+ 			<if test="description != null">description = #{description},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where house_id = #{houseId}
+	</update>
+
+	<update id="updateBizHouseStatus" parameterType="BizHouse">
+ 		update biz_house
+ 		<set>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where house_id = #{houseId}
+	</update>
+
+	<delete id="deleteBizHouseByHouseId" parameterType="Long">
+		delete from biz_house where house_id = #{houseId}
+	</delete>
+
+	<delete id="deleteBizHouseByHouseIds" parameterType="Long">
+ 		delete from biz_house where house_id in
+ 		<foreach collection="array" item="houseId" open="(" separator="," close=")">
+ 			#{houseId}
+        </foreach>
+ 	</delete>
+
+</mapper>
