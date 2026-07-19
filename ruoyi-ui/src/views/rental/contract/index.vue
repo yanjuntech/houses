@@ -27,6 +27,16 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="支付周期" prop="payCycle">
+        <el-select v-model="queryParams.payCycle" placeholder="请选择支付周期" clearable>
+          <el-option
+            v-for="dict in dict.type.biz_contract_pay_cycle"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="出租方手机号" prop="landlordPhone">
         <el-input
           v-model="queryParams.landlordPhone"
@@ -104,7 +114,9 @@
             <el-descriptions-item label="月租金">{{ scope.row.monthlyRent }} 元</el-descriptions-item>
             <el-descriptions-item label="押金">{{ scope.row.deposit || 0 }} 元</el-descriptions-item>
             <el-descriptions-item label="租期">{{ scope.row.rentPeriod || '-' }} 个月</el-descriptions-item>
-            <el-descriptions-item label="支付周期">{{ scope.row.payCycle || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="支付周期">
+              <dict-tag :options="dict.type.biz_contract_pay_cycle" :value="scope.row.payCycle"/>
+            </el-descriptions-item>
             <el-descriptions-item label="合同开始日期">{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</el-descriptions-item>
             <el-descriptions-item label="合同结束日期">{{ parseTime(scope.row.endDate, '{y}-{m}-{d}') }}</el-descriptions-item>
             <el-descriptions-item label="签订时间" :span="2">{{ parseTime(scope.row.signTime) || '-' }}</el-descriptions-item>
@@ -128,6 +140,11 @@
       <el-table-column label="承租方" align="center" prop="tenantName" />
       <el-table-column label="月租金(元)" align="center" prop="monthlyRent" />
       <el-table-column label="租期(月)" align="center" prop="rentPeriod" />
+      <el-table-column label="支付周期" align="center" prop="payCycle">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.biz_contract_pay_cycle" :value="scope.row.payCycle"/>
+        </template>
+      </el-table-column>
       <el-table-column label="合同期限" align="center" width="200">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }} ~ {{ parseTime(scope.row.endDate, '{y}-{m}-{d}') }}</span>
@@ -280,7 +297,14 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="支付周期" prop="payCycle">
-              <el-input v-model="form.payCycle" placeholder="请输入支付周期（如：押一付三）" />
+              <el-select v-model="form.payCycle" placeholder="请选择支付周期" style="width: 100%">
+                <el-option
+                  v-for="dict in dict.type.biz_contract_pay_cycle"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -310,7 +334,9 @@
         <el-descriptions-item label="月租金(元)">{{ detailForm.monthlyRent }}</el-descriptions-item>
         <el-descriptions-item label="押金(元)">{{ detailForm.deposit }}</el-descriptions-item>
         <el-descriptions-item label="租期(月)">{{ detailForm.rentPeriod }}</el-descriptions-item>
-        <el-descriptions-item label="支付周期">{{ detailForm.payCycle }}</el-descriptions-item>
+        <el-descriptions-item label="支付周期">
+          <dict-tag :options="dict.type.biz_contract_pay_cycle" :value="detailForm.payCycle"/>
+        </el-descriptions-item>
         <el-descriptions-item label="开始日期">{{ parseTime(detailForm.startDate, '{y}-{m}-{d}') }}</el-descriptions-item>
         <el-descriptions-item label="结束日期">{{ parseTime(detailForm.endDate, '{y}-{m}-{d}') }}</el-descriptions-item>
         <el-descriptions-item label="合同状态">
@@ -354,7 +380,7 @@ import { listHouse } from "@/api/rental/house"
 
 export default {
   name: "Contract",
-  dicts: ['biz_contract_status'],
+  dicts: ['biz_contract_status', 'biz_contract_pay_cycle'],
   data() {
     return {
       // 遮罩层
@@ -388,6 +414,7 @@ export default {
         contractTitle: undefined,
         contractNo: undefined,
         status: undefined,
+        payCycle: undefined,
         landlordPhone: undefined,
         tenantPhone: undefined
       },

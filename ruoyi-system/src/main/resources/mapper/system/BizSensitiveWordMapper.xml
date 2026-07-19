@@ -49,14 +49,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<insert id="insertBizSensitiveWord" parameterType="BizSensitiveWord" useGeneratedKeys="true" keyProperty="wordId">
 		insert into biz_sensitive_word(
-			<if test="word != null and word != ''">word,</if>
+			word,
 			<if test="category != null and category != ''">category,</if>
 			<if test="status != null and status != ''">status,</if>
 			<if test="createBy != null and createBy != ''">create_by,</if>
 			<if test="remark != null and remark != ''">remark,</if>
 			create_time
 		)values(
-			<if test="word != null and word != ''">#{word},</if>
+			#{word},
 			<if test="category != null and category != ''">#{category},</if>
 			<if test="status != null and status != ''">#{status},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>

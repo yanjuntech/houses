@@ -1,17 +1,31 @@
 <template>
   <div class="amap-picker">
-    <el-autocomplete
-      v-model="searchText"
-      placeholder="请输入地址搜索"
-      :fetch-suggestions="querySearch"
-      @select="handleSelect"
-      style="width: 100%; margin-bottom: 10px;"
-    />
-    <div ref="mapContainer" class="amap-container" style="width: 100%; height: 400px;"></div>
+    <el-alert
+      v-if="errorMsg"
+      :title="errorMsg"
+      type="error"
+      :closable="false"
+      show-icon
+      style="margin-bottom: 10px;"
+    >
+      <span slot="desc">请在系统参数中配置地图 API Key</span>
+    </el-alert>
+    <div v-loading="loading" element-loading-text="地图加载中..." style="width: 100%;">
+      <el-autocomplete
+        v-model="searchText"
+        placeholder="请输入地址搜索"
+        :fetch-suggestions="querySearch"
+        @select="handleSelect"
+        style="width: 100%; margin-bottom: 10px;"
+      />
+      <div ref="mapContainer" class="amap-container" style="width: 100%; height: 400px;"></div>
+    </div>
   </div>
 </template>
 
 <script>
+import { getConfigKey } from '@/api/system/config'
+
 export default {
   name: 'AMapPicker',
   props: {
@@ -26,33 +40,51 @@ export default {
       marker: null,
       placeSearch: null,
       autoComplete: null,
-      geocoder: null
+      geocoder: null,
+      loading: false,
+      errorMsg: ''
     }
   },
   mounted() {
-    this.loadAMapScript()
+    this.loadMapKey()
   },
   methods: {
-    loadAMapScript() {
+    loadMapKey() {
+      this.loading = true
+      this.errorMsg = ''
+      getConfigKey('sys.community.mapKeyAmap').then(response => {
+        const key = response.msg || ''
+        if (!key) {
+          this.loading = false
+          this.errorMsg = '高德地图 API Key 未配置'
+          return
+        }
+        this.loadAMapScript(key)
+      }).catch(() => {
+        this.loading = false
+        this.errorMsg = '获取地图配置失败'
+      })
+    },
+    loadAMapScript(key) {
       if (window.AMap) {
         this.initMap()
         return
       }
-      // eslint-disable-next-line no-console
-      console.warn('[AMapPicker] 使用占位 API Key "YOUR_AMAP_KEY"，请替换为有效的高德地图 Key，否则地图无法加载。')
       const script = document.createElement('script')
-      script.src = 'https://webapi.amap.com/maps?v=2.0&key=YOUR_AMAP_KEY&plugin=AMap.PlaceSearch,AMap.AutoComplete,AMap.Geocoder'
-      script.onload = () => this.initMap()
+      script.src = 'https://webapi.amap.com/maps?v=2.0&key=' + key + '&plugin=AMap.PlaceSearch,AMap.AutoComplete,AMap.Geocoder'
+      script.onload = () => {
+        this.initMap()
+      }
       script.onerror = () => {
-        // eslint-disable-next-line no-console
-        console.error('[AMapPicker] 高德地图脚本加载失败，请检查网络或 API Key 配置。')
+        this.loading = false
+        this.errorMsg = '高德地图脚本加载失败，请检查网络或 API Key 配置'
       }
       document.head.appendChild(script)
     },
     initMap() {
       if (!window.AMap) {
-        // eslint-disable-next-line no-console
-        console.error('[AMapPicker] window.AMap 未定义，初始化失败。')
+        this.loading = false
+        this.errorMsg = '地图初始化失败'
         return
       }
       const lng = this.longitude || 116.397428
@@ -68,19 +100,17 @@ export default {
       })
       this.geocoder = new AMap.Geocoder()
       this.autoComplete = new AMap.AutoComplete({ input: null })
-      // 点击地图事件
       this.map.on('click', (e) => {
         const lnglat = e.lnglat
         this.marker.setPosition([lnglat.lng, lnglat.lat])
         this.reverseGeocode(lnglat.lng, lnglat.lat)
       })
-      // 拖拽 marker 事件
       this.marker.on('dragend', (e) => {
         const lnglat = e.lnglat
         this.reverseGeocode(lnglat.lng, lnglat.lat)
       })
-      // 初始 address 回填到搜索框
       if (this.address) this.searchText = this.address
+      this.loading = false
     },
     reverseGeocode(lng, lat) {
       if (!this.geocoder) {

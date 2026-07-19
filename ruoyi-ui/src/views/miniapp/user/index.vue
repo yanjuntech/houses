@@ -508,7 +508,7 @@
 </template>
 
 <script>
-import { listUser, getUser, delUser, addUser, updateUser, changeUserType, verifyUser, adjustPublishCount, extendPublishPeriod } from "@/api/miniapp/user"
+import { listUser, getUser, delUser, addUser, updateUser, verifyUser, adjustPublishCount, extendPublishPeriod } from "@/api/miniapp/user"
 import { pushMessage, listMessage } from "@/api/miniapp/message"
 
 export default {
@@ -689,7 +689,7 @@ export default {
           const submitData = { ...this.form }
           submitData.tags = this.form.tagsList && this.form.tagsList.length > 0 ? this.form.tagsList.join(',') : ''
           if (this.form.userId != undefined) {
-            changeUserType(submitData).then(() => {
+            updateUser(submitData).then(() => {
               this.$modal.msgSuccess("修改成功")
               this.open = false
               this.getList()

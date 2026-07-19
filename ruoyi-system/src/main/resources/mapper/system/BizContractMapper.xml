@@ -54,6 +54,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="status != null and status != ''">
 				AND status = #{status}
 			</if>
+			<if test="payCycle != null and payCycle != ''">
+				AND pay_cycle = #{payCycle}
+			</if>
 			<if test="landlordId != null">
 				AND landlord_id = #{landlordId}
 			</if>
@@ -82,7 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="landlordId != null">landlord_id,</if>
 			<if test="landlordName != null and landlordName != ''">landlord_name,</if>
 			<if test="landlordPhone != null and landlordPhone != ''">landlord_phone,</if>
-			<if test="tenantId != null">tenant_id,</if>
+			tenant_id,
 			<if test="tenantName != null and tenantName != ''">tenant_name,</if>
 			<if test="tenantPhone != null and tenantPhone != ''">tenant_phone,</if>
 			<if test="monthlyRent != null">monthly_rent,</if>
@@ -107,7 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="landlordId != null">#{landlordId},</if>
 			<if test="landlordName != null and landlordName != ''">#{landlordName},</if>
 			<if test="landlordPhone != null and landlordPhone != ''">#{landlordPhone},</if>
-			<if test="tenantId != null">#{tenantId},</if>
+			#{tenantId},
 			<if test="tenantName != null and tenantName != ''">#{tenantName},</if>
 			<if test="tenantPhone != null and tenantPhone != ''">#{tenantPhone},</if>
 			<if test="monthlyRent != null">#{monthlyRent},</if>

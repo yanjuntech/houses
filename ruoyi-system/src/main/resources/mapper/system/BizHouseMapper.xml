@@ -81,7 +81,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="totalFloor != null">total_floor,</if>
 			<if test="decoration != null and decoration != ''">decoration,</if>
 			<if test="orientation != null and orientation != ''">orientation,</if>
-			<if test="price != null">price,</if>
+			price,
 			<if test="publishUserId != null">publish_user_id,</if>
 			<if test="publishUserType != null and publishUserType != ''">publish_user_type,</if>
 			<if test="images != null and images != ''">images,</if>
@@ -105,7 +105,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="totalFloor != null">#{totalFloor},</if>
 			<if test="decoration != null and decoration != ''">#{decoration},</if>
 			<if test="orientation != null and orientation != ''">#{orientation},</if>
-			<if test="price != null">#{price},</if>
+			#{price},
 			<if test="publishUserId != null">#{publishUserId},</if>
 			<if test="publishUserType != null and publishUserType != ''">#{publishUserType},</if>
 			<if test="images != null and images != ''">#{images},</if>

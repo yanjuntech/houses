@@ -20,7 +20,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="小区" prop="communityId">
-        <el-select v-model="queryParams.communityId" placeholder="请选择小区" clearable>
+        <el-select v-model="queryParams.communityId" placeholder="请选择小区" clearable filterable>
           <el-option
             v-for="item in communityOptions"
             :key="item.communityId"
@@ -275,7 +275,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="所属小区" prop="communityId">
-              <el-select v-model="form.communityId" placeholder="请选择小区" @change="handleCommunityChange" style="width: 100%">
+              <el-select v-model="form.communityId" placeholder="请选择小区" filterable @change="handleCommunityChange" style="width: 100%">
                 <el-option
                   v-for="item in communityOptions"
                   :key="item.communityId"

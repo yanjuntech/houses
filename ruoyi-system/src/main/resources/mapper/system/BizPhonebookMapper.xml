@@ -56,9 +56,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into biz_phonebook(
             <if test="merchantName != null and merchantName != ''">merchant_name,</if>
             <if test="ownerName != null and ownerName != ''">owner_name,</if>
-            <if test="phone != null and phone != ''">phone,</if>
-            <if test="phone1 != null and phone1 != ''">phone1,</if>
-            <if test="phone2 != null and phone2 != ''">phone2,</if>
+            phone,
+            phone1,
+            phone2,
             <if test="category != null and category != ''">category,</if>
             <if test="address != null and address != ''">address,</if>
             <if test="businessLicense != null and businessLicense != ''">business_license,</if>
@@ -70,9 +70,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         )values(
             <if test="merchantName != null and merchantName != ''">#{merchantName},</if>
             <if test="ownerName != null and ownerName != ''">#{ownerName},</if>
-            <if test="phone != null and phone != ''">#{phone},</if>
-            <if test="phone1 != null and phone1 != ''">#{phone1},</if>
-            <if test="phone2 != null and phone2 != ''">#{phone2},</if>
+            #{phone},
+            #{phone1},
+            #{phone2},
             <if test="category != null and category != ''">#{category},</if>
             <if test="address != null and address != ''">#{address},</if>
             <if test="businessLicense != null and businessLicense != ''">#{businessLicense},</if>

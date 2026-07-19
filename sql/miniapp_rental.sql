@@ -335,3 +335,13 @@ insert into sys_dict_data values(1051, 1, '待签署', '0', 'biz_contract_status
 insert into sys_dict_data values(1052, 2, '已签署', '1', 'biz_contract_status', '', 'success', 'N', '0', 'admin', sysdate(), '', null, '');
 insert into sys_dict_data values(1053, 3, '已取消', '2', 'biz_contract_status', '', 'info',    'N', '0', 'admin', sysdate(), '', null, '');
 insert into sys_dict_data values(1054, 4, '已过期', '3', 'biz_contract_status', '', 'danger',  'N', '0', 'admin', sysdate(), '', null, '');
+
+-- 合同支付周期字典
+insert into sys_dict_type values(106, '合同支付周期', 'biz_contract_pay_cycle', '0', 'admin', sysdate(), '', null, '电子合同支付周期');
+insert into sys_dict_data values(1061, 1, '押一付一', '0', 'biz_contract_pay_cycle', '', 'primary', 'Y', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1062, 2, '押一付二', '1', 'biz_contract_pay_cycle', '', 'primary', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1063, 3, '押一付三', '2', 'biz_contract_pay_cycle', '', 'primary', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1064, 4, '押一付六', '3', 'biz_contract_pay_cycle', '', 'primary', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1065, 5, '季付', '4', 'biz_contract_pay_cycle', '', 'primary', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1066, 6, '半年付', '5', 'biz_contract_pay_cycle', '', 'primary', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1067, 7, '年付', '6', 'biz_contract_pay_cycle', '', 'primary', 'N', '0', 'admin', sysdate(), '', null, '');
