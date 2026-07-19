@@ -68,6 +68,73 @@
 
     <el-table v-loading="loading" :data="repairList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="expand">
+        <template slot-scope="scope">
+          <el-descriptions :column="3" border size="medium" style="padding: 10px;">
+            <el-descriptions-item label="维修ID">{{ scope.row.repairId }}</el-descriptions-item>
+            <el-descriptions-item label="房源标题" :span="2">{{ scope.row.houseTitle || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="租客姓名">{{ scope.row.tenantName || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="房东姓名">{{ scope.row.landlordName || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="维修类型">
+              <dict-tag :options="dict.type.biz_repair_type" :value="scope.row.repairType"/>
+            </el-descriptions-item>
+            <el-descriptions-item label="维修状态">
+              <dict-tag :options="dict.type.biz_repair_status" :value="scope.row.status"/>
+            </el-descriptions-item>
+            <el-descriptions-item label="维修金额" v-if="scope.row.receiptAmount">{{ scope.row.receiptAmount }} 元</el-descriptions-item>
+            <el-descriptions-item label="维修描述" :span="3">{{ scope.row.description || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="维修图片" :span="3">
+              <template v-if="scope.row.images">
+                <el-image
+                  v-for="(img, idx) in scope.row.images.split(',')"
+                  :key="idx"
+                  style="width: 100px; height: 100px; margin-right: 8px;"
+                  :src="img"
+                  :preview-src-list="scope.row.images.split(',')"
+                  fit="cover"
+                />
+              </template>
+              <span v-else>-</span>
+            </el-descriptions-item>
+            <el-descriptions-item label="报销凭证" :span="3">
+              <template v-if="scope.row.receiptImages">
+                <el-image
+                  v-for="(img, idx) in scope.row.receiptImages.split(',')"
+                  :key="idx"
+                  style="width: 100px; height: 100px; margin-right: 8px;"
+                  :src="img"
+                  :preview-src-list="scope.row.receiptImages.split(',')"
+                  fit="cover"
+                />
+              </template>
+              <span v-else>-</span>
+            </el-descriptions-item>
+            <el-descriptions-item label="备注" :span="3">{{ scope.row.remark || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="创建人">{{ scope.row.createBy || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="创建时间">{{ parseTime(scope.row.createTime) || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="更新时间">{{ parseTime(scope.row.updateTime) || '-' }}</el-descriptions-item>
+          </el-descriptions>
+
+          <el-divider content-position="left">维修进度时间轴</el-divider>
+          <div style="padding: 10px 30px; overflow-x: auto;">
+            <el-timeline>
+              <el-timeline-item
+                v-for="(node, idx) in getRepairTimeline(scope.row)"
+                :key="idx"
+                :timestamp="node.time ? parseTime(node.time) : '待处理'"
+                :type="node.done ? 'success' : 'info'"
+                :color="node.done ? '#67C23A' : '#909399'"
+                placement="top"
+              >
+                <el-card shadow="hover" :body-style="{ padding: '10px' }">
+                  <h4 style="margin: 0 0 4px 0;">{{ node.title }}</h4>
+                  <p style="margin: 0; color: #909399; font-size: 12px;">{{ node.desc }}</p>
+                </el-card>
+              </el-timeline-item>
+            </el-timeline>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="维修ID" align="center" prop="repairId" />
       <el-table-column label="房源标题" align="center" prop="houseTitle" show-overflow-tooltip />
       <el-table-column label="租客姓名" align="center" prop="tenantName" />
@@ -309,6 +376,16 @@ export default {
         this.total = response.total
         this.loading = false
       })
+    },
+    /** 维修进度时间轴数据 */
+    getRepairTimeline(row) {
+      return [
+        { title: '提交维修申请', desc: '租户提交维修申请', time: row.createTime, done: true },
+        { title: '房东确认维修', desc: '房东确认受理维修申请', time: row.confirmTime, done: !!row.confirmTime },
+        { title: '维修完成', desc: '维修人员完成维修', time: row.completeTime, done: !!row.completeTime },
+        { title: '租客确认完成', desc: '租客确认维修结果', time: row.tenantConfirmTime, done: !!row.tenantConfirmTime },
+        { title: '报销完成', desc: '房东确认报销', time: row.reimburseTime, done: !!row.reimburseTime }
+      ]
     },
     // 取消按钮
     cancel() {

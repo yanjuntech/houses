@@ -84,6 +84,40 @@
     </el-row>
 
     <el-table v-loading="loading" :data="communityList" @selection-change="handleSelectionChange">
+      <el-table-column type="expand">
+        <template slot-scope="scope">
+          <el-descriptions :column="3" border size="medium" style="padding: 10px;">
+            <el-descriptions-item label="省份">{{ scope.row.province || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="城市">{{ scope.row.city || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="区县">{{ scope.row.district || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="详细地址" :span="3">{{ scope.row.address || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="经度">{{ scope.row.longitude || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="纬度">{{ scope.row.latitude || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="物业公司">{{ scope.row.propertyCompany || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="物业公司电话">{{ scope.row.propertyPhone || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="状态">
+              <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
+            </el-descriptions-item>
+            <el-descriptions-item label="小区标签" :span="3">
+              <template v-if="scope.row.tags">
+                <dict-tag
+                  v-for="(tag, index) in scope.row.tags.split(',')"
+                  :key="index"
+                  :options="dict.type.biz_community_tag"
+                  :value="tag"
+                  style="margin-right: 5px;"
+                />
+              </template>
+              <span v-else>-</span>
+            </el-descriptions-item>
+            <el-descriptions-item label="备注" :span="3">{{ scope.row.remark || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="创建人">{{ scope.row.createBy || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="创建时间">{{ parseTime(scope.row.createTime) || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="更新人">{{ scope.row.updateBy || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="更新时间">{{ parseTime(scope.row.updateTime) || '-' }}</el-descriptions-item>
+          </el-descriptions>
+        </template>
+      </el-table-column>
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="小区编号" align="center" prop="communityId" />
       <el-table-column label="小区名称" align="center" prop="communityName" />
@@ -92,6 +126,7 @@
       <el-table-column label="所在区" align="center" prop="district" />
       <el-table-column label="详细地址" align="center" prop="address" show-overflow-tooltip />
       <el-table-column label="物业公司" align="center" prop="propertyCompany" />
+      <el-table-column label="联系电话" align="center" prop="propertyPhone" />
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <el-switch
@@ -166,17 +201,39 @@
             style="width: 100%"
           />
         </el-form-item>
+        <el-form-item label="地图选点">
+          <div style="width: 100%">
+            <el-alert title="点击地图或搜索地址选择小区位置，将自动填充详细地址、经纬度" type="info" :closable="false" style="margin-bottom: 10px;" />
+            <amap-picker
+              v-if="mapProvider === 'amap'"
+              :longitude="form.longitude"
+              :latitude="form.latitude"
+              :address="form.address"
+              @select="handleMapSelect"
+            />
+            <tmap-picker
+              v-else-if="mapProvider === 'tencent'"
+              :longitude="form.longitude"
+              :latitude="form.latitude"
+              :address="form.address"
+              @select="handleMapSelect"
+            />
+          </div>
+        </el-form-item>
         <el-form-item label="详细地址" prop="address">
-          <el-input v-model="form.address" type="textarea" placeholder="请输入详细地址" />
+          <el-input v-model="form.address" type="textarea" placeholder="请输入详细地址（可手动覆盖地图反查结果）" />
         </el-form-item>
         <el-form-item label="经度" prop="longitude">
-          <el-input v-model="form.longitude" placeholder="请输入经度" />
+          <el-input v-model="form.longitude" placeholder="经度（由地图选点自动填充）" disabled />
         </el-form-item>
         <el-form-item label="纬度" prop="latitude">
-          <el-input v-model="form.latitude" placeholder="请输入纬度" />
+          <el-input v-model="form.latitude" placeholder="纬度（由地图选点自动填充）" disabled />
         </el-form-item>
         <el-form-item label="物业公司" prop="propertyCompany">
           <el-input v-model="form.propertyCompany" placeholder="请输入物业公司" />
+        </el-form-item>
+        <el-form-item label="联系电话" prop="propertyPhone">
+          <el-input v-model="form.propertyPhone" placeholder="请输入物业公司联系电话（手机号或座机，如010-12345678）" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
@@ -212,14 +269,22 @@
 <script>
 import { listCommunity, getCommunity, delCommunity, addCommunity, updateCommunity } from "@/api/rental/community"
 import { listRegion } from "@/api/system/region"
+import { getConfigKey } from "@/api/system/config"
+import AMapPicker from "@/components/AMapPicker"
+import TMapPicker from "@/components/TMapPicker"
 
 export default {
   name: "RentalCommunity",
   dicts: ['sys_normal_disable', 'biz_community_tag'],
+  components: { AMapPicker, TMapPicker },
   data() {
     return {
       // 遮罩层
       loading: true,
+      // 地图服务商（amap 高德 / tencent 腾讯）
+      mapProvider: 'amap',
+      // 地图选点组件可见性
+      mapPickerVisible: false,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -266,7 +331,11 @@ export default {
           { required: true, message: "小区名称不能为空", trigger: "blur" }
         ],
         region: [
-          { required: true, message: "所在地区不能为空", trigger: "change" }
+          { required: true, validator: (rule, value, callback) => { if (!this.formRegion || this.formRegion.length === 0) callback(new Error('所在地区不能为空')); else callback(); }, trigger: 'change' }
+        ],
+        propertyPhone: [
+          { required: false, message: "联系电话不能为空", trigger: "blur" },
+          { pattern: /(^1[3-9]\d{9}$)|(^0\d{2,3}-?\d{7,8}$)/, message: "联系电话格式不正确（11位手机号或区号-号码）", trigger: "blur" }
         ]
       }
     }
@@ -274,8 +343,27 @@ export default {
   created() {
     this.getList()
     this.getRegionTree()
+    this.loadMapProvider()
   },
   methods: {
+    /** 加载地图服务商配置 */
+    loadMapProvider() {
+      getConfigKey('sys.community.mapProvider').then(response => {
+        // response.msg 是 config_value
+        if (response.msg) {
+          this.mapProvider = response.msg === 'tencent' ? 'tencent' : 'amap'
+        }
+      }).catch(() => {
+        // 默认 amap
+        this.mapProvider = 'amap'
+      })
+    },
+    /** 地图选点回调，回填表单 */
+    handleMapSelect(data) {
+      this.form.address = data.address
+      this.form.longitude = data.longitude
+      this.form.latitude = data.latitude
+    },
     /** 获取行政区划树 */
     getRegionTree() {
       listRegion().then(response => {
@@ -328,6 +416,7 @@ export default {
         longitude: undefined,
         latitude: undefined,
         propertyCompany: undefined,
+        propertyPhone: undefined,
         status: "0",
         tags: undefined,
         tagsList: [],

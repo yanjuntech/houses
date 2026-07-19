@@ -100,11 +100,38 @@
         </el-row>
 
         <el-table v-loading="loading" :data="phonebookList" @selection-change="handleSelectionChange">
+          <el-table-column type="expand">
+            <template slot-scope="scope">
+              <el-descriptions :column="3" border size="medium" style="padding: 10px;">
+                <el-descriptions-item label="商家名称">{{ scope.row.merchantName || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="负责人">{{ scope.row.ownerName || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="商家分类">{{ scope.row.category || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="联系电话1">{{ scope.row.phone1 || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="联系电话2">{{ scope.row.phone2 || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="状态">
+                  <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'">{{ scope.row.status === '0' ? '启用' : '停用' }}</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="地址" :span="3">{{ scope.row.address || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="营业执照" :span="3">
+                  <el-link v-if="scope.row.businessLicense" :href="scope.row.businessLicense" target="_blank" type="primary">查看营业执照</el-link>
+                  <span v-else>-</span>
+                </el-descriptions-item>
+                <el-descriptions-item label="有效期至">{{ scope.row.validUntil ? parseTime(scope.row.validUntil, '{y}-{m}-{d}') : '-' }}</el-descriptions-item>
+                <el-descriptions-item label="创建人">{{ scope.row.createBy || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="创建时间">{{ parseTime(scope.row.createTime) || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="备注" :span="3">{{ scope.row.remark || '-' }}</el-descriptions-item>
+              </el-descriptions>
+            </template>
+          </el-table-column>
           <el-table-column type="selection" width="55" align="center" />
           <el-table-column label="编号" align="center" prop="phonebookId" />
           <el-table-column label="商家名称" align="center" prop="merchantName" :show-overflow-tooltip="true" />
           <el-table-column label="负责人" align="center" prop="ownerName" />
-          <el-table-column label="电话" align="center" prop="phone" />
+          <el-table-column label="电话" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.phone1 || '' }}{{ scope.row.phone2 ? ' / ' + scope.row.phone2 : '' }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="分类" align="center" prop="category" />
           <el-table-column label="地址" align="center" prop="address" :show-overflow-tooltip="true" />
           <el-table-column label="状态" align="center" prop="status">
@@ -167,8 +194,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="电话" prop="phone">
-              <el-input v-model="form.phone" placeholder="请输入电话" />
+            <el-form-item label="联系电话1" prop="phone1">
+              <el-input v-model="form.phone1" placeholder="11位手机号或座机" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="联系电话2" prop="phone2">
+              <el-input v-model="form.phone2" placeholder="选填，11位手机号或座机" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -280,8 +312,12 @@ export default {
         ownerName: [
           { required: true, message: "负责人不能为空", trigger: "blur" }
         ],
-        phone: [
-          { required: true, message: "电话不能为空", trigger: "blur" }
+        phone1: [
+          { required: true, message: "联系电话1不能为空", trigger: "blur" },
+          { pattern: /(^1[3-9]\d{9}$)|(^0\d{2,3}-?\d{7,8}$)/, message: "电话格式不正确（11位手机号或区号-号码）", trigger: "blur" }
+        ],
+        phone2: [
+          { required: false, pattern: /(^1[3-9]\d{9}$)|(^0\d{2,3}-?\d{7,8}$)/, message: "电话格式不正确（11位手机号或区号-号码）", trigger: "blur" }
         ],
         category: [
           { required: true, message: "商家分类不能为空", trigger: "change" }
@@ -346,6 +382,8 @@ export default {
         merchantName: undefined,
         ownerName: undefined,
         phone: undefined,
+        phone1: undefined,
+        phone2: undefined,
         category: undefined,
         address: undefined,
         businessLicense: undefined,

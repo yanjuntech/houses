@@ -1,0 +1,62 @@
+-- ============================================
+-- 电话簿申请种子数据（50 条）
+-- 字段：merchant_name, owner_name, phone, category, address, business_license,
+--      applicant_id, applicant_name, applicant_phone, apply_status,
+--      approve_by, approve_time, approve_remark, create_by, create_time, update_by, update_time, remark
+-- apply_status 分布：0(待审批) 18条 / 1(已通过) 22条 / 2(已驳回) 10条
+-- ============================================
+DELETE FROM biz_phonebook_apply;
+
+INSERT INTO biz_phonebook_apply
+(merchant_name, owner_name, phone, category, address, business_license, applicant_id, applicant_name, applicant_phone, apply_status, approve_by, approve_time, approve_remark, create_by, create_time, update_by, update_time, remark)
+VALUES
+('老北京炸酱面馆',       '张三',  '13800138001', '餐饮美食', '北京市朝阳区建国路88号',     '91110105MA01ABCD12', 1,  '张伟',  '13800138001', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 50 DAY, 'admin', NOW() - INTERVAL 50 DAY, NULL),
+('阳光24小时便利店',     '李四',  '13800138002', '超市便利', '北京市朝阳区望京SOHO',       '91110105MA02BCDE23', 2,  '王芳',  '13800138002', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 49 DAY, 'admin', NOW() - INTERVAL 49 DAY, NULL),
+('顺丰快递服务点',       '王五',  '13800138003', '快递服务', '北京市海淀区中关村大街1号',  '91110108MA03CDEF34', 3,  '李强',  '13800138003', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 48 DAY, 'admin', NOW() - INTERVAL 48 DAY, NULL),
+('美佳家政服务中心',     '赵六',  '13800138004', '家政服务', '北京市西城区西直门内大街',  '91110102MA04DEFG45', 4,  '刘洋',  '13800138004', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 47 DAY, 'admin', NOW() - INTERVAL 47 DAY, NULL),
+('周师傅水电维修部',     '周七',  '13800138005', '维修服务', '北京市东城区东直门外大街',  '91110101MA05EFGH56', 5,  '陈静',  '13800138005', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 46 DAY, 'admin', NOW() - INTERVAL 46 DAY, NULL),
+('康宁大药房',           '孙八',  '13800138006', '医疗健康', '北京市丰台区南三环西路',    '91110106MA06FGHI67', 6,  '杨明',  '13800138006', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 45 DAY, 'admin', NOW() - INTERVAL 45 DAY, NULL),
+('星火教育培训中心',     '吴九',  '13800138007', '教育培训', '北京市石景山区八角西街',    '91110107MA07GHIJ78', 7,  '赵丽',  '13800138007', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 44 DAY, 'admin', NOW() - INTERVAL 44 DAY, NULL),
+('雅美容美发沙龙',       '郑十',  '13800138008', '美容美发', '北京市通州区新华大街',      '91110112MA08HIJK89', 8,  '孙涛',  '13800138008', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 43 DAY, 'admin', NOW() - INTERVAL 43 DAY, NULL),
+('力健身工作室',         '钱多',  '13800138009', '健身运动', '北京市昌平区回龙观西大街',  '91110114MA09IJKL90', 9,  '周倩',  '13800138009', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 42 DAY, 'admin', NOW() - INTERVAL 42 DAY, NULL),
+('速达汽车维修中心',     '钱少',  '13800138010', '汽车服务', '北京市大兴区黄村镇',        '91110115MA10JKLM01', 10, '吴磊',  '13800138010', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 41 DAY, 'admin', NOW() - INTERVAL 41 DAY, NULL),
+('巴蜀火锅店',           '冯亮',  '13800138011', '餐饮美食', '北京市顺义区府前街',        '91110113MA11KLMN12', 1,  '郑华',  '13800138011', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 40 DAY, 'admin', NOW() - INTERVAL 40 DAY, NULL),
+('麦当劳快餐店',         '冯丽',  '13800138012', '餐饮美食', '北京市房山区拱辰大街',      '91110111MA12LMNO23', 2,  '冯丽',  '13800138012', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 39 DAY, 'admin', NOW() - INTERVAL 39 DAY, NULL),
+('星巴克咖啡',           '陈勇',  '13800138013', '餐饮美食', '北京市门头沟区新桥大街',    '91110109MA13MNOP34', 3,  '陈勇',  '13800138013', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 38 DAY, 'admin', NOW() - INTERVAL 38 DAY, NULL),
+('蜜雪冰城',             '褚红',  '13800138014', '餐饮美食', '北京市怀柔区青春路',        '91110116MA14NOPQ45', 4,  '褚红',  '13800138014', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 37 DAY, 'admin', NOW() - INTERVAL 37 DAY, NULL),
+('永琪美容美发',         '卫国',  '13800138015', '美容美发', '北京市平谷区府前西街',      '91110117MA15OPQR56', 5,  '卫国',  '13800138015', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 36 DAY, 'admin', NOW() - INTERVAL 36 DAY, NULL),
+('京东快递点',           '蒋文',  '13800138016', '快递服务', '北京市密云区鼓楼东大街',    '91110118MA16PQRS67', 6,  '蒋文',  '13800138016', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 35 DAY, 'admin', NOW() - INTERVAL 35 DAY, NULL),
+('圆通速递',             '沈祥',  '13800138017', '快递服务', '北京市延庆区延庆镇',        '91110119MA17QRST78', 7,  '沈祥',  '13800138017', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 34 DAY, 'admin', NOW() - INTERVAL 34 DAY, NULL),
+('中通快递',             '韩雪',  '13800138018', '快递服务', '北京市朝阳区三里屯',        '91110105MA18RSTU89', 8,  '韩雪',  '13800138018', '0', NULL, NULL, NULL, 'admin', NOW() - INTERVAL 33 DAY, 'admin', NOW() - INTERVAL 33 DAY, NULL),
+('韵达快递',             '杨森',  '13800138019', '快递服务', '北京市海淀区五道口',        '91110108MA19STUV90', 9,  '杨森',  '13800138019', '1', 'admin', NOW() - INTERVAL 30 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 32 DAY, 'admin', NOW() - INTERVAL 30 DAY, NULL),
+('申通快递',             '朱琳',  '13800138020', '快递服务', '北京市西城区西单',          '91110102MA20TUVW01', 10, '朱琳',  '13800138020', '1', 'admin', NOW() - INTERVAL 30 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 31 DAY, 'admin', NOW() - INTERVAL 30 DAY, NULL),
+('天天五金店',           '秦勇',  '13800138021', '建材五金', '北京市东城区王府井',        '91110101MA21UVWX12', 1,  '秦勇',  '13800138021', '1', 'admin', NOW() - INTERVAL 29 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 30 DAY, 'admin', NOW() - INTERVAL 29 DAY, NULL),
+('装修装饰公司',         '尤佳',  '13800138022', '装修服务', '北京市丰台区方庄',          '91110106MA22VWXY23', 2,  '尤佳',  '13800138022', '1', 'admin', NOW() - INTERVAL 28 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 29 DAY, 'admin', NOW() - INTERVAL 28 DAY, NULL),
+('开锁换锁服务',         '许涛',  '13800138023', '便民服务', '北京市石景山区鲁谷',        '91110107MA23WXYZ34', 3,  '许涛',  '13800138023', '1', 'admin', NOW() - INTERVAL 27 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 28 DAY, 'admin', NOW() - INTERVAL 27 DAY, NULL),
+('管道疏通',             '何丽',  '13800138024', '便民服务', '北京市通州区梨园',          '91110112MA24XYZA45', 4,  '何丽',  '13800138024', '1', 'admin', NOW() - INTERVAL 26 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 27 DAY, 'admin', NOW() - INTERVAL 26 DAY, NULL),
+('空调安装维修',         '吕军',  '13800138025', '维修服务', '北京市昌平区天通苑',        '91110114MA25YZAB56', 5,  '吕军',  '13800138025', '1', 'admin', NOW() - INTERVAL 25 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 26 DAY, 'admin', NOW() - INTERVAL 25 DAY, NULL),
+('洗衣店',               '施红',  '13800138026', '便民服务', '北京市大兴区亦庄',          '91110115MA26ZABC67', 6,  '施红',  '13800138026', '1', 'admin', NOW() - INTERVAL 24 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 25 DAY, 'admin', NOW() - INTERVAL 24 DAY, NULL),
+('干洗店',               '张明',  '13800138027', '便民服务', '北京市顺义区后沙峪',        '91110113MA27ABCD78', 7,  '张明',  '13800138027', '1', 'admin', NOW() - INTERVAL 23 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 24 DAY, 'admin', NOW() - INTERVAL 23 DAY, NULL),
+('水果超市',             '孔华',  '13800138028', '超市便利', '北京市房山区良乡',          '91110111MA28BCDE89', 8,  '孔华',  '13800138028', '1', 'admin', NOW() - INTERVAL 22 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 23 DAY, 'admin', NOW() - INTERVAL 22 DAY, NULL),
+('蔬菜批发',             '曹亮',  '13800138029', '超市便利', '北京市门头沟区大峪',        '91110109MA29CDEF90', 9,  '曹亮',  '13800138029', '1', 'admin', NOW() - INTERVAL 21 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 22 DAY, 'admin', NOW() - INTERVAL 21 DAY, NULL),
+('海鲜市场',             '严静',  '13800138030', '超市便利', '北京市怀柔区龙山',          '91110116MA30DEFG01', 10, '严静',  '13800138030', '1', 'admin', NOW() - INTERVAL 20 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 21 DAY, 'admin', NOW() - INTERVAL 20 DAY, NULL),
+('宠物医院',             '华军',  '13800138031', '宠物服务', '北京市平谷区滨河',          '91110117MA31EFGH12', 1,  '华军',  '13800138031', '1', 'admin', NOW() - INTERVAL 19 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 20 DAY, 'admin', NOW() - INTERVAL 19 DAY, NULL),
+('宠物美容店',           '金雪',  '13800138032', '宠物服务', '北京市密云区果园',          '91110118MA32FGHI23', 2,  '金雪',  '13800138032', '1', 'admin', NOW() - INTERVAL 18 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 19 DAY, 'admin', NOW() - INTERVAL 18 DAY, NULL),
+('母婴用品店',           '魏涛',  '13800138033', '母婴用品', '北京市延庆区延庆',          '91110119MA33GHIJ34', 3,  '魏涛',  '13800138033', '1', 'admin', NOW() - INTERVAL 17 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 18 DAY, 'admin', NOW() - INTERVAL 17 DAY, NULL),
+('儿童玩具店',           '陶丽',  '13800138034', '母婴用品', '北京市朝阳区国贸',          '91110105MA34HIJK45', 4,  '陶丽',  '13800138034', '1', 'admin', NOW() - INTERVAL 16 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 17 DAY, 'admin', NOW() - INTERVAL 16 DAY, NULL),
+('文具书店',             '姜伟',  '13800138035', '教育培训', '北京市海淀区学院路',        '91110108MA35IJKL56', 5,  '姜伟',  '13800138035', '1', 'admin', NOW() - INTERVAL 15 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 16 DAY, 'admin', NOW() - INTERVAL 15 DAY, NULL),
+('眼镜店',               '戚华',  '13800138036', '医疗健康', '北京市西城区金融街',        '91110102MA36JKLM67', 6,  '戚华',  '13800138036', '1', 'admin', NOW() - INTERVAL 14 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 15 DAY, 'admin', NOW() - INTERVAL 14 DAY, NULL),
+('牙科诊所',             '谢亮',  '13800138037', '医疗健康', '北京市东城区东四十条',      '91110101MA37KLMN78', 7,  '谢亮',  '13800138037', '1', 'admin', NOW() - INTERVAL 13 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 14 DAY, 'admin', NOW() - INTERVAL 13 DAY, NULL),
+('中医馆',               '邹静',  '13800138038', '医疗健康', '北京市丰台区刘家窑',        '91110106MA38LMNO89', 8,  '邹静',  '13800138038', '1', 'admin', NOW() - INTERVAL 12 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 13 DAY, 'admin', NOW() - INTERVAL 12 DAY, NULL),
+('律师事务所',           '喻军',  '13800138039', '法律服务', '北京市石景山区万达广场',    '91110107MA39MNOP90', 9,  '喻军',  '13800138039', '1', 'admin', NOW() - INTERVAL 11 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 12 DAY, 'admin', NOW() - INTERVAL 11 DAY, NULL),
+('房屋中介',             '柏雪',  '13800138040', '房产服务', '北京市通州区北苑',          '91110112MA40NOPQ01', 10, '柏雪',  '13800138040', '1', 'admin', NOW() - INTERVAL 10 DAY, '资料齐全，审核通过', 'admin', NOW() - INTERVAL 11 DAY, 'admin', NOW() - INTERVAL 10 DAY, NULL),
+('婚纱摄影',             '窦涛',  '13800138041', '摄影服务', '北京市昌平区沙河',          '91110114MA41OPQR12', 1,  '窦涛',  '13800138041', '2', 'admin', NOW() - INTERVAL 9 DAY,  '营业执照过期，请重新提交', 'admin', NOW() - INTERVAL 11 DAY, 'admin', NOW() - INTERVAL 9 DAY,  '资料不符合要求'),
+('打印复印店',           '章丽',  '13800138042', '便民服务', '北京市大兴区黄村',          '91110115MA42PQRS23', 2,  '章丽',  '13800138042', '2', 'admin', NOW() - INTERVAL 9 DAY,  '经营范围不明确，请补充说明', 'admin', NOW() - INTERVAL 10 DAY, 'admin', NOW() - INTERVAL 9 DAY,  NULL),
+('电脑维修',             '云军',  '13800138043', '维修服务', '北京市顺义区胜利',          '91110113MA43QRST34', 3,  '云军',  '13800138043', '2', 'admin', NOW() - INTERVAL 8 DAY,  '资质证书缺失', 'admin', NOW() - INTERVAL 10 DAY, 'admin', NOW() - INTERVAL 8 DAY,  NULL),
+('手机维修',             '苏雪',  '13800138044', '维修服务', '北京市房山长阳',            '91110111MA44RSTU45', 4,  '苏雪',  '13800138044', '2', 'admin', NOW() - INTERVAL 8 DAY,  '材料不全，请补充', 'admin', NOW() - INTERVAL 9 DAY, 'admin', NOW() - INTERVAL 8 DAY,  NULL),
+('数码产品店',           '潘涛',  '13800138045', '数码电子', '北京市门头沟城子',          '91110109MA45STUV56', 5,  '潘涛',  '13800138045', '2', 'admin', NOW() - INTERVAL 7 DAY,  '地址信息有误', 'admin', NOW() - INTERVAL 9 DAY, 'admin', NOW() - INTERVAL 7 DAY,  NULL),
+('茶馆',                 '葛丽',  '13800138046', '休闲娱乐', '北京市怀柔雁栖',            '91110116MA46TUVW67', 6,  '葛丽',  '13800138046', '2', 'admin', NOW() - INTERVAL 7 DAY,  '联系电话无法接通', 'admin', NOW() - INTERVAL 8 DAY, 'admin', NOW() - INTERVAL 7 DAY,  NULL),
+('棋牌室',               '奚军',  '13800138047', '休闲娱乐', '北京市平谷兴谷',            '91110117MA47UVWX78', 7,  '奚军',  '13800138047', '2', 'admin', NOW() - INTERVAL 6 DAY,  '消防资质缺失', 'admin', NOW() - INTERVAL 8 DAY, 'admin', NOW() - INTERVAL 6 DAY,  NULL),
+('KTV娱乐',              '范雪',  '13800138048', '休闲娱乐', '北京市密云鼓楼',            '91110118MA48VWXY89', 8,  '范雪',  '13800138048', '2', 'admin', NOW() - INTERVAL 6 DAY,  '娱乐经营许可证缺失', 'admin', NOW() - INTERVAL 7 DAY, 'admin', NOW() - INTERVAL 6 DAY,  NULL),
+('酒吧',                 '彭涛',  '13800138049', '休闲娱乐', '北京市延庆延庆',            '91110119MA49WXYZ90', 9,  '彭涛',  '13800138049', '2', 'admin', NOW() - INTERVAL 5 DAY,  '酒类经营许可证缺失', 'admin', NOW() - INTERVAL 7 DAY, 'admin', NOW() - INTERVAL 5 DAY,  NULL),
+('兽医诊所',             '鲁丽',  '13800138050', '宠物服务', '北京市朝阳三里屯',          '91110105MA50XYZA01', 10, '鲁丽',  '13800138050', '2', 'admin', NOW() - INTERVAL 5 DAY,  '执业兽医证书缺失', 'admin', NOW() - INTERVAL 6 DAY, 'admin', NOW() - INTERVAL 5 DAY,  NULL);

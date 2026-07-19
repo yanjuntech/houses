@@ -87,6 +87,38 @@
 
     <el-table v-loading="loading" :data="contractList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="expand">
+        <template slot-scope="scope">
+          <el-descriptions :column="3" border size="medium" style="padding: 10px;">
+            <el-descriptions-item label="合同编号">{{ scope.row.contractNo || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="合同标题" :span="2">{{ scope.row.contractTitle || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="房源标题">{{ scope.row.houseTitle || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="所属小区">{{ scope.row.communityName || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="合同状态">
+              <dict-tag :options="dict.type.biz_contract_status" :value="scope.row.status"/>
+            </el-descriptions-item>
+            <el-descriptions-item label="出租方姓名">{{ scope.row.landlordName || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="出租方电话">{{ scope.row.landlordPhone || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="承租方姓名">{{ scope.row.tenantName || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="承租方电话">{{ scope.row.tenantPhone || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="月租金">{{ scope.row.monthlyRent }} 元</el-descriptions-item>
+            <el-descriptions-item label="押金">{{ scope.row.deposit || 0 }} 元</el-descriptions-item>
+            <el-descriptions-item label="租期">{{ scope.row.rentPeriod || '-' }} 个月</el-descriptions-item>
+            <el-descriptions-item label="支付周期">{{ scope.row.payCycle || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="合同开始日期">{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</el-descriptions-item>
+            <el-descriptions-item label="合同结束日期">{{ parseTime(scope.row.endDate, '{y}-{m}-{d}') }}</el-descriptions-item>
+            <el-descriptions-item label="签订时间" :span="2">{{ parseTime(scope.row.signTime) || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="PDF路径" :span="3">
+              <el-link v-if="scope.row.pdfPath" :href="scope.row.pdfPath" target="_blank" type="primary">下载合同PDF</el-link>
+              <span v-else>-</span>
+            </el-descriptions-item>
+            <el-descriptions-item label="备注" :span="3">{{ scope.row.remark || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="创建人">{{ scope.row.createBy || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="创建时间">{{ parseTime(scope.row.createTime) || '-' }}</el-descriptions-item>
+            <el-descriptions-item label="更新人">{{ scope.row.updateBy || '-' }}</el-descriptions-item>
+          </el-descriptions>
+        </template>
+      </el-table-column>
       <el-table-column label="合同编号ID" align="center" prop="contractId" />
       <el-table-column label="合同编号" align="center" prop="contractNo" :show-overflow-tooltip="true" />
       <el-table-column label="合同标题" align="center" prop="contractTitle" :show-overflow-tooltip="true" />
