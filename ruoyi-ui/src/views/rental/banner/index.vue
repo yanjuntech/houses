@@ -41,12 +41,12 @@
 
     <el-table v-loading="loading" :data="bannerList">
       <el-table-column label="轮播图ID" align="center" prop="bannerId" width="80" />
-      <el-table-column label="图片" align="center" prop="imageUrl" width="100">
+      <el-table-column label="图片" align="center" prop="image" width="100">
         <template slot-scope="scope">
           <el-image
-            v-if="scope.row.imageUrl"
-            :src="getImageUrl(scope.row.imageUrl)"
-            :preview-src-list="[getImageUrl(scope.row.imageUrl)]"
+            v-if="scope.row.image"
+            :src="getImageUrl(scope.row.image)"
+            :preview-src-list="[getImageUrl(scope.row.image)]"
             fit="cover"
             style="width: 60px; height: 40px; border-radius: 4px;"
           />
@@ -55,17 +55,17 @@
       </el-table-column>
       <el-table-column label="标题" align="center" prop="title" :show-overflow-tooltip="true" />
       <el-table-column label="联系电话" align="center" prop="contactPhone" width="120" />
-      <el-table-column label="有效期开始" align="center" prop="validStartTime" width="160">
+      <el-table-column label="有效期开始" align="center" prop="validStart" width="160">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.validStartTime) }}</span>
+          <span>{{ parseTime(scope.row.validStart) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="有效期结束" align="center" prop="validEndTime" width="160">
+      <el-table-column label="有效期结束" align="center" prop="validEnd" width="160">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.validEndTime) }}</span>
+          <span>{{ parseTime(scope.row.validEnd) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="显示顺序" align="center" prop="sortOrder" width="80" />
+      <el-table-column label="显示顺序" align="center" prop="sort" width="80" />
       <el-table-column label="状态" align="center" prop="status" width="80">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
@@ -108,8 +108,8 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="24">
-            <el-form-item label="图片" prop="imageUrl">
-              <image-upload v-model="form.imageUrl" :limit="1" :drag="false" />
+            <el-form-item label="图片" prop="image">
+              <image-upload v-model="form.image" :limit="1" :drag="false" />
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -123,9 +123,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="有效期开始" prop="validStartTime">
+            <el-form-item label="有效期开始" prop="validStart">
               <el-date-picker
-                v-model="form.validStartTime"
+                v-model="form.validStart"
                 type="datetime"
                 placeholder="选择开始时间"
                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -134,9 +134,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="有效期结束" prop="validEndTime">
+            <el-form-item label="有效期结束" prop="validEnd">
               <el-date-picker
-                v-model="form.validEndTime"
+                v-model="form.validEnd"
                 type="datetime"
                 placeholder="选择结束时间"
                 value-format="yyyy-MM-dd HH:mm:ss"
@@ -150,8 +150,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="显示顺序" prop="sortOrder">
-              <el-input-number v-model="form.sortOrder" controls-position="right" :min="0" style="width: 100%" />
+            <el-form-item label="显示顺序" prop="sort">
+              <el-input-number v-model="form.sort" controls-position="right" :min="0" style="width: 100%" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -206,13 +206,13 @@ export default {
         title: [
           { required: true, message: "标题不能为空", trigger: "blur" }
         ],
-        imageUrl: [
+        image: [
           { required: true, message: "请上传图片", trigger: "change" }
         ],
-        validStartTime: [
+        validStart: [
           { required: true, message: "有效期开始时间不能为空", trigger: "change" }
         ],
-        validEndTime: [
+        validEnd: [
           { required: true, message: "有效期结束时间不能为空", trigger: "change" }
         ]
       }
@@ -242,13 +242,13 @@ export default {
     reset() {
       this.form = {
         bannerId: undefined,
-        imageUrl: undefined,
+        image: undefined,
         title: undefined,
         content: undefined,
-        validStartTime: undefined,
-        validEndTime: undefined,
+        validStart: undefined,
+        validEnd: undefined,
         contactPhone: undefined,
-        sortOrder: 0,
+        sort: 0,
         status: "0",
         remark: undefined
       }
