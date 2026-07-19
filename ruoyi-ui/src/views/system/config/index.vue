@@ -156,15 +156,38 @@
         <el-form-item label="参数键名" prop="configKey">
           <el-input v-model="form.configKey" placeholder="请输入参数键名" />
         </el-form-item>
+        <el-form-item label="参数值类型" prop="configValueType">
+          <el-select v-model="form.configValueType" placeholder="请选择参数值类型" style="width: 100%" @change="handleConfigValueTypeChange">
+            <el-option label="数字类型" value="N" />
+            <el-option label="字符串类型" value="S" />
+            <el-option label="文本类型" value="T" />
+            <el-option label="下拉类型" value="D" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="参数键值" prop="configValue">
+          <el-input-number
+            v-if="form.configValueType === 'N'"
+            v-model="form.configValue"
+            controls-position="right"
+            :min="0"
+            style="width: 100%"
+            placeholder="请输入数字"
+          />
+          <el-input
+            v-else-if="form.configValueType === 'T'"
+            v-model="form.configValue"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入文本"
+          />
           <el-select
-            v-if="optionsForSelect.length > 0"
+            v-else-if="form.configValueType === 'D'"
             v-model="form.configValue"
             placeholder="请选择参数键值"
             style="width: 100%"
           >
             <el-option
-              v-for="item in optionsForSelect"
+              v-for="item in parsedConfigOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -173,43 +196,18 @@
           <el-input
             v-else
             v-model="form.configValue"
-            type="textarea"
             placeholder="请输入参数键值"
           />
         </el-form-item>
         <el-form-item label="参数键选项">
-          <div class="config-options-wrapper">
-            <div
-              v-for="(item, index) in form.configOptionsList"
-              :key="index"
-              class="config-option-row"
-            >
-              <el-input
-                v-model="item.label"
-                placeholder="参数名"
-                size="small"
-                style="width: 40%; margin-right: 10px;"
-              />
-              <el-input
-                v-model="item.value"
-                placeholder="参数值"
-                size="small"
-                style="width: 40%; margin-right: 10px;"
-              />
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                size="small"
-                @click="removeConfigOption(index)"
-              />
-            </div>
-            <el-button
-              type="primary"
-              icon="el-icon-plus"
-              size="small"
-              @click="addConfigOption"
-              style="margin-top: 10px;"
-            >添加选项</el-button>
+          <el-input
+            v-model="form.configOptions"
+            type="textarea"
+            :rows="3"
+            placeholder="格式：参数名&参数值#参数名&参数值#参数名&参数值（示例：蓝色&skin-blue#绿色&skin-green#紫色&skin-purple）"
+          />
+          <div style="font-size: 12px; color: #999; margin-top: 5px;">
+            格式说明：每行选项用 # 分隔，参数名与参数值用 & 分隔。仅"下拉类型"时生效。
           </div>
         </el-form-item>
         <el-form-item label="系统内置" prop="configType">
@@ -282,20 +280,21 @@ export default {
         configValue: [
           { required: true, message: "参数键值不能为空", trigger: "blur" }
         ]
-      },
-      // 选项列表用于参数值下拉
-      optionsForSelect: []
+      }
     }
   },
   created() {
     this.getList()
   },
-  watch: {
-    'form.configOptionsList': {
-      handler() {
-        this.updateOptionsForSelect()
-      },
-      deep: true
+  computed: {
+    parsedConfigOptions() {
+      if (!this.form.configOptions) return []
+      return this.form.configOptions.split('#')
+        .filter(item => item && item.includes('&'))
+        .map(item => {
+          const [label, value] = item.split('&', 2)
+          return { label: label.trim(), value: value.trim() }
+        })
     }
   },
   methods: {
@@ -322,11 +321,10 @@ export default {
         configKey: undefined,
         configValue: undefined,
         configType: "Y",
+        configValueType: 'S',
         remark: undefined,
-        configOptions: '',
-        configOptionsList: []
+        configOptions: ''
       }
-      this.optionsForSelect = []
       this.resetForm("form")
     },
     /** 搜索按钮操作 */
@@ -359,8 +357,7 @@ export default {
       getConfig(configId).then(response => {
         this.form = response.data
         this.form.configOptions = response.data.configOptions || ''
-        this.form.configOptionsList = this.parseConfigOptions(this.form.configOptions)
-        this.optionsForSelect = [...this.form.configOptionsList]
+        if (!this.form.configValueType) this.form.configValueType = 'S'
         this.open = true
         this.title = "修改参数"
       })
@@ -369,7 +366,6 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.form.configOptions = this.formatConfigOptions(this.form.configOptionsList)
           if (this.form.configId != undefined) {
             updateConfig(this.form).then(() => {
               this.$modal.msgSuccess("修改成功")
@@ -408,49 +404,10 @@ export default {
         this.$modal.msgSuccess("刷新成功")
       })
     },
-    /** 解析参数键选项字符串 */
-    parseConfigOptions(optionsStr) {
-      if (!optionsStr) {
-        return []
-      }
-      const list = []
-      const pairs = optionsStr.split('#')
-      for (const pair of pairs) {
-        if (pair) {
-          const [label, value] = pair.split('&')
-          list.push({
-            label: label || '',
-            value: value || ''
-          })
-        }
-      }
-      return list
-    },
-    /** 格式化参数键选项数组为字符串 */
-    formatConfigOptions(list) {
-      if (!list || list.length === 0) {
-        return ''
-      }
-      return list
-        .filter(item => item.label || item.value)
-        .map(item => `${item.label}&${item.value}`)
-        .join('#')
-    },
-    /** 添加一行选项 */
-    addConfigOption() {
-      this.form.configOptionsList.push({
-        label: '',
-        value: ''
-      })
-    },
-    /** 删除一行选项 */
-    removeConfigOption(index) {
-      this.form.configOptionsList.splice(index, 1)
-      this.updateOptionsForSelect()
-    },
-    /** 更新下拉选项 */
-    updateOptionsForSelect() {
-      this.optionsForSelect = this.form.configOptionsList.filter(item => item.label && item.value)
+    /** 参数值类型切换 */
+    handleConfigValueTypeChange(val) {
+      // 切换类型时清空参数键值
+      this.form.configValue = undefined
     }
   }
 }

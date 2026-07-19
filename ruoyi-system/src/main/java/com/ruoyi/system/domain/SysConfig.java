@@ -37,6 +37,10 @@ public class SysConfig extends BaseEntity
     @Excel(name = "参数键选项配置")
     private String configOptions;
 
+    /** 参数值类型（N数字类型 S字符串类型 T文本类型 D下拉类型） */
+    @Excel(name = "参数值类型", readConverterExp = "N=数字类型,S=字符串类型,T=文本类型,D=下拉类型")
+    private String configValueType;
+
     /** 系统内置（Y是 N否） */
     @Excel(name = "系统内置", readConverterExp = "Y=是,N=否")
     private String configType;
@@ -98,6 +102,16 @@ public class SysConfig extends BaseEntity
         this.configOptions = configOptions;
     }
 
+    public String getConfigValueType()
+    {
+        return configValueType;
+    }
+
+    public void setConfigValueType(String configValueType)
+    {
+        this.configValueType = configValueType;
+    }
+
     public String getConfigType()
     {
         return configType;
@@ -116,6 +130,7 @@ public class SysConfig extends BaseEntity
             .append("configKey", getConfigKey())
             .append("configValue", getConfigValue())
             .append("configOptions", getConfigOptions())
+            .append("configValueType", getConfigValueType())
             .append("configType", getConfigType())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
