@@ -353,7 +353,7 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="房屋标签" prop="tags">
-              <el-select v-model="form.tagsList" multiple placeholder="请选择房屋标签" style="width: 100%">
+              <el-select v-model="form.tagsList" multiple placeholder="请选择房屋标签" style="width: 100%" :popper-append-to-body="false">
                 <el-option
                   v-for="dict in dict.type.biz_house_tag"
                   :key="dict.value"

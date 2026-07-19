@@ -55,6 +55,8 @@
       row-key="regionId"
       :default-expand-all="isExpandAll"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      :lazy="!isSearchMode"
+      :load="loadRegionChildren"
     >
       <el-table-column prop="regionName" label="区划名称" width="260"></el-table-column>
       <el-table-column prop="regionCode" label="区划编码" width="120"></el-table-column>
@@ -187,7 +189,7 @@
 </template>
 
 <script>
-import { listRegion, getRegion, delRegion, addRegion, updateRegion, changeRegisterSwitch } from "@/api/system/region"
+import { listRegion, getRegion, delRegion, addRegion, updateRegion, changeRegisterSwitch, listRegionByParentId } from "@/api/system/region"
 import Treeselect from "@riophae/vue-treeselect"
 import "@riophae/vue-treeselect/dist/vue-treeselect.css"
 
@@ -203,8 +205,9 @@ export default {
       regionOptions: [],
       title: "",
       open: false,
-      isExpandAll: true,
+      isExpandAll: false,
       refreshTable: true,
+      isSearchMode: false,
       queryParams: {
         regionName: undefined,
         status: undefined
@@ -240,9 +243,40 @@ export default {
   methods: {
     getList() {
       this.loading = true
-      listRegion(this.queryParams).then(response => {
-        this.regionList = this.handleTree(response.data, "regionId")
-        this.loading = false
+      this.isSearchMode = !!(this.queryParams.regionName || this.queryParams.status)
+      if (this.isSearchMode) {
+        listRegion(this.queryParams).then(response => {
+          this.regionList = this.handleTree(response.data, "regionId")
+          this.setHasChildren(this.regionList)
+          this.loading = false
+        })
+      } else {
+        listRegionByParentId(0).then(response => {
+          this.regionList = response.data.map(item => ({
+            ...item,
+            hasChildren: item.regionLevel < 3
+          }))
+          this.loading = false
+        })
+      }
+    },
+    setHasChildren(list) {
+      list.forEach(item => {
+        if (item.children && item.children.length > 0) {
+          item.hasChildren = true
+          this.setHasChildren(item.children)
+        } else {
+          item.hasChildren = item.regionLevel < 3
+        }
+      })
+    },
+    loadRegionChildren(row, treeNode, resolve) {
+      listRegionByParentId(row.regionId).then(response => {
+        const children = response.data.map(item => ({
+          ...item,
+          hasChildren: item.regionLevel < 3
+        }))
+        resolve(children)
       })
     },
     normalizer(node) {
@@ -296,11 +330,31 @@ export default {
       })
     },
     toggleExpandAll() {
-      this.refreshTable = false
-      this.isExpandAll = !this.isExpandAll
-      this.$nextTick(() => {
-        this.refreshTable = true
-      })
+      if (this.isSearchMode) {
+        this.refreshTable = false
+        this.isExpandAll = !this.isExpandAll
+        this.$nextTick(() => {
+          this.refreshTable = true
+        })
+      } else {
+        if (this.isExpandAll) {
+          this.isExpandAll = false
+          this.getList()
+        } else {
+          this.loading = true
+          listRegion().then(response => {
+            this.regionList = this.handleTree(response.data, "regionId")
+            this.setHasChildren(this.regionList)
+            this.isExpandAll = true
+            this.isSearchMode = true
+            this.refreshTable = false
+            this.$nextTick(() => {
+              this.refreshTable = true
+              this.loading = false
+            })
+          })
+        }
+      }
     },
     handleUpdate(row) {
       this.reset()

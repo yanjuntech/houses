@@ -297,6 +297,13 @@
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-document"
+            @click="handlePushRecord(scope.row)"
+            v-hasPermi="['miniapp:message:list']"
+          >推送记录</el-button>
+          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['miniapp:user:remove']"
@@ -326,7 +333,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="用户标签" prop="tags">
-          <el-select v-model="form.tagsList" multiple placeholder="请选择用户标签" style="width: 100%">
+          <el-select v-model="form.tagsList" multiple placeholder="请选择用户标签" style="width: 100%" :popper-append-to-body="false">
             <el-option
               v-for="dict in dict.type.biz_user_tag"
               :key="dict.value"
@@ -434,12 +441,75 @@
         <el-button @click="cancelPushMessage">取 消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 推送记录对话框 -->
+    <el-dialog title="推送记录" :visible.sync="pushRecordOpen" width="900px" append-to-body>
+      <div class="push-record-header">
+        <span>用户：<b>{{ pushRecordUser }}</b></span>
+      </div>
+      <el-table v-loading="pushRecordLoading" :data="pushRecordList" border>
+        <el-table-column label="序号" type="index" width="60" align="center" />
+        <el-table-column label="消息标题" align="center" prop="title" min-width="150">
+          <template slot-scope="scope">
+            <div class="msg-title-wrapper">
+              <span v-if="scope.row.isRead === '0'" class="unread-dot"></span>
+              <span :class="{ 'unread-text': scope.row.isRead === '0' }">{{ scope.row.title }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="消息内容" align="left" prop="content" min-width="250">
+          <template slot-scope="scope">
+            <div class="msg-content-wrapper">
+              <div v-if="!scope.row.expanded" class="msg-content-truncate">
+                {{ scope.row.content }}
+              </div>
+              <div v-else class="msg-content-full">
+                {{ scope.row.content }}
+              </div>
+              <el-button
+                v-if="scope.row.content && scope.row.content.length > 50"
+                type="text"
+                size="mini"
+                @click="toggleContentExpand(scope.row)"
+              >
+                {{ scope.row.expanded ? '收起' : '展开' }}
+              </el-button>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="发送时间" align="center" prop="sendTime" width="160">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.sendTime) || '-' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="已读状态" align="center" prop="isRead" width="90">
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.isRead === '1' ? 'success' : 'danger'" size="small">
+              {{ scope.row.isRead === '1' ? '已读' : '未读' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="阅读时间" align="center" prop="readTime" width="160">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.readTime) || '-' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="发送人" align="center" prop="sendBy" width="100" />
+      </el-table>
+      <pagination
+        v-show="pushRecordTotal > 0"
+        :total="pushRecordTotal"
+        :page.sync="pushRecordQuery.pageNum"
+        :limit.sync="pushRecordQuery.pageSize"
+        @pagination="getPushRecordList"
+      />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { listUser, getUser, delUser, addUser, updateUser, changeUserType, verifyUser, adjustPublishCount, extendPublishPeriod } from "@/api/miniapp/user"
-import { pushMessage } from "@/api/miniapp/message"
+import { pushMessage, listMessage } from "@/api/miniapp/message"
 
 export default {
   name: "MiniappUser",
@@ -520,6 +590,17 @@ export default {
         content: [
           { required: true, message: "消息内容不能为空", trigger: "blur" }
         ]
+      },
+      // 推送记录对话框
+      pushRecordOpen: false,
+      pushRecordUser: '',
+      pushRecordLoading: false,
+      pushRecordList: [],
+      pushRecordTotal: 0,
+      pushRecordQuery: {
+        pageNum: 1,
+        pageSize: 10,
+        userId: undefined
       }
     }
   },
@@ -752,6 +833,35 @@ export default {
           })
         }
       })
+    },
+    /** 推送记录按钮操作 */
+    handlePushRecord(row) {
+      this.pushRecordUser = row.nickname || row.phone
+      this.pushRecordQuery = {
+        pageNum: 1,
+        pageSize: 10,
+        userId: row.userId
+      }
+      this.pushRecordList = []
+      this.pushRecordTotal = 0
+      this.pushRecordOpen = true
+      this.getPushRecordList()
+    },
+    /** 查询推送记录列表 */
+    getPushRecordList() {
+      this.pushRecordLoading = true
+      listMessage(this.pushRecordQuery).then(response => {
+        this.pushRecordList = response.rows.map(item => ({
+          ...item,
+          expanded: false
+        }))
+        this.pushRecordTotal = response.total
+        this.pushRecordLoading = false
+      })
+    },
+    /** 切换消息内容展开/收起 */
+    toggleContentExpand(row) {
+      row.expanded = !row.expanded
     }
   }
 }
@@ -797,5 +907,55 @@ export default {
   background: #f5f7fa;
   color: #909399;
   font-size: 20px;
+}
+
+.push-record-header {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ebeef5;
+  font-size: 14px;
+  color: #606266;
+}
+
+.push-record-header b {
+  color: #303133;
+}
+
+.msg-title-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.unread-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #f56c6c;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.unread-text {
+  font-weight: bold;
+  color: #303133;
+}
+
+.msg-content-wrapper {
+  line-height: 1.5;
+}
+
+.msg-content-truncate {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #606266;
+}
+
+.msg-content-full {
+  color: #606266;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 </style>

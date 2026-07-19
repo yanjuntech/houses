@@ -97,7 +97,63 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange" @expand-change="handleExpandChange" row-key="roleId">
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <div class="expand-user-container" v-loading="expandLoadingMap[props.row.roleId]">
+            <div class="expand-user-header">
+              <span class="expand-user-title">
+                <i class="el-icon-user"></i> 角色用户列表
+                <span class="expand-user-count" v-if="expandUserMap[props.row.roleId]">
+                  （共 {{ expandUserMap[props.row.roleId].total }} 人）
+                </span>
+              </span>
+            </div>
+            <el-table :data="expandUserMap[props.row.roleId] ? expandUserMap[props.row.roleId].list : []" size="mini" border style="width: 100%">
+              <el-table-column label="头像" align="center" width="80">
+                <template slot-scope="scope">
+                  <el-image
+                    :src="getUserAvatar(scope.row)"
+                    :preview-src-list="[getUserAvatar(scope.row)]"
+                    class="user-avatar-img"
+                    fit="cover">
+                    <div slot="error" class="image-slot">
+                      <i class="el-icon-user-solid"></i>
+                    </div>
+                  </el-image>
+                </template>
+              </el-table-column>
+              <el-table-column label="用户名" prop="userName" :show-overflow-tooltip="true" />
+              <el-table-column label="昵称" prop="nickName" :show-overflow-tooltip="true" />
+              <el-table-column label="手机号" prop="phonenumber" width="120" />
+              <el-table-column label="用户类型" prop="userType" width="100" align="center">
+                <template slot-scope="scope">
+                  <el-tag v-if="scope.row.userType === '00'" size="mini" type="success">系统用户</el-tag>
+                  <el-tag v-else size="mini">{{ scope.row.userType || '-' }}</el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column label="状态" align="center" width="80">
+                <template slot-scope="scope">
+                  <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="expand-user-pagination" v-if="expandUserMap[props.row.roleId] && expandUserMap[props.row.roleId].total > 10">
+              <el-pagination
+                background
+                layout="prev, pager, next"
+                :total="expandUserMap[props.row.roleId].total"
+                :page-size="10"
+                :current-page.sync="expandUserMap[props.row.roleId].pageNum"
+                @current-change="handleExpandPageChange(props.row.roleId, $event)"
+              />
+            </div>
+            <div v-if="expandUserMap[props.row.roleId] && expandUserMap[props.row.roleId].total === 0" class="expand-user-empty">
+              <el-empty description="暂无用户" :image-size="80" />
+            </div>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="角色编号" prop="roleId" width="120" />
       <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
@@ -252,7 +308,7 @@
 </template>
 
 <script>
-import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus, deptTreeSelect } from "@/api/system/role"
+import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus, deptTreeSelect, allocatedUserList } from "@/api/system/role"
 import { treeselect as menuTreeselect, roleMenuTreeselect } from "@/api/system/menu"
 
 export default {
@@ -338,7 +394,11 @@ export default {
         roleSort: [
           { required: true, message: "角色顺序不能为空", trigger: "blur" }
         ]
-      }
+      },
+      // 展开行用户数据缓存
+      expandUserMap: {},
+      // 展开行加载状态
+      expandLoadingMap: {}
     }
   },
   created() {
@@ -599,7 +659,99 @@ export default {
       this.download('system/role/export', {
         ...this.queryParams
       }, `role_${new Date().getTime()}.xlsx`)
+    },
+    /** 展开行变化 */
+    handleExpandChange(row, expandedRows) {
+      const isExpand = expandedRows.some(item => item.roleId === row.roleId)
+      if (isExpand && !this.expandUserMap[row.roleId]) {
+        this.loadRoleUsers(row.roleId, 1)
+      }
+    },
+    /** 加载角色用户列表 */
+    loadRoleUsers(roleId, pageNum) {
+      this.$set(this.expandLoadingMap, roleId, true)
+      allocatedUserList({ roleId, pageNum, pageSize: 10 }).then(response => {
+        this.$set(this.expandUserMap, roleId, {
+          list: response.rows,
+          total: response.total,
+          pageNum: pageNum,
+          pageSize: 10
+        })
+        this.$set(this.expandLoadingMap, roleId, false)
+      }).catch(() => {
+        this.$set(this.expandLoadingMap, roleId, false)
+      })
+    },
+    /** 展开行分页变化 */
+    handleExpandPageChange(roleId, pageNum) {
+      this.loadRoleUsers(roleId, pageNum)
+    },
+    /** 获取用户头像 */
+    getUserAvatar(row) {
+      if (row.avatar) {
+        return process.env.VUE_APP_BASE_API + row.avatar
+      }
+      return require("@/assets/images/profile.jpg")
     }
   }
 }
 </script>
+
+<style scoped>
+.expand-user-container {
+  padding: 20px;
+  background-color: #fafbfc;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.expand-user-header {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.expand-user-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.expand-user-count {
+  font-size: 12px;
+  font-weight: normal;
+  color: #909399;
+}
+
+.user-avatar-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #ebeef5;
+}
+
+.image-slot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f5f7fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c0c4cc;
+  font-size: 18px;
+}
+
+.expand-user-pagination {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.expand-user-empty {
+  padding: 20px 0;
+}
+</style>

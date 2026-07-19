@@ -245,7 +245,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="小区标签" prop="tags">
-          <el-select v-model="form.tagsList" multiple placeholder="请选择小区标签" style="width: 100%">
+          <el-select v-model="form.tagsList" multiple placeholder="请选择小区标签" style="width: 100%" :popper-append-to-body="false">
             <el-option
               v-for="dict in dict.type.biz_community_tag"
               :key="dict.value"

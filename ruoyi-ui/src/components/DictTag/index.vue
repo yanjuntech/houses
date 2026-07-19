@@ -87,7 +87,73 @@ export default {
 }
 </script>
 <style scoped>
-.el-tag + .el-tag {
-  margin-left: 10px;
+div {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+::v-deep .el-tag {
+  border-radius: 12px;
+  padding: 0 14px;
+  height: 28px;
+  line-height: 26px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  background-color: #ecf5ff;
+  color: #409eff;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: 0 !important;
+}
+
+::v-deep .el-tag:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px) scale(1.03);
+  opacity: 0.92;
+}
+
+::v-deep .el-tag--primary {
+  background-color: #ecf5ff;
+  color: #409eff;
+}
+
+::v-deep .el-tag--success {
+  background-color: #f0f9eb;
+  color: #67c23a;
+}
+
+::v-deep .el-tag--info {
+  background-color: #f4f4f5;
+  color: #909399;
+}
+
+::v-deep .el-tag--warning {
+  background-color: #fdf6ec;
+  color: #e6a23c;
+}
+
+::v-deep .el-tag--danger {
+  background-color: #fef0f0;
+  color: #f56c6c;
+}
+
+span {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  background-color: #f5f7fa;
+  color: #606266;
+  line-height: 20px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+span:hover {
+  background-color: #e9edf2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px) scale(1.03);
 }
 </style>

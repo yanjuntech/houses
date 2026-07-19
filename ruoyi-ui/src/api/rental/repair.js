@@ -28,7 +28,7 @@ export function delRepair(repairId) {
 // 房东确认维修
 export function confirmByLandlord(repairId) {
   return request({
-    url: '/rental/repair/confirmByLandlord/' + repairId,
+    url: '/rental/repair/landlordConfirm/' + repairId,
     method: 'put'
   })
 }
@@ -36,7 +36,7 @@ export function confirmByLandlord(repairId) {
 // 房东选择租客自修
 export function chooseTenantSelfRepair(repairId) {
   return request({
-    url: '/rental/repair/chooseTenantSelfRepair/' + repairId,
+    url: '/rental/repair/landlordChooseTenantRepair/' + repairId,
     method: 'put'
   })
 }
@@ -52,7 +52,7 @@ export function cancelRepair(repairId) {
 // 完成维修
 export function completeRepair(repairId) {
   return request({
-    url: '/rental/repair/complete/' + repairId,
+    url: '/rental/repair/landlordComplete/' + repairId,
     method: 'put'
   })
 }
@@ -60,7 +60,7 @@ export function completeRepair(repairId) {
 // 租客确认完成
 export function confirmByTenant(repairId) {
   return request({
-    url: '/rental/repair/confirmByTenant/' + repairId,
+    url: '/rental/repair/tenantConfirm/' + repairId,
     method: 'put'
   })
 }
@@ -68,7 +68,7 @@ export function confirmByTenant(repairId) {
 // 上传凭证
 export function uploadVoucher(data) {
   return request({
-    url: '/rental/repair/uploadVoucher',
+    url: '/rental/repair/tenantUploadReceipt',
     method: 'put',
     data: data
   })
@@ -77,7 +77,7 @@ export function uploadVoucher(data) {
 // 确认报销
 export function confirmReimburse(repairId) {
   return request({
-    url: '/rental/repair/confirmReimburse/' + repairId,
+    url: '/rental/repair/landlordConfirmReimburse/' + repairId,
     method: 'put'
   })
 }

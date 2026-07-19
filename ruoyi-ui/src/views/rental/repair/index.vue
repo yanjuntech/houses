@@ -116,8 +116,8 @@
           </el-descriptions>
 
           <el-divider content-position="left">维修进度时间轴</el-divider>
-          <div style="padding: 10px 30px; overflow-x: auto;">
-            <el-timeline>
+          <div style="padding: 30px 10px; overflow-x: auto;">
+            <el-timeline horizontal>
               <el-timeline-item
                 v-for="(node, idx) in getRepairTimeline(scope.row)"
                 :key="idx"
@@ -285,11 +285,11 @@
     <!-- 上传凭证对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="凭证图片URL" prop="voucherImage">
-          <el-input v-model="form.voucherImage" placeholder="请输入凭证图片URL" />
+        <el-form-item label="凭证图片URL" prop="receiptImages">
+          <el-input v-model="form.receiptImages" placeholder="请输入凭证图片URL" />
         </el-form-item>
-        <el-form-item label="维修金额" prop="amount">
-          <el-input-number v-model="form.amount" controls-position="right" :min="0" :precision="2" />
+        <el-form-item label="维修金额" prop="receiptAmount">
+          <el-input-number v-model="form.receiptAmount" controls-position="right" :min="0" :precision="2" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -345,10 +345,10 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        voucherImage: [
+        receiptImages: [
           { required: true, message: "凭证图片URL不能为空", trigger: "blur" }
         ],
-        amount: [
+        receiptAmount: [
           { required: true, message: "维修金额不能为空", trigger: "blur" }
         ]
       },
@@ -396,8 +396,8 @@ export default {
     reset() {
       this.form = {
         repairId: undefined,
-        voucherImage: undefined,
-        amount: 0
+        receiptImages: undefined,
+        receiptAmount: 0
       }
       this.resetForm("form")
     },
