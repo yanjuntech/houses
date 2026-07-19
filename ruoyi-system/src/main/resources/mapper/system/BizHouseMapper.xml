@@ -24,6 +24,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="images"            column="images"              />
 		<result property="description"       column="description"         />
 		<result property="status"            column="status"              />
+		<result property="tags"              column="tags"                />
+		<result property="validUntil"        column="valid_until"         />
 		<result property="createBy"          column="create_by"           />
 		<result property="createTime"        column="create_time"        />
 		<result property="updateBy"          column="update_by"           />
@@ -34,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<sql id="selectBizHouseVo">
 		select house_id, title, house_type, community_id, community_name, room_count, hall_count, bath_count,
 		       area, floor, total_floor, decoration, orientation, price, publish_user_id, publish_user_type,
-		       images, description, status, create_by, create_time, update_by, update_time, remark
+		       images, description, status, tags, valid_until, create_by, create_time, update_by, update_time, remark
 		from biz_house
 	</sql>
 
@@ -85,6 +87,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="images != null and images != ''">images,</if>
 			<if test="description != null and description != ''">description,</if>
 			<if test="status != null and status != ''">status,</if>
+			<if test="tags != null and tags != ''">tags,</if>
+			<if test="validUntil != null">valid_until,</if>
 			<if test="createBy != null and createBy != ''">create_by,</if>
 			<if test="remark != null and remark != ''">remark,</if>
 			create_time
@@ -107,6 +111,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="images != null and images != ''">#{images},</if>
 			<if test="description != null and description != ''">#{description},</if>
 			<if test="status != null and status != ''">#{status},</if>
+			<if test="tags != null and tags != ''">#{tags},</if>
+			<if test="validUntil != null">#{validUntil},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="remark != null and remark != ''">#{remark},</if>
 			sysdate()
@@ -134,6 +140,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="images != null">images = #{images},</if>
  			<if test="description != null">description = #{description},</if>
  			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="tags != null">tags = #{tags},</if>
+ 			<if test="validUntil != null">valid_until = #{validUntil},</if>
  			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
  			<if test="remark != null">remark = #{remark},</if>
  			update_time = sysdate()

@@ -92,6 +92,78 @@
     </el-row>
 
     <el-table v-loading="loading" :data="houseList" @selection-change="handleSelectionChange">
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <div class="expand-content">
+            <div class="expand-section">
+              <div class="section-title">
+                <i class="el-icon-document"></i>
+                <span>房屋详情</span>
+              </div>
+              <el-descriptions :column="3" border size="small">
+                <el-descriptions-item label="房屋编号">{{ props.row.houseId }}</el-descriptions-item>
+                <el-descriptions-item label="房源标题">{{ props.row.title }}</el-descriptions-item>
+                <el-descriptions-item label="房屋状态">
+                  <dict-tag :options="dict.type.biz_house_status" :value="props.row.status"/>
+                </el-descriptions-item>
+                <el-descriptions-item label="租赁类型">
+                  <dict-tag :options="dict.type.biz_house_type" :value="props.row.houseType"/>
+                </el-descriptions-item>
+                <el-descriptions-item label="所属小区">{{ props.row.communityName }}</el-descriptions-item>
+                <el-descriptions-item label="户型">{{ props.row.roomCount }}室{{ props.row.hallCount }}厅{{ props.row.bathCount }}卫</el-descriptions-item>
+                <el-descriptions-item label="面积(㎡)">{{ props.row.area }}</el-descriptions-item>
+                <el-descriptions-item label="租金(元/月)">{{ props.row.price }}</el-descriptions-item>
+                <el-descriptions-item label="发布方">
+                  <span v-if="props.row.publishUserType === '0'">房东直租</span>
+                  <span v-else-if="props.row.publishUserType === '1'">房屋中介</span>
+                  <span v-else>-</span>
+                </el-descriptions-item>
+                <el-descriptions-item label="所在楼层">{{ props.row.floor ? props.row.floor + '层' : '-' }}</el-descriptions-item>
+                <el-descriptions-item label="总楼层">{{ props.row.totalFloor ? props.row.totalFloor + '层' : '-' }}</el-descriptions-item>
+                <el-descriptions-item label="朝向">{{ props.row.orientation || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="装修情况">{{ props.row.decoration || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="创建时间">{{ parseTime(props.row.createTime) }}</el-descriptions-item>
+                <el-descriptions-item label="更新时间">{{ parseTime(props.row.updateTime) || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="创建人">{{ props.row.createBy || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="更新人">{{ props.row.updateBy || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="房屋标签">
+                  <template v-if="props.row.tags">
+                    <dict-tag
+                      v-for="(tag, index) in props.row.tags.split(',')"
+                      :key="index"
+                      :options="dict.type.biz_house_tag"
+                      :value="tag"
+                      style="margin-right: 5px;"
+                    />
+                  </template>
+                  <span v-else>-</span>
+                </el-descriptions-item>
+                <el-descriptions-item label="房屋描述" :span="3">{{ props.row.description || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="备注" :span="3">{{ props.row.remark || '-' }}</el-descriptions-item>
+              </el-descriptions>
+            </div>
+            <div class="expand-section">
+              <div class="section-title">
+                <i class="el-icon-time"></i>
+                <span>审批流程</span>
+              </div>
+              <div class="timeline-horizontal">
+                <div class="timeline-item" v-for="(step, index) in getTimelineSteps(props.row)" :key="index">
+                  <div class="timeline-node" :class="step.status">
+                    <i :class="step.icon"></i>
+                  </div>
+                  <div class="timeline-line" v-if="index < getTimelineSteps(props.row).length - 1" :class="step.status"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">{{ step.title }}</div>
+                    <div class="timeline-time">{{ step.time }}</div>
+                    <div class="timeline-operator">{{ step.operator }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="房屋编号" align="center" prop="houseId" />
       <el-table-column label="房源标题" align="center" prop="title" :show-overflow-tooltip="true" />
@@ -117,6 +189,19 @@
       <el-table-column label="房屋状态" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.biz_house_status" :value="scope.row.status"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="房屋标签" align="center" prop="tags">
+        <template slot-scope="scope">
+          <template v-if="scope.row.tags">
+            <dict-tag
+              v-for="(tag, index) in scope.row.tags.split(',')"
+              :key="index"
+              :options="dict.type.biz_house_tag"
+              :value="tag"
+              style="margin-right: 5px;"
+            />
+          </template>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -267,6 +352,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
+            <el-form-item label="房屋标签" prop="tags">
+              <el-select v-model="form.tagsList" multiple placeholder="请选择房屋标签" style="width: 100%">
+                <el-option
+                  v-for="dict in dict.type.biz_house_tag"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="备注" prop="remark">
               <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" />
             </el-form-item>
@@ -287,7 +384,7 @@ import { selectAllCommunity } from "@/api/rental/community"
 
 export default {
   name: "House",
-  dicts: ['biz_house_type', 'biz_house_status'],
+  dicts: ['biz_house_type', 'biz_house_status', 'biz_house_tag'],
   data() {
     return {
       // 遮罩层
@@ -355,6 +452,42 @@ export default {
     this.getCommunityOptions()
   },
   methods: {
+    /** 获取时间轴步骤数据 */
+    getTimelineSteps(row) {
+      const steps = []
+      steps.push({
+        title: '提交申请',
+        time: this.parseTime(row.createTime) || '-',
+        operator: row.createBy ? '发布人：' + row.createBy : '-',
+        icon: 'el-icon-edit',
+        status: 'finished'
+      })
+      steps.push({
+        title: '待审批',
+        time: this.parseTime(row.createTime) || '-',
+        operator: '等待审批',
+        icon: 'el-icon-time',
+        status: row.status === '0' ? 'process' : 'finished'
+      })
+      if (row.status === '1' || row.status === '2' || row.status === '3') {
+        steps.push({
+          title: '审批通过',
+          time: this.parseTime(row.updateTime) || '-',
+          operator: row.updateBy ? '审核人：' + row.updateBy : '-',
+          icon: 'el-icon-circle-check',
+          status: 'finished success'
+        })
+      } else {
+        steps.push({
+          title: '等待审批',
+          time: '-',
+          operator: '-',
+          icon: 'el-icon-loading',
+          status: 'wait'
+        })
+      }
+      return steps
+    },
     /** 查询房屋列表 */
     getList() {
       this.loading = true
@@ -402,6 +535,8 @@ export default {
         images: undefined,
         description: undefined,
         status: "0",
+        tags: undefined,
+        tagsList: [],
         remark: undefined
       }
       this.resetForm("form")
@@ -434,6 +569,7 @@ export default {
       const houseId = row.houseId || this.ids
       getHouse(houseId).then(response => {
         this.form = response.data
+        this.form.tagsList = response.data.tags ? response.data.tags.split(',') : []
         this.open = true
         this.title = "修改房屋"
       })
@@ -442,14 +578,16 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          const submitData = { ...this.form }
+          submitData.tags = this.form.tagsList && this.form.tagsList.length > 0 ? this.form.tagsList.join(',') : ''
           if (this.form.houseId != undefined) {
-            updateHouse(this.form).then(() => {
+            updateHouse(submitData).then(() => {
               this.$modal.msgSuccess("修改成功")
               this.open = false
               this.getList()
             })
           } else {
-            addHouse(this.form).then(() => {
+            addHouse(submitData).then(() => {
               this.$modal.msgSuccess("新增成功")
               this.open = false
               this.getList()
@@ -481,3 +619,157 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.expand-content {
+  padding: 10px 20px;
+  background-color: #fafafa;
+}
+
+.expand-section {
+  margin-bottom: 20px;
+}
+
+.expand-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.section-title i {
+  color: #409eff;
+  margin-right: 6px;
+  font-size: 16px;
+}
+
+.timeline-horizontal {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 40px;
+  position: relative;
+}
+
+.timeline-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.timeline-node {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  z-index: 1;
+  background-color: #fff;
+  border: 2px solid #dcdfe6;
+  color: #dcdfe6;
+}
+
+.timeline-node.finished {
+  background-color: #409eff;
+  border-color: #409eff;
+  color: #fff;
+}
+
+.timeline-node.finished.success {
+  background-color: #67c23a;
+  border-color: #67c23a;
+  color: #fff;
+}
+
+.timeline-node.finished.danger {
+  background-color: #f56c6c;
+  border-color: #f56c6c;
+  color: #fff;
+}
+
+.timeline-node.process {
+  background-color: #e6a23c;
+  border-color: #e6a23c;
+  color: #fff;
+  animation: pulse 2s infinite;
+}
+
+.timeline-node.wait {
+  background-color: #fff;
+  border-color: #dcdfe6;
+  color: #dcdfe6;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(230, 162, 60, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(230, 162, 60, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(230, 162, 60, 0);
+  }
+}
+
+.timeline-line {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: #dcdfe6;
+  z-index: 0;
+}
+
+.timeline-line.finished {
+  background-color: #409eff;
+}
+
+.timeline-line.finished.success {
+  background-color: #67c23a;
+}
+
+.timeline-line.finished.danger {
+  background-color: #f56c6c;
+}
+
+.timeline-content {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.timeline-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 4px;
+}
+
+.timeline-time {
+  font-size: 12px;
+  color: #909399;
+  margin-bottom: 2px;
+}
+
+.timeline-operator {
+  font-size: 12px;
+  color: #606266;
+}
+
+.timeline-item:last-child .timeline-line {
+  display: none;
+}
+</style>

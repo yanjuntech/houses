@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="configName"    column="config_name"    />
         <result property="configKey"     column="config_key"     />
         <result property="configValue"   column="config_value"   />
+        <result property="configOptions" column="config_options" />
         <result property="configType"    column="config_type"    />
         <result property="createBy"      column="create_by"      />
         <result property="createTime"    column="create_time"    />
@@ -17,7 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
     
     <sql id="selectConfigVo">
-        select config_id, config_name, config_key, config_value, config_type, create_by, create_time, update_by, update_time, remark 
+        select config_id, config_name, config_key, config_value, config_options, config_type, create_by, create_time, update_by, update_time, remark 
 		from sys_config
     </sql>
     
@@ -74,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="configName != null and configName != '' ">config_name,</if>
 			<if test="configKey != null and configKey != '' ">config_key,</if>
 			<if test="configValue != null and configValue != '' ">config_value,</if>
+			<if test="configOptions != null and configOptions != '' ">config_options,</if>
 			<if test="configType != null and configType != '' ">config_type,</if>
 			<if test="createBy != null and createBy != ''">create_by,</if>
 			<if test="remark != null and remark != ''">remark,</if>
@@ -82,6 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="configName != null and configName != ''">#{configName},</if>
 			<if test="configKey != null and configKey != ''">#{configKey},</if>
 			<if test="configValue != null and configValue != ''">#{configValue},</if>
+			<if test="configOptions != null and configOptions != ''">#{configOptions},</if>
 			<if test="configType != null and configType != ''">#{configType},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="remark != null and remark != ''">#{remark},</if>
@@ -95,6 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="configName != null and configName != ''">config_name = #{configName},</if>
             <if test="configKey != null and configKey != ''">config_key = #{configKey},</if>
             <if test="configValue != null and configValue != ''">config_value = #{configValue},</if>
+            <if test="configOptions != null">config_options = #{configOptions},</if>
             <if test="configType != null and configType != ''">config_type = #{configType},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>

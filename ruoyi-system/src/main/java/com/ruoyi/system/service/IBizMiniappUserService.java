@@ -113,4 +113,39 @@ public interface IBizMiniappUserService
      * @return 结果
      */
     public int removeFromBlacklist(Long userId);
+
+    /**
+     * 调整发布次数
+     *
+     * @param bizMiniappUser 小程序用户信息（包含 userId 和 publishCount）
+     * @return 结果
+     */
+    public int updatePublishCount(BizMiniappUser bizMiniappUser);
+
+    /**
+     * 延长发布周期
+     *
+     * @param bizMiniappUser 小程序用户信息（包含 userId 和 publishPeriodEnd）
+     * @return 结果
+     */
+    public int extendPublishPeriod(BizMiniappUser bizMiniappUser);
+
+    /**
+     * 调整发布次数（正数增加，负数减少）
+     *
+     * @param userId 用户ID
+     * @param count 调整数量（正数增加，负数减少）
+     * @param reason 调整原因
+     * @return 结果
+     */
+    public int adjustPublishCount(Long userId, Integer count, String reason);
+
+    /**
+     * 延长发布周期（支持叠加）
+     *
+     * @param userId 用户ID
+     * @param days 延长天数
+     * @return 结果
+     */
+    public int extendPublishPeriod(Long userId, Integer days);
 }

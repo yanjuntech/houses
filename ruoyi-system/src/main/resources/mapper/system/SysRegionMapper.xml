@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysRegionMapper">
+
+	<resultMap type="SysRegion" id="SysRegionResult">
+		<id     property="regionId"               column="region_id"               />
+		<result property="parentId"               column="parent_id"               />
+		<result property="regionCode"             column="region_code"             />
+		<result property="regionName"             column="region_name"             />
+		<result property="regionLevel"            column="region_level"            />
+		<result property="communityRegisterSwitch" column="community_register_switch" />
+		<result property="sort"                   column="sort"                    />
+		<result property="status"                 column="status"                  />
+		<result property="createBy"               column="create_by"               />
+		<result property="createTime"             column="create_time"             />
+		<result property="updateBy"               column="update_by"               />
+		<result property="updateTime"             column="update_time"             />
+		<result property="remark"                 column="remark"                  />
+	</resultMap>
+	
+	<sql id="selectRegionVo">
+        select r.region_id, r.parent_id, r.region_code, r.region_name, r.region_level, 
+               r.community_register_switch, r.sort, r.status, r.create_by, r.create_time, 
+               r.update_by, r.update_time, r.remark
+        from sys_region r
+    </sql>
+	
+	<select id="selectRegionList" parameterType="SysRegion" resultMap="SysRegionResult">
+        <include refid="selectRegionVo"/>
+        <where>
+			<if test="regionId != null and regionId != 0">
+				AND region_id = #{regionId}
+			</if>
+	        <if test="parentId != null and parentId != 0">
+				AND parent_id = #{parentId}
+			</if>
+			<if test="regionCode != null and regionCode != ''">
+				AND region_code like concat('%', #{regionCode}, '%')
+			</if>
+			<if test="regionName != null and regionName != ''">
+				AND region_name like concat('%', #{regionName}, '%')
+			</if>
+			<if test="regionLevel != null">
+				AND region_level = #{regionLevel}
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+		</where>
+		order by r.parent_id, r.sort
+    </select>
+    
+    <select id="selectRegionById" parameterType="Long" resultMap="SysRegionResult">
+		<include refid="selectRegionVo"/>
+		where r.region_id = #{regionId}
+	</select>
+	
+	<select id="selectChildrenRegionById" parameterType="Long" resultMap="SysRegionResult">
+		select * from sys_region where find_in_set(#{regionId}, parent_id)
+	</select>
+	
+	<select id="selectRegionByParentId" parameterType="Long" resultMap="SysRegionResult">
+		<include refid="selectRegionVo"/>
+		where r.parent_id = #{parentId} and r.status = '0'
+		order by r.sort
+	</select>
+	
+	<select id="hasChildByRegionId" parameterType="Long" resultType="int">
+		select count(1) from sys_region
+		where parent_id = #{regionId} limit 1
+	</select>
+	
+	<select id="checkRegionNameUnique" resultMap="SysRegionResult">
+	    <include refid="selectRegionVo"/>
+		where region_name=#{regionName} and parent_id = #{parentId} limit 1
+	</select>
+
+	<select id="selectRegionByDistrictName" parameterType="String" resultMap="SysRegionResult">
+		<include refid="selectRegionVo"/>
+		where r.region_name = #{districtName} and r.region_level = 3
+		limit 1
+	</select>
+    
+    <insert id="insertRegion" parameterType="SysRegion" useGeneratedKeys="true" keyProperty="regionId">
+ 		insert into sys_region(
+ 			<if test="parentId != null and parentId != 0">parent_id,</if>
+ 			<if test="regionCode != null and regionCode != ''">region_code,</if>
+ 			<if test="regionName != null and regionName != ''">region_name,</if>
+ 			<if test="regionLevel != null">region_level,</if>
+ 			<if test="communityRegisterSwitch != null and communityRegisterSwitch != ''">community_register_switch,</if>
+ 			<if test="sort != null">sort,</if>
+ 			<if test="status != null">status,</if>
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			<if test="remark != null and remark != ''">remark,</if>
+ 			create_time
+ 		)values(
+ 			<if test="parentId != null and parentId != 0">#{parentId},</if>
+ 			<if test="regionCode != null and regionCode != ''">#{regionCode},</if>
+ 			<if test="regionName != null and regionName != ''">#{regionName},</if>
+ 			<if test="regionLevel != null">#{regionLevel},</if>
+ 			<if test="communityRegisterSwitch != null and communityRegisterSwitch != ''">#{communityRegisterSwitch},</if>
+ 			<if test="sort != null">#{sort},</if>
+ 			<if test="status != null">#{status},</if>
+ 			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			<if test="remark != null and remark != ''">#{remark},</if>
+ 			sysdate()
+ 		)
+	</insert>
+	
+	<update id="updateRegion" parameterType="SysRegion">
+ 		update sys_region
+ 		<set>
+ 			<if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
+ 			<if test="regionCode != null and regionCode != ''">region_code = #{regionCode},</if>
+ 			<if test="regionName != null and regionName != ''">region_name = #{regionName},</if>
+ 			<if test="regionLevel != null">region_level = #{regionLevel},</if>
+ 			<if test="communityRegisterSwitch != null and communityRegisterSwitch != ''">community_register_switch = #{communityRegisterSwitch},</if>
+ 			<if test="sort != null">sort = #{sort},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where region_id = #{regionId}
+	</update>
+	
+	<delete id="deleteRegionById" parameterType="Long">
+		delete from sys_region where region_id = #{regionId}
+	</delete>
+
+</mapper>

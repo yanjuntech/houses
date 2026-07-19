@@ -1,5 +1,7 @@
 package com.ruoyi.system.domain;
 
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -67,4 +69,10 @@ public class BizPhonebook extends BaseEntity
     @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     @JsonProperty("status")
     private String status;
+
+    /** 有效期截止时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "有效期截止", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty("validUntil")
+    private Date validUntil;
 }

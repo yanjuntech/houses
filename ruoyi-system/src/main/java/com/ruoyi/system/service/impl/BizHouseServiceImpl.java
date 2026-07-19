@@ -64,6 +64,7 @@ public class BizHouseServiceImpl implements IBizHouseService
     /**
      * 新增房屋信息
      * 校验发布者是否已完成实名认证（id_card_verified='1'）
+     * 扣减发布次数，次数不足时抛出异常
      *
      * @param bizHouse 房屋信息
      * @return 结果
@@ -79,6 +80,15 @@ public class BizHouseServiceImpl implements IBizHouseService
             {
                 throw new ServiceException("请先完成实名认证");
             }
+            // 校验发布次数
+            if (publishUser.getPublishCount() == null || publishUser.getPublishCount() <= 0)
+            {
+                throw new ServiceException("发布次数不足，请先兑换或联系管理员");
+            }
+            // 扣减发布次数，累加累计发布次数
+            publishUser.setPublishCount(publishUser.getPublishCount() - 1);
+            publishUser.setTotalPublishCount(publishUser.getTotalPublishCount() == null ? 1 : publishUser.getTotalPublishCount() + 1);
+            bizMiniappUserMapper.updateBizMiniappUser(publishUser);
         }
         return bizHouseMapper.insertBizHouse(bizHouse);
     }
@@ -150,6 +160,18 @@ public class BizHouseServiceImpl implements IBizHouseService
             rows += bizHouseMapper.insertBizHouse(house);
         }
         return rows;
+    }
+
+    /**
+     * 调整房屋有效期
+     *
+     * @param bizHouse 房屋信息（包含 houseId 和 validUntil）
+     * @return 结果
+     */
+    @Override
+    public int updateValidUntil(BizHouse bizHouse)
+    {
+        return bizHouseMapper.updateBizHouse(bizHouse);
     }
 
     /**

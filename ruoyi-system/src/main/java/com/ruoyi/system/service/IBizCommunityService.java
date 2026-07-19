@@ -57,4 +57,13 @@ public interface IBizCommunityService
      * @return 结果
      */
     public int deleteBizCommunityByCommunityIds(Long[] communityIds);
+
+    /**
+     * 校验小区登记开关是否开启
+     *
+     * @param province 省份
+     * @param city 城市
+     * @param district 区县
+     */
+    public void checkCommunityRegisterSwitch(String province, String city, String district);
 }

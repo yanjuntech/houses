@@ -56,6 +56,54 @@
     </el-row>
 
     <el-table v-loading="loading" :data="applyList">
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <div class="expand-content">
+            <div class="expand-section">
+              <div class="section-title">
+                <i class="el-icon-document"></i>
+                <span>申请详情</span>
+              </div>
+              <el-descriptions :column="3" border size="small">
+                <el-descriptions-item label="申请编号">{{ props.row.applyId }}</el-descriptions-item>
+                <el-descriptions-item label="小区名称">{{ props.row.communityName }}</el-descriptions-item>
+                <el-descriptions-item label="审批状态">
+                  <dict-tag :options="dict.type.biz_apply_status" :value="props.row.applyStatus"/>
+                </el-descriptions-item>
+                <el-descriptions-item label="所在省">{{ props.row.province }}</el-descriptions-item>
+                <el-descriptions-item label="所在市">{{ props.row.city }}</el-descriptions-item>
+                <el-descriptions-item label="所在区">{{ props.row.district }}</el-descriptions-item>
+                <el-descriptions-item label="详细地址" :span="3">{{ props.row.address }}</el-descriptions-item>
+                <el-descriptions-item label="申请人姓名">{{ props.row.applicantName }}</el-descriptions-item>
+                <el-descriptions-item label="申请人手机号">{{ props.row.applicantPhone }}</el-descriptions-item>
+                <el-descriptions-item label="创建时间">{{ parseTime(props.row.createTime) }}</el-descriptions-item>
+                <el-descriptions-item label="审批人">{{ props.row.approveBy || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="审批时间">{{ parseTime(props.row.approveTime) || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="审批备注">{{ props.row.approveRemark || props.row.remark || '-' }}</el-descriptions-item>
+              </el-descriptions>
+            </div>
+            <div class="expand-section">
+              <div class="section-title">
+                <i class="el-icon-time"></i>
+                <span>审批流程</span>
+              </div>
+              <div class="timeline-horizontal">
+                <div class="timeline-item" v-for="(step, index) in getTimelineSteps(props.row)" :key="index">
+                  <div class="timeline-node" :class="step.status">
+                    <i :class="step.icon"></i>
+                  </div>
+                  <div class="timeline-line" v-if="index < getTimelineSteps(props.row).length - 1" :class="step.status"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">{{ step.title }}</div>
+                    <div class="timeline-time">{{ step.time }}</div>
+                    <div class="timeline-operator">{{ step.operator }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="申请编号" align="center" prop="applyId" />
       <el-table-column label="小区名称" align="center" prop="communityName" />
       <el-table-column label="所在省" align="center" prop="province" />
@@ -236,6 +284,50 @@ export default {
     this.getList()
   },
   methods: {
+    /** 获取时间轴步骤数据 */
+    getTimelineSteps(row) {
+      const steps = []
+      steps.push({
+        title: '提交申请',
+        time: this.parseTime(row.createTime) || '-',
+        operator: row.applicantName ? '申请人：' + row.applicantName : '-',
+        icon: 'el-icon-edit',
+        status: 'finished'
+      })
+      steps.push({
+        title: '待审批',
+        time: this.parseTime(row.createTime) || '-',
+        operator: '等待审批',
+        icon: 'el-icon-time',
+        status: row.applyStatus === '0' ? 'process' : 'finished'
+      })
+      if (row.applyStatus === '1') {
+        steps.push({
+          title: '审批通过',
+          time: this.parseTime(row.approveTime) || '-',
+          operator: row.approveBy ? '审批人：' + row.approveBy : '-',
+          icon: 'el-icon-circle-check',
+          status: 'finished success'
+        })
+      } else if (row.applyStatus === '2') {
+        steps.push({
+          title: '审批驳回',
+          time: this.parseTime(row.approveTime) || '-',
+          operator: row.approveBy ? '审批人：' + row.approveBy : '-',
+          icon: 'el-icon-circle-close',
+          status: 'finished danger'
+        })
+      } else {
+        steps.push({
+          title: '等待审批',
+          time: '-',
+          operator: '-',
+          icon: 'el-icon-loading',
+          status: 'wait'
+        })
+      }
+      return steps
+    },
     /** 查询申请列表 */
     getList() {
       this.loading = true
@@ -321,3 +413,157 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.expand-content {
+  padding: 10px 20px;
+  background-color: #fafafa;
+}
+
+.expand-section {
+  margin-bottom: 20px;
+}
+
+.expand-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.section-title i {
+  color: #409eff;
+  margin-right: 6px;
+  font-size: 16px;
+}
+
+.timeline-horizontal {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 40px;
+  position: relative;
+}
+
+.timeline-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.timeline-node {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  z-index: 1;
+  background-color: #fff;
+  border: 2px solid #dcdfe6;
+  color: #dcdfe6;
+}
+
+.timeline-node.finished {
+  background-color: #409eff;
+  border-color: #409eff;
+  color: #fff;
+}
+
+.timeline-node.finished.success {
+  background-color: #67c23a;
+  border-color: #67c23a;
+  color: #fff;
+}
+
+.timeline-node.finished.danger {
+  background-color: #f56c6c;
+  border-color: #f56c6c;
+  color: #fff;
+}
+
+.timeline-node.process {
+  background-color: #e6a23c;
+  border-color: #e6a23c;
+  color: #fff;
+  animation: pulse 2s infinite;
+}
+
+.timeline-node.wait {
+  background-color: #fff;
+  border-color: #dcdfe6;
+  color: #dcdfe6;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(230, 162, 60, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(230, 162, 60, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(230, 162, 60, 0);
+  }
+}
+
+.timeline-line {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: #dcdfe6;
+  z-index: 0;
+}
+
+.timeline-line.finished {
+  background-color: #409eff;
+}
+
+.timeline-line.finished.success {
+  background-color: #67c23a;
+}
+
+.timeline-line.finished.danger {
+  background-color: #f56c6c;
+}
+
+.timeline-content {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.timeline-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 4px;
+}
+
+.timeline-time {
+  font-size: 12px;
+  color: #909399;
+  margin-bottom: 2px;
+}
+
+.timeline-operator {
+  font-size: 12px;
+  color: #606266;
+}
+
+.timeline-item:last-child .timeline-line {
+  display: none;
+}
+</style>

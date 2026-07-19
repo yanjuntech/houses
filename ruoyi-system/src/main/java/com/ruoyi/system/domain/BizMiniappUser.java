@@ -116,4 +116,25 @@ public class BizMiniappUser extends BaseEntity
     @Excel(name = "最后登录时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("loginDate")
     private Date loginDate;
+
+    /** 标签（逗号分隔） */
+    @Excel(name = "标签")
+    @JsonProperty("tags")
+    private String tags;
+
+    /** 剩余发布次数 */
+    @Excel(name = "剩余发布次数")
+    @JsonProperty("publishCount")
+    private Integer publishCount;
+
+    /** 发布周期结束时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "周期结束时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty("publishPeriodEnd")
+    private Date publishPeriodEnd;
+
+    /** 累计发布次数 */
+    @Excel(name = "累计发布次数")
+    @JsonProperty("totalPublishCount")
+    private Integer totalPublishCount;
 }

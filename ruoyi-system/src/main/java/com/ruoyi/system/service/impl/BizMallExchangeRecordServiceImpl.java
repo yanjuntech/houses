@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,13 +248,11 @@ public class BizMallExchangeRecordServiceImpl implements IBizMallExchangeRecordS
         }
         else
         {
-            // 未知商品类型，不生效配额
             return;
         }
 
         if (effectCount <= 0)
         {
-            // 兜底：从商品类型后缀解析数值
             effectCount = parseEffectCountFromType(productType);
         }
         if (effectCount <= 0)
@@ -261,6 +260,49 @@ public class BizMallExchangeRecordServiceImpl implements IBizMallExchangeRecordS
             return;
         }
         bizExchangeQuotaMapper.addQuota(userId, quotaType, effectCount);
+        applyProductEffectToUser(userId, productType, effectCount);
+    }
+
+    /**
+     * 将商品效果同步到用户表（发布次数、有效期）
+     *
+     * @param userId 用户ID
+     * @param productType 商品类型
+     * @param effectCount 生效数量
+     */
+    private void applyProductEffectToUser(Long userId, String productType, int effectCount)
+    {
+        BizMiniappUser user = bizMiniappUserMapper.selectBizMiniappUserByUserId(userId);
+        if (user == null)
+        {
+            return;
+        }
+        BizMiniappUser update = new BizMiniappUser();
+        update.setUserId(userId);
+        boolean needUpdate = false;
+
+        if (productType.startsWith("HOUSE_PUBLISH"))
+        {
+            int currentCount = user.getPublishCount() == null ? 0 : user.getPublishCount();
+            update.setPublishCount(currentCount + effectCount);
+            needUpdate = true;
+        }
+        else if (productType.startsWith("PHONEBOOK_DELAY"))
+        {
+            Date now = new Date();
+            Date currentEnd = user.getPublishPeriodEnd();
+            Date baseDate = (currentEnd == null || currentEnd.before(now)) ? now : currentEnd;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(baseDate);
+            calendar.add(Calendar.DAY_OF_MONTH, effectCount);
+            update.setPublishPeriodEnd(calendar.getTime());
+            needUpdate = true;
+        }
+
+        if (needUpdate)
+        {
+            bizMiniappUserMapper.updateBizMiniappUser(update);
+        }
     }
 
     /**

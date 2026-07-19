@@ -1,8 +1,12 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.BizMiniappUser;
 import com.ruoyi.system.mapper.BizMiniappUserMapper;
 import com.ruoyi.system.service.IBizMiniappUserService;
@@ -172,5 +176,101 @@ public class BizMiniappUserServiceImpl implements IBizMiniappUserService
     public int removeFromBlacklist(Long userId)
     {
         return bizMiniappUserMapper.removeFromBlacklist(userId);
+    }
+
+    /**
+     * 调整发布次数
+     *
+     * @param bizMiniappUser 小程序用户信息（包含 userId 和 publishCount）
+     * @return 结果
+     */
+    @Override
+    public int updatePublishCount(BizMiniappUser bizMiniappUser)
+    {
+        return bizMiniappUserMapper.updateBizMiniappUser(bizMiniappUser);
+    }
+
+    /**
+     * 延长发布周期
+     *
+     * @param bizMiniappUser 小程序用户信息（包含 userId 和 publishPeriodEnd）
+     * @return 结果
+     */
+    @Override
+    public int extendPublishPeriod(BizMiniappUser bizMiniappUser)
+    {
+        return bizMiniappUserMapper.updateBizMiniappUser(bizMiniappUser);
+    }
+
+    /**
+     * 调整发布次数（正数增加，负数减少）
+     *
+     * @param userId 用户ID
+     * @param count 调整数量（正数增加，负数减少）
+     * @param reason 调整原因
+     * @return 结果
+     */
+    @Override
+    public int adjustPublishCount(Long userId, Integer count, String reason)
+    {
+        if (userId == null)
+        {
+            throw new ServiceException("用户ID不能为空");
+        }
+        if (count == null)
+        {
+            throw new ServiceException("调整数量不能为空");
+        }
+        BizMiniappUser user = bizMiniappUserMapper.selectBizMiniappUserByUserId(userId);
+        if (user == null)
+        {
+            throw new ServiceException("用户不存在");
+        }
+        int currentCount = user.getPublishCount() == null ? 0 : user.getPublishCount();
+        int newCount = currentCount + count;
+        if (newCount < 0)
+        {
+            throw new ServiceException("调整后发布次数不能为负数");
+        }
+        BizMiniappUser update = new BizMiniappUser();
+        update.setUserId(userId);
+        update.setPublishCount(newCount);
+        return bizMiniappUserMapper.updateBizMiniappUser(update);
+    }
+
+    /**
+     * 延长发布周期（支持叠加）
+     *
+     * @param userId 用户ID
+     * @param days 延长天数
+     * @return 结果
+     */
+    @Override
+    public int extendPublishPeriod(Long userId, Integer days)
+    {
+        if (userId == null)
+        {
+            throw new ServiceException("用户ID不能为空");
+        }
+        if (days == null || days <= 0)
+        {
+            throw new ServiceException("延长天数必须大于0");
+        }
+        BizMiniappUser user = bizMiniappUserMapper.selectBizMiniappUserByUserId(userId);
+        if (user == null)
+        {
+            throw new ServiceException("用户不存在");
+        }
+        Date now = new Date();
+        Date currentEnd = user.getPublishPeriodEnd();
+        Date baseDate = (currentEnd == null || currentEnd.before(now)) ? now : currentEnd;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(baseDate);
+        calendar.add(Calendar.DAY_OF_MONTH, days);
+        Date newEnd = calendar.getTime();
+        BizMiniappUser update = new BizMiniappUser();
+        update.setUserId(userId);
+        update.setPublishPeriodEnd(newEnd);
+        return bizMiniappUserMapper.updateBizMiniappUser(update);
     }
 }

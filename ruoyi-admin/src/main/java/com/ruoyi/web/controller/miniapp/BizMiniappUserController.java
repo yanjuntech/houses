@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.miniapp;
 
 import java.util.List;
+import java.util.Map;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,9 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.BizMiniappUser;
+import com.ruoyi.system.domain.BizUserMessage;
 import com.ruoyi.system.service.IBizMiniappUserService;
+import com.ruoyi.system.service.IBizUserMessageService;
 
 /**
  * 小程序用户管理
@@ -34,6 +37,9 @@ public class BizMiniappUserController extends BaseController
 {
     @Autowired
     private IBizMiniappUserService bizMiniappUserService;
+
+    @Autowired
+    private IBizUserMessageService bizUserMessageService;
 
     /**
      * 查询小程序用户列表
@@ -276,5 +282,91 @@ public class BizMiniappUserController extends BaseController
         update.setPhone(bizMiniappUser.getPhone());
         update.setUpdateBy("miniapp");
         return toAjax(bizMiniappUserService.updateBizMiniappUser(update));
+    }
+
+    /**
+     * 调整发布次数
+     */
+    @PreAuthorize("@ss.hasPermi('biz:miniapp:user:edit')")
+    @Log(title = "小程序用户管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/adjustPublishCount")
+    public AjaxResult adjustPublishCount(@RequestBody Map<String, Object> params)
+    {
+        Long userId = params.get("userId") != null ? Long.valueOf(params.get("userId").toString()) : null;
+        Integer count = params.get("count") != null ? Integer.valueOf(params.get("count").toString()) : null;
+        String reason = params.get("reason") != null ? params.get("reason").toString() : null;
+        if (userId == null)
+        {
+            return error("用户ID不能为空");
+        }
+        if (count == null)
+        {
+            return error("调整数量不能为空");
+        }
+        return toAjax(bizMiniappUserService.adjustPublishCount(userId, count, reason));
+    }
+
+    /**
+     * 延长发布周期
+     */
+    @PreAuthorize("@ss.hasPermi('biz:miniapp:user:edit')")
+    @Log(title = "小程序用户管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/extendPublishPeriod")
+    public AjaxResult extendPublishPeriod(@RequestBody Map<String, Object> params)
+    {
+        Long userId = params.get("userId") != null ? Long.valueOf(params.get("userId").toString()) : null;
+        Integer days = params.get("days") != null ? Integer.valueOf(params.get("days").toString()) : null;
+        if (userId == null)
+        {
+            return error("用户ID不能为空");
+        }
+        if (days == null || days <= 0)
+        {
+            return error("延长天数必须大于0");
+        }
+        return toAjax(bizMiniappUserService.extendPublishPeriod(userId, days));
+    }
+
+    /**
+     * 小程序端 - 查询用户消息列表
+     */
+    @Anonymous
+    @GetMapping("/message/list")
+    public TableDataInfo messageList(BizUserMessage bizUserMessage)
+    {
+        startPage();
+        List<BizUserMessage> list = bizUserMessageService.selectBizUserMessageList(bizUserMessage);
+        return getDataTable(list);
+    }
+
+    /**
+     * 小程序端 - 获取消息详情（标记已读）
+     */
+    @Anonymous
+    @GetMapping(value = "/message/{messageId}")
+    public AjaxResult getMessageDetail(@PathVariable("messageId") Long messageId)
+    {
+        BizUserMessage message = bizUserMessageService.selectBizUserMessageById(messageId);
+        if (message != null && "0".equals(message.getIsRead()))
+        {
+            bizUserMessageService.markAsRead(messageId, message.getUserId());
+            message.setIsRead("1");
+        }
+        return success(message);
+    }
+
+    /**
+     * 小程序端 - 查询未读消息数量
+     */
+    @Anonymous
+    @GetMapping("/message/unreadCount")
+    public AjaxResult unreadCount(Long userId)
+    {
+        if (userId == null)
+        {
+            return error("用户ID不能为空");
+        }
+        int count = bizUserMessageService.countUnreadByUserId(userId);
+        return success(count);
     }
 }

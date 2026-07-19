@@ -73,4 +73,12 @@ public interface IBizHouseService
      * @return 结果
      */
     public int batchInsert(List<BizHouse> houseList);
+
+    /**
+     * 调整房屋有效期
+     *
+     * @param bizHouse 房屋信息（包含 houseId 和 validUntil）
+     * @return 结果
+     */
+    public int updateValidUntil(BizHouse bizHouse);
 }

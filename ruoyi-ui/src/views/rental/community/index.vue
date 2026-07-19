@@ -9,28 +9,16 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="所在省" prop="province">
-        <el-input
-          v-model="queryParams.province"
-          placeholder="请输入所在省"
+      <el-form-item label="所在地区" prop="district">
+        <el-cascader
+          v-model="queryRegion"
+          :options="regionOptions"
+          :props="regionProps"
+          :show-all-levels="true"
+          change-on-select
           clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="所在市" prop="city">
-        <el-input
-          v-model="queryParams.city"
-          placeholder="请输入所在市"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="所在区" prop="district">
-        <el-input
-          v-model="queryParams.district"
-          placeholder="请输入所在区"
-          clearable
-          @keyup.enter.native="handleQuery"
+          placeholder="请选择所在地区"
+          style="width: 100%"
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
@@ -114,6 +102,19 @@
           ></el-switch>
         </template>
       </el-table-column>
+      <el-table-column label="小区标签" align="center" prop="tags">
+        <template slot-scope="scope">
+          <template v-if="scope.row.tags">
+            <dict-tag
+              v-for="(tag, index) in scope.row.tags.split(',')"
+              :key="index"
+              :options="dict.type.biz_community_tag"
+              :value="tag"
+              style="margin-right: 5px;"
+            />
+          </template>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -153,14 +154,17 @@
         <el-form-item label="小区名称" prop="communityName">
           <el-input v-model="form.communityName" placeholder="请输入小区名称" />
         </el-form-item>
-        <el-form-item label="所在省" prop="province">
-          <el-input v-model="form.province" placeholder="请输入所在省" />
-        </el-form-item>
-        <el-form-item label="所在市" prop="city">
-          <el-input v-model="form.city" placeholder="请输入所在市" />
-        </el-form-item>
-        <el-form-item label="所在区" prop="district">
-          <el-input v-model="form.district" placeholder="请输入所在区" />
+        <el-form-item label="所在地区" prop="region">
+          <el-cascader
+            v-model="formRegion"
+            :options="regionOptions"
+            :props="regionProps"
+            :show-all-levels="true"
+            change-on-select
+            clearable
+            placeholder="请选择所在地区"
+            style="width: 100%"
+          />
         </el-form-item>
         <el-form-item label="详细地址" prop="address">
           <el-input v-model="form.address" type="textarea" placeholder="请输入详细地址" />
@@ -183,6 +187,16 @@
             >{{ dict.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="小区标签" prop="tags">
+          <el-select v-model="form.tagsList" multiple placeholder="请选择小区标签" style="width: 100%">
+            <el-option
+              v-for="dict in dict.type.biz_community_tag"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
@@ -197,10 +211,11 @@
 
 <script>
 import { listCommunity, getCommunity, delCommunity, addCommunity, updateCommunity } from "@/api/rental/community"
+import { listRegion } from "@/api/system/region"
 
 export default {
   name: "RentalCommunity",
-  dicts: ['sys_normal_disable'],
+  dicts: ['sys_normal_disable', 'biz_community_tag'],
   data() {
     return {
       // 遮罩层
@@ -221,6 +236,18 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 行政区划树数据
+      regionOptions: [],
+      // 级联选择器配置
+      regionProps: {
+        value: 'regionName',
+        label: 'regionName',
+        children: 'children'
+      },
+      // 查询用地区
+      queryRegion: [],
+      // 表单用地区
+      formRegion: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -238,25 +265,35 @@ export default {
         communityName: [
           { required: true, message: "小区名称不能为空", trigger: "blur" }
         ],
-        province: [
-          { required: true, message: "所在省不能为空", trigger: "blur" }
-        ],
-        city: [
-          { required: true, message: "所在市不能为空", trigger: "blur" }
-        ],
-        district: [
-          { required: true, message: "所在区不能为空", trigger: "blur" }
+        region: [
+          { required: true, message: "所在地区不能为空", trigger: "change" }
         ]
       }
     }
   },
   created() {
     this.getList()
+    this.getRegionTree()
   },
   methods: {
+    /** 获取行政区划树 */
+    getRegionTree() {
+      listRegion().then(response => {
+        this.regionOptions = response.data
+      })
+    },
     /** 查询小区列表 */
     getList() {
       this.loading = true
+      if (this.queryRegion && this.queryRegion.length > 0) {
+        this.queryParams.province = this.queryRegion[0] || undefined
+        this.queryParams.city = this.queryRegion[1] || undefined
+        this.queryParams.district = this.queryRegion[2] || undefined
+      } else {
+        this.queryParams.province = undefined
+        this.queryParams.city = undefined
+        this.queryParams.district = undefined
+      }
       listCommunity(this.queryParams).then(response => {
         this.communityList = response.rows
         this.total = response.total
@@ -292,8 +329,11 @@ export default {
         latitude: undefined,
         propertyCompany: undefined,
         status: "0",
+        tags: undefined,
+        tagsList: [],
         remark: undefined
       }
+      this.formRegion = []
       this.resetForm("form")
     },
     /** 搜索按钮操作 */
@@ -303,6 +343,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.queryRegion = []
       this.resetForm("queryForm")
       this.handleQuery()
     },
@@ -315,6 +356,7 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset()
+      this.formRegion = ['山东省', '聊城市', '阳谷县']
       this.open = true
       this.title = "添加小区"
     },
@@ -324,6 +366,13 @@ export default {
       const communityId = row.communityId || this.ids
       getCommunity(communityId).then(response => {
         this.form = response.data
+        this.form.tagsList = response.data.tags ? response.data.tags.split(',') : []
+        if (this.form.province || this.form.city || this.form.district) {
+          this.formRegion = []
+          if (this.form.province) this.formRegion.push(this.form.province)
+          if (this.form.city) this.formRegion.push(this.form.city)
+          if (this.form.district) this.formRegion.push(this.form.district)
+        }
         this.open = true
         this.title = "修改小区"
       })
@@ -332,14 +381,21 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          if (this.formRegion && this.formRegion.length > 0) {
+            this.form.province = this.formRegion[0] || undefined
+            this.form.city = this.formRegion[1] || undefined
+            this.form.district = this.formRegion[2] || undefined
+          }
+          const submitData = { ...this.form }
+          submitData.tags = this.form.tagsList && this.form.tagsList.length > 0 ? this.form.tagsList.join(',') : ''
           if (this.form.communityId != undefined) {
-            updateCommunity(this.form).then(() => {
+            updateCommunity(submitData).then(() => {
               this.$modal.msgSuccess("修改成功")
               this.open = false
               this.getList()
             })
           } else {
-            addCommunity(this.form).then(() => {
+            addCommunity(submitData).then(() => {
               this.$modal.msgSuccess("新增成功")
               this.open = false
               this.getList()

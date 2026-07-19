@@ -33,6 +33,10 @@ public class SysConfig extends BaseEntity
     @Excel(name = "参数键值")
     private String configValue;
 
+    /** 参数键选项配置 */
+    @Excel(name = "参数键选项配置")
+    private String configOptions;
+
     /** 系统内置（Y是 N否） */
     @Excel(name = "系统内置", readConverterExp = "Y=是,N=否")
     private String configType;
@@ -83,6 +87,17 @@ public class SysConfig extends BaseEntity
         this.configValue = configValue;
     }
 
+    @Size(min = 0, max = 1000, message = "参数键选项配置长度不能超过1000个字符")
+    public String getConfigOptions()
+    {
+        return configOptions;
+    }
+
+    public void setConfigOptions(String configOptions)
+    {
+        this.configOptions = configOptions;
+    }
+
     public String getConfigType()
     {
         return configType;
@@ -100,6 +115,7 @@ public class SysConfig extends BaseEntity
             .append("configName", getConfigName())
             .append("configKey", getConfigKey())
             .append("configValue", getConfigValue())
+            .append("configOptions", getConfigOptions())
             .append("configType", getConfigType())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

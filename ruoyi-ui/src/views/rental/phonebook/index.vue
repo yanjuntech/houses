@@ -1,130 +1,156 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="商家名称" prop="merchantName">
-        <el-input
-          v-model="queryParams.merchantName"
-          placeholder="请输入商家名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="商家分类" prop="category">
-        <el-select v-model="queryParams.category" placeholder="请选择商家分类" clearable>
-          <el-option
-            v-for="item in categoryOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.label"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="电话" prop="phone">
-        <el-input
-          v-model="queryParams.phone"
-          placeholder="请输入电话"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable>
-          <el-option label="启用" value="0" />
-          <el-option label="停用" value="1" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+    <el-row :gutter="10">
+      <el-col :span="4">
+        <div class="category-tree-container">
+          <div class="tree-header">
+            <span class="tree-title">商家分类</span>
+          </div>
+          <el-tree
+            ref="categoryTree"
+            :data="categoryTreeData"
+            :props="defaultProps"
+            node-key="id"
+            default-expand-all
+            :expand-on-click-node="false"
+            highlight-current
+            @node-click="handleNodeClick"
+          >
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+              <span class="node-label">{{ node.label }}</span>
+              <span class="node-count" v-if="data.count !== undefined">({{ data.count }})</span>
+            </span>
+          </el-tree>
+        </div>
+      </el-col>
+      <el-col :span="20">
+        <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+          <el-form-item label="商家名称" prop="merchantName">
+            <el-input
+              v-model="queryParams.merchantName"
+              placeholder="请输入商家名称"
+              clearable
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item label="商家分类" prop="category">
+            <el-select v-model="queryParams.category" placeholder="请选择商家分类" clearable>
+              <el-option
+                v-for="item in categoryOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.label"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="电话" prop="phone">
+            <el-input
+              v-model="queryParams.phone"
+              placeholder="请输入电话"
+              clearable
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item label="状态" prop="status">
+            <el-select v-model="queryParams.status" placeholder="请选择状态" clearable>
+              <el-option label="启用" value="0" />
+              <el-option label="停用" value="1" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['rental:phonebook:add']"
-        >新增</el-button>
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button
+              type="primary"
+              plain
+              icon="el-icon-plus"
+              size="mini"
+              @click="handleAdd"
+              v-hasPermi="['rental:phonebook:add']"
+            >新增</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              type="success"
+              plain
+              icon="el-icon-edit"
+              size="mini"
+              :disabled="single"
+              @click="handleUpdate"
+              v-hasPermi="['rental:phonebook:edit']"
+            >修改</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              type="danger"
+              plain
+              icon="el-icon-delete"
+              size="mini"
+              :disabled="multiple"
+              @click="handleDelete"
+              v-hasPermi="['rental:phonebook:remove']"
+            >删除</el-button>
+          </el-col>
+          <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+        </el-row>
+
+        <el-table v-loading="loading" :data="phonebookList" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column label="编号" align="center" prop="phonebookId" />
+          <el-table-column label="商家名称" align="center" prop="merchantName" :show-overflow-tooltip="true" />
+          <el-table-column label="负责人" align="center" prop="ownerName" />
+          <el-table-column label="电话" align="center" prop="phone" />
+          <el-table-column label="分类" align="center" prop="category" />
+          <el-table-column label="地址" align="center" prop="address" :show-overflow-tooltip="true" />
+          <el-table-column label="状态" align="center" prop="status">
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.status"
+                active-value="0"
+                inactive-value="1"
+                @change="handleStatusChange(scope.row)"
+              ></el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+            <template slot-scope="scope">
+              <span>{{ parseTime(scope.row.createTime) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-edit"
+                @click="handleUpdate(scope.row)"
+                v-hasPermi="['rental:phonebook:edit']"
+              >修改</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.row)"
+                v-hasPermi="['rental:phonebook:remove']"
+              >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="queryParams.pageNum"
+          :limit.sync="queryParams.pageSize"
+          @pagination="getList"
+        />
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['rental:phonebook:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['rental:phonebook:remove']"
-        >删除</el-button>
-      </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
-
-    <el-table v-loading="loading" :data="phonebookList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="编号" align="center" prop="phonebookId" />
-      <el-table-column label="商家名称" align="center" prop="merchantName" :show-overflow-tooltip="true" />
-      <el-table-column label="负责人" align="center" prop="ownerName" />
-      <el-table-column label="电话" align="center" prop="phone" />
-      <el-table-column label="分类" align="center" prop="category" />
-      <el-table-column label="地址" align="center" prop="address" :show-overflow-tooltip="true" />
-      <el-table-column label="状态" align="center" prop="status">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.status"
-            active-value="0"
-            inactive-value="1"
-            @change="handleStatusChange(scope.row)"
-          ></el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['rental:phonebook:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['rental:phonebook:remove']"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
 
     <!-- 添加或修改电话簿对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
@@ -213,14 +239,24 @@ export default {
       phonebookList: [],
       // 商家分类下拉数据
       categoryOptions: [
-        { value: "1", label: "餐饮" },
-        { value: "2", label: "便利店" },
-        { value: "3", label: "家政" },
-        { value: "4", label: "维修" },
-        { value: "5", label: "快递" },
-        { value: "6", label: "医疗" },
-        { value: "7", label: "其他" }
+        { value: "1", label: "餐饮美食" },
+        { value: "2", label: "生活服务" },
+        { value: "3", label: "家居建材" },
+        { value: "4", label: "教育培训" },
+        { value: "5", label: "医疗健康" },
+        { value: "6", label: "休闲娱乐" },
+        { value: "7", label: "交通出行" },
+        { value: "8", label: "购物商场" }
       ],
+      // 分类树配置
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      // 当前选中的分类节点
+      currentCategoryId: '0',
+      // 分类树数据
+      categoryTreeData: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -257,9 +293,38 @@ export default {
     }
   },
   created() {
+    this.initCategoryTree()
     this.getList()
   },
+  mounted() {
+    this.$nextTick(() => {
+      if (this.$refs.categoryTree) {
+        this.$refs.categoryTree.setCurrentKey('0')
+      }
+    })
+  },
   methods: {
+    /** 初始化分类树 */
+    initCategoryTree() {
+      const children = this.categoryOptions.map(item => ({
+        id: item.value,
+        label: item.label,
+        value: item.label
+      }))
+      this.categoryTreeData = [{
+        id: '0',
+        label: '全部',
+        value: undefined,
+        children: children
+      }]
+    },
+    /** 分类树节点点击 */
+    handleNodeClick(data) {
+      this.currentCategoryId = data.id
+      this.queryParams.category = data.value
+      this.queryParams.pageNum = 1
+      this.getList()
+    },
     /** 查询电话簿列表 */
     getList() {
       this.loading = true
@@ -297,6 +362,11 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm("queryForm")
+      this.currentCategoryId = '0'
+      this.queryParams.category = undefined
+      if (this.$refs.categoryTree) {
+        this.$refs.categoryTree.setCurrentKey('0')
+      }
       this.handleQuery()
     },
     // 多选框选中数据
@@ -365,3 +435,46 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.category-tree-container {
+  background: #fff;
+  border-radius: 4px;
+  padding: 0;
+  height: calc(100vh - 140px);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+}
+.tree-header {
+  height: 40px;
+  line-height: 40px;
+  padding: 0 15px;
+  border-bottom: 1px solid #e6e6e6;
+  background: #fafafa;
+  border-radius: 4px 4px 0 0;
+}
+.tree-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+}
+.custom-tree-node {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  padding-right: 8px;
+}
+.node-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.node-count {
+  color: #909399;
+  font-size: 12px;
+  margin-left: 5px;
+}
+</style>

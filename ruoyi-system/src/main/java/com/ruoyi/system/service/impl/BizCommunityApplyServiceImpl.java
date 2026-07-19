@@ -5,12 +5,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.BizCommunity;
 import com.ruoyi.system.domain.BizCommunityApply;
+import com.ruoyi.system.domain.SysRegion;
 import com.ruoyi.system.mapper.BizCommunityApplyMapper;
 import com.ruoyi.system.mapper.BizCommunityMapper;
 import com.ruoyi.system.service.IBizCommunityApplyService;
+import com.ruoyi.system.service.ISysRegionService;
 
 /**
  * 小区申请信息 服务层处理
@@ -25,6 +28,9 @@ public class BizCommunityApplyServiceImpl implements IBizCommunityApplyService
 
     @Autowired
     private BizCommunityMapper bizCommunityMapper;
+
+    @Autowired
+    private ISysRegionService sysRegionService;
 
     /**
      * 查询小区申请信息集合
@@ -59,6 +65,7 @@ public class BizCommunityApplyServiceImpl implements IBizCommunityApplyService
     @Override
     public int insertBizCommunityApply(BizCommunityApply bizCommunityApply)
     {
+        checkCommunityRegisterSwitch(bizCommunityApply.getProvince(), bizCommunityApply.getCity(), bizCommunityApply.getDistrict());
         // 默认申请状态为待审批
         if (StringUtils.isEmpty(bizCommunityApply.getApplyStatus()))
         {
@@ -152,5 +159,30 @@ public class BizCommunityApplyServiceImpl implements IBizCommunityApplyService
         apply.setApproveTime(new Date());
         apply.setApproveRemark(bizCommunityApply.getApproveRemark());
         return bizCommunityApplyMapper.updateBizCommunityApply(apply);
+    }
+
+    /**
+     * 校验小区登记开关是否开启
+     *
+     * @param province 省份
+     * @param city 城市
+     * @param district 区县
+     */
+    @Override
+    public void checkCommunityRegisterSwitch(String province, String city, String district)
+    {
+        if (StringUtils.isEmpty(district))
+        {
+            return;
+        }
+        SysRegion region = sysRegionService.selectRegionByDistrictName(district);
+        if (region == null)
+        {
+            throw new ServiceException("该地区未开放使用，请联系平台");
+        }
+        if ("1".equals(region.getCommunityRegisterSwitch()))
+        {
+            throw new ServiceException("该地区未开放使用，请联系平台");
+        }
     }
 }

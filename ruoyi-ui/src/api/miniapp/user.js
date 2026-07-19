@@ -60,3 +60,21 @@ export function verifyUser(data) {
     data: data
   })
 }
+
+// 调整发布次数
+export function adjustPublishCount(data) {
+  return request({
+    url: '/miniapp/user/adjustPublishCount',
+    method: 'put',
+    data: data
+  })
+}
+
+// 延长发布周期
+export function extendPublishPeriod(data) {
+  return request({
+    url: '/miniapp/user/extendPublishPeriod',
+    method: 'put',
+    data: data
+  })
+}

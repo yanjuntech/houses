@@ -73,4 +73,9 @@ public class BizCommunity extends BaseEntity
     @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     @JsonProperty("status")
     private String status;
+
+    /** 标签（逗号分隔） */
+    @Excel(name = "标签")
+    @JsonProperty("tags")
+    private String tags;
 }

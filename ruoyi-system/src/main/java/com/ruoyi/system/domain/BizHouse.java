@@ -1,6 +1,8 @@
 package com.ruoyi.system.domain;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -117,4 +119,15 @@ public class BizHouse extends BaseEntity
     @Excel(name = "发布者标签")
     @JsonProperty("publishUserTypeLabel")
     private String publishUserTypeLabel;
+
+    /** 标签（逗号分隔） */
+    @Excel(name = "标签")
+    @JsonProperty("tags")
+    private String tags;
+
+    /** 有效期截止时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "有效期截止", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty("validUntil")
+    private Date validUntil;
 }
