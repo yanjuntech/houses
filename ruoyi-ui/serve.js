@@ -34,22 +34,33 @@ const server = http.createServer((req, res) => {
     return
   }
 
+  // Remove query parameters from URL
+  let urlPath = req.url.split('?')[0]
+  // Decode URI and normalize
+  urlPath = decodeURIComponent(urlPath)
+
   // Serve static files from dist
-  let filePath = path.join(DIST_DIR, req.url === '/' ? 'index.html' : req.url)
+  let filePath = path.join(DIST_DIR, urlPath === '/' ? 'index.html' : urlPath)
 
   const ext = path.extname(filePath)
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      // SPA fallback: serve index.html for unknown routes
-      fs.readFile(path.join(DIST_DIR, 'index.html'), (e2, d2) => {
-        if (e2) {
-          res.writeHead(404)
-          res.end('Not Found')
-        } else {
-          res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
-          res.end(d2)
-        }
-      })
+      // If request has a file extension, return 404 (don't serve HTML for missing JS/CSS)
+      if (ext) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' })
+        res.end('Not Found')
+      } else {
+        // SPA fallback: serve index.html for unknown routes (no file extension)
+        fs.readFile(path.join(DIST_DIR, 'index.html'), (e2, d2) => {
+          if (e2) {
+            res.writeHead(404)
+            res.end('Not Found')
+          } else {
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
+            res.end(d2)
+          }
+        })
+      }
     } else {
       res.writeHead(200, { 'Content-Type': mimeTypes[ext] || 'application/octet-stream' })
       res.end(data)
