@@ -342,6 +342,9 @@ export default {
   methods: {
     /** 初始化分类树 */
     initCategoryTree() {
+      // 注意:数据库 biz_phonebook.category 字段存储的是中文标签(如"餐饮美食"、"超市便利")
+      // 因此 value 必须使用 item.label(中文)以匹配后端查询,
+      // id 使用 item.value(数字)仅用于树节点标识
       const children = this.categoryOptions.map(item => ({
         id: item.value,
         label: item.label,
@@ -357,7 +360,12 @@ export default {
     /** 分类树节点点击 */
     handleNodeClick(data) {
       this.currentCategoryId = data.id
-      this.queryParams.category = data.value
+      // 安全检查:如果 data.value 为 undefined 或 null(如点击"全部"根节点),则清空查询条件
+      if (data.value === undefined || data.value === null) {
+        this.queryParams.category = undefined
+      } else {
+        this.queryParams.category = data.value
+      }
       this.queryParams.pageNum = 1
       this.getList()
     },

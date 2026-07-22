@@ -1,0 +1,28 @@
+# Checklist
+
+- [x] 数据库 `biz_phonebook.category` 字段实际存储值已确认（中文标签或数字标识）
+  - 验证: DB 存储"餐饮美食"、"超市便利"等中文标签
+- [x] `initCategoryTree()` 中树节点 `id` 与 `value` 字段类型一致
+  - 验证: `id` 为数字字符串(节点标识)，`value` 为中文标签(查询参数)
+- [x] `handleNodeClick(data)` 点击"全部"节点时 `queryParams.category` 被置为 `undefined`
+  - 验证: 浏览器测试步骤 7 点击"全部"后表格显示 2 条全部记录
+- [x] `handleNodeClick(data)` 点击"餐饮美食"节点时发送的 `category` 参数能命中数据库记录
+  - 验证: 浏览器测试步骤 4 点击后表格显示 1 条"老北京炸酱面馆"
+- [x] 搜索表单 `el-select` 的 `:value` 与树节点点击发送的 `category` 参数一致
+  - 验证: 搜索表单测试返回 1 条"老北京炸酱面馆"，与树点击一致
+- [x] 新增/修改表单 `el-select` 的 `:value` 与数据库存储方式一致
+  - 验证: 表单 `:value="item.label"` 与 DB 中文标签一致
+- [x] 前端生产版本已重新构建（`npm run build:prod`）
+  - 验证: dist/ 目录已更新,serve.js 已加载最新产物
+- [x] 浏览器登录成功并进入电话簿管理页面
+  - 验证: URL 从 /login 跳转到 /index,再导航至 /biz/phonebook
+- [x] 点击"餐饮美食"分类树节点后，表格正确显示"老北京炸酱面馆"记录
+  - 验证: 表格 1 行,包含"老北京炸酱面馆"且分类为"餐饮美食"
+- [x] 点击"全部"节点后，表格显示所有商家记录
+  - 验证: 表格 2 行,包含"老北京炸酱面馆"和"阳光24小时便利店"
+- [x] 搜索表单下拉选择"餐饮美食"后点击搜索，结果与树点击一致
+  - 验证: 返回 1 行"老北京炸酱面馆"记录,与树点击行为一致
+- [x] 页面无错误提示且浏览器控制台无 JavaScript 异常
+  - 验证: 无 el-message--error,无 console error/warning,无 pageerror
+- [x] 测试完成后 `sys.account.captchaEnabled` 已恢复为 `true`
+  - 验证: DB config_value='true',Redis 缓存已清除,/captchaImage 返回 captchaEnabled=True
