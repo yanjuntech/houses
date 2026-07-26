@@ -272,13 +272,18 @@ export default {
       // 商家分类下拉数据
       categoryOptions: [
         { value: "1", label: "餐饮美食" },
-        { value: "2", label: "生活服务" },
-        { value: "3", label: "家居建材" },
-        { value: "4", label: "教育培训" },
-        { value: "5", label: "医疗健康" },
-        { value: "6", label: "休闲娱乐" },
-        { value: "7", label: "交通出行" },
-        { value: "8", label: "购物商场" }
+        { value: "2", label: "快递服务" },
+        { value: "3", label: "超市便利" },
+        { value: "4", label: "便民服务" },
+        { value: "5", label: "维修服务" },
+        { value: "6", label: "医疗健康" },
+        { value: "7", label: "教育培训" },
+        { value: "8", label: "建材五金" },
+        { value: "9", label: "装修服务" },
+        { value: "10", label: "宠物服务" },
+        { value: "11", label: "母婴用品" },
+        { value: "12", label: "法律服务" },
+        { value: "13", label: "房产服务" }
       ],
       // 分类树配置
       defaultProps: {
