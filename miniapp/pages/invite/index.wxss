@@ -1,0 +1,308 @@
+/* 邀请管理页样式 */
+.invite-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 40rpx;
+}
+
+/* 顶部邀请统计卡片 */
+.stats-card {
+  margin: 20rpx;
+  padding: 32rpx 24rpx;
+  background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
+  border-radius: 16rpx;
+  box-shadow: 0 6rpx 20rpx rgba(64, 128, 255, 0.25);
+}
+
+.stats-header {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 28rpx;
+}
+
+.stats-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ffffff;
+  margin-right: 16rpx;
+}
+
+.stats-subtitle {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.stats-body {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12rpx;
+  padding: 24rpx 0;
+}
+
+.stats-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stats-value {
+  font-size: 56rpx;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.1;
+  margin-bottom: 8rpx;
+}
+
+.stats-value.verified {
+  color: #ffffff;
+}
+
+.stats-value.pending {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.stats-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.stats-divider {
+  width: 1rpx;
+  height: 80rpx;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 中部邀请操作区 */
+.action-card {
+  margin: 0 20rpx 20rpx;
+  padding: 24rpx;
+  background: #ffffff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.invite-code-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.invite-code-label {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.invite-code-box {
+  display: flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  background: #f0f5ff;
+  border-radius: 8rpx;
+}
+
+.invite-code-value {
+  font-size: 30rpx;
+  color: #4080ff;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+  margin-right: 12rpx;
+}
+
+.copy-icon {
+  font-size: 28rpx;
+}
+
+.action-buttons {
+  display: flex;
+  margin-top: 24rpx;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 120rpx;
+  border-radius: 12rpx;
+  border: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
+  color: #ffffff;
+  margin-right: 16rpx;
+}
+
+.action-btn.secondary {
+  background: #f0f5ff;
+  color: #4080ff;
+  border: 1rpx solid #d6e4ff;
+}
+
+.action-btn:active {
+  opacity: 0.85;
+}
+
+.btn-icon {
+  font-size: 36rpx;
+  margin-bottom: 8rpx;
+}
+
+.btn-text {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+/* 底部邀请列表 */
+.list-section {
+  margin: 0 20rpx;
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 8rpx 20rpx;
+}
+
+.list-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.list-count {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.invite-list {
+  background: #ffffff;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.invite-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.invite-item:last-child {
+  border-bottom: none;
+}
+
+.invite-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+  flex-shrink: 0;
+}
+
+.invite-info {
+  flex: 1;
+  min-width: 0;
+  margin-left: 20rpx;
+}
+
+.invite-top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.invite-nickname {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333333;
+  max-width: 360rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 16rpx;
+}
+
+.status-tag {
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+
+.status-tag.verified {
+  color: #52c41a;
+  background: #f6ffed;
+  border: 1rpx solid #d9f7be;
+}
+
+.status-tag.unverified {
+  color: #999999;
+  background: #f5f5f5;
+  border: 1rpx solid #e8e8e8;
+}
+
+.invite-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.invite-phone {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.invite-time {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0 80rpx;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #999999;
+  margin-bottom: 10rpx;
+}
+
+.empty-tip {
+  font-size: 24rpx;
+  color: #bbbbbb;
+}
+
+/* 加载提示 */
+.loading-tip {
+  text-align: center;
+  padding: 32rpx 0;
+  font-size: 24rpx;
+  color: #999999;
+}

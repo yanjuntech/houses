@@ -1,0 +1,77 @@
+<!-- 消息中心 - 消息详情页 -->
+<view class="detail-page">
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 消息不存在 -->
+  <view class="empty-state" wx:if="{{!loading && !detail}}">
+    <view class="empty-icon">📭</view>
+    <text class="empty-text">消息不存在</text>
+  </view>
+
+  <!-- 消息详情卡片 -->
+  <view class="detail-card" wx:if="{{!loading && detail}}">
+    <!-- 消息标题 -->
+    <view class="detail-title">{{detail.title || detail.messageTitle || '系统消息'}}</view>
+
+    <!-- 发送时间和发送人信息 -->
+    <view class="detail-meta">
+      <view class="meta-item" wx:if="{{detail.sender || detail.sendUser || detail.senderName}}">
+        <text class="meta-label">发送人：</text>
+        <text class="meta-value">{{detail.sender || detail.sendUser || detail.senderName}}</text>
+      </view>
+      <view class="meta-item">
+        <text class="meta-label">时间：</text>
+        <text class="meta-value">{{formatTime}}</text>
+      </view>
+    </view>
+
+    <!-- 分隔线 -->
+    <view class="divider"></view>
+
+    <!-- 消息内容 -->
+    <view class="detail-content">
+      <text>{{detail.content || detail.messageContent || '暂无内容'}}</text>
+    </view>
+
+    <!-- 附件或链接区域 -->
+    <view class="attachment-area" wx:if="{{detail.attachments || detail.attachmentUrl || detail.linkUrl}}">
+      <view class="attachment-title">附件/链接</view>
+      <view
+        class="attachment-item"
+        wx:if="{{detail.attachmentUrl}}"
+        data-url="{{detail.attachmentUrl}}"
+        bindtap="handleAttachment"
+      >
+        <text class="attachment-icon">📎</text>
+        <text class="attachment-text">查看附件</text>
+      </view>
+      <view
+        class="attachment-item"
+        wx:if="{{detail.linkUrl}}"
+        data-url="{{detail.linkUrl}}"
+        bindtap="handleAttachment"
+      >
+        <text class="attachment-icon">🔗</text>
+        <text class="attachment-text">查看链接</text>
+      </view>
+      <block wx:if="{{detail.attachments && detail.attachments.length > 0}}">
+        <view
+          class="attachment-item"
+          wx:for="{{detail.attachments}}"
+          wx:key="index"
+          data-url="{{item.url || item}}"
+          bindtap="handleAttachment"
+        >
+          <text class="attachment-icon">📎</text>
+          <text class="attachment-text">{{item.name || ('附件' + (index + 1))}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 返回按钮 -->
+  <view class="back-btn" wx:if="{{!loading}}" bindtap="onBack">返回</view>
+</view>

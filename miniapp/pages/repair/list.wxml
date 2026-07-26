@@ -1,0 +1,53 @@
+<view class="page">
+  <!-- 顶部 tab 切换 -->
+  <view class="tab-bar">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+      data-tab="{{item.key}}"
+      bindtap="switchTab"
+    >{{item.label}}</view>
+  </view>
+
+  <!-- 维修记录列表 -->
+  <view class="repair-list" wx:if="{{repairList.length > 0}}">
+    <view
+      class="repair-card"
+      wx:for="{{repairList}}"
+      wx:key="repairId"
+      data-id="{{item.repairId}}"
+      bindtap="goDetail"
+    >
+      <view class="card-top">
+        <text class="repair-no">单号：{{item.repairNo || item.repairId}}</text>
+        <text class="status-tag {{item.statusClass}}">{{item.statusText}}</text>
+      </view>
+      <view class="card-row">
+        <text class="row-icon">📍</text>
+        <text class="row-text">{{item.houseAddress || '暂无地址'}}</text>
+      </view>
+      <view class="card-row">
+        <text class="row-icon">📝</text>
+        <text class="row-text desc-text">{{item.description || '暂无描述'}}</text>
+      </view>
+      <view class="card-bottom">
+        <text class="create-time">{{item.formatTime}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && repairList.length === 0}}">
+    <text class="empty-icon">🔧</text>
+    <text class="empty-text">暂无维修记录</text>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="loadmore" wx:if="{{repairList.length > 0}}">
+    <text class="loadmore-text" wx:if="{{loading}}">加载中...</text>
+    <text class="loadmore-text" wx:elif="{{!hasMore}}">没有更多了</text>
+    <text class="loadmore-text" wx:else>上拉加载更多</text>
+  </view>
+</view>

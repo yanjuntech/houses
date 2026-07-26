@@ -1,0 +1,58 @@
+<!-- 消息中心 - 消息列表页 -->
+<view class="message-page">
+  <!-- 顶部标签栏 -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{activeTab === 'all' ? 'active' : ''}}"
+      data-tab="all"
+      bindtap="switchTab"
+    >全部</view>
+    <view
+      class="tab-item {{activeTab === 'unread' ? 'active' : ''}}"
+      data-tab="unread"
+      bindtap="switchTab"
+    >
+      未读
+      <text wx:if="{{unreadCount > 0}}" class="badge">{{unreadCount > 99 ? '99+' : unreadCount}}</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'read' ? 'active' : ''}}"
+      data-tab="read"
+      bindtap="switchTab"
+    >已读</view>
+  </view>
+
+  <!-- 消息列表区域 -->
+  <view class="message-list" wx:if="{{messageList.length > 0}}">
+    <view
+      class="message-item"
+      wx:for="{{messageList}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+    >
+      <!-- 未读红点 -->
+      <view class="unread-dot" wx:if="{{item.readStatus === 0 || item.readStatus === '0' || !item.isRead}}"></view>
+      <view class="item-content">
+        <view class="item-header">
+          <text class="item-title">{{item.title || item.messageTitle || '系统消息'}}</text>
+          <text class="item-time">{{item.formatTime}}</text>
+        </view>
+        <view class="item-preview">{{item.content || item.messageContent || ''}}</view>
+      </view>
+      <view class="item-arrow">›</view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && messageList.length === 0}}">
+    <view class="empty-icon">📭</view>
+    <text class="empty-text">暂无消息</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-tip" wx:if="{{loading}}">加载中...</view>
+
+  <!-- 没有更多 -->
+  <view class="loading-tip" wx:if="{{!loading && messageList.length > 0 && !hasMore}}">没有更多了</view>
+</view>

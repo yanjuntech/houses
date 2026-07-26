@@ -1,0 +1,38 @@
+<view class="page">
+  <!-- 兑换记录列表 -->
+  <view class="record-list" wx:if="{{recordList.length > 0}}">
+    <view
+      class="record-card"
+      wx:for="{{recordList}}"
+      wx:key="recordId"
+    >
+      <view class="record-main">
+        <view class="record-header">
+          <text class="product-name">{{item.productName || '未知商品'}}</text>
+          <text class="status-tag {{item.statusCls}}">{{item.statusText}}</text>
+        </view>
+        <view class="record-meta">
+          <view class="meta-row">
+            <text class="meta-label">兑换时间</text>
+            <text class="meta-value">{{item.exchangeTimeText || '-'}}</text>
+          </view>
+          <view class="meta-row">
+            <text class="meta-label">消耗人数</text>
+            <text class="meta-value cost">{{item.costCount || 0}}人</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{loading && recordList.length === 0}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && recordList.length === 0}}">
+    <text class="empty-icon">📭</text>
+    <text class="empty-text">暂无兑换记录</text>
+  </view>
+</view>

@@ -1,4 +1,5 @@
 <view class="container">
+  <!-- 顶部欢迎区 -->
   <view class="header">
     <view class="header-bg"></view>
     <view class="header-content">
@@ -7,11 +8,29 @@
       </view>
       <view class="search-bar" bindtap="handleSearch">
         <text class="search-icon">🔍</text>
-        <text class="search-placeholder">搜索服务</text>
+        <text class="search-placeholder">搜索房源</text>
       </view>
     </view>
   </view>
 
+  <!-- 轮播图：无数据时不显示 -->
+  <view class="banner-wrap" wx:if="{{banners.length > 0}}">
+    <swiper
+      class="banner-swiper"
+      autoplay="{{true}}"
+      interval="4000"
+      duration="500"
+      circular="{{true}}"
+      indicator-dots="{{true}}"
+      indicator-color="rgba(255,255,255,0.4)"
+      indicator-active-color="#ffffff">
+      <swiper-item wx:for="{{banners}}" wx:key="id">
+        <image class="banner-image" src="{{item.imageUrl}}" mode="aspectFill" />
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <!-- 快捷入口 -->
   <view class="quick-actions">
     <view class="action-item" wx:for="{{quickActions}}" wx:key="id" bindtap="handleAction" data-id="{{item.id}}">
       <view class="action-icon">{{item.icon}}</view>
@@ -19,37 +38,74 @@
     </view>
   </view>
 
+  <!-- 热门房源 -->
   <view class="section">
     <view class="section-header">
-      <text class="section-title">热门服务</text>
-      <text class="section-more" bindtap="viewMore">查看更多 ›</text>
+      <text class="section-title">热门房源</text>
+      <text class="section-more" bindtap="viewMoreHouses">查看更多 ›</text>
     </view>
-    <view class="service-list">
-      <view class="service-card" wx:for="{{services}}" wx:key="id" bindtap="handleService" data-id="{{item.id}}">
-        <image class="service-image" src="{{item.image}}" mode="aspectFill" />
-        <view class="service-info">
-          <text class="service-name">{{item.name}}</text>
-          <text class="service-desc">{{item.desc}}</text>
-          <view class="service-tags">
-            <text class="tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+    <view class="house-list" wx:if="{{houses.length > 0}}">
+      <view
+        class="house-card"
+        wx:for="{{houses}}"
+        wx:key="id"
+        bindtap="handleService"
+        data-id="{{item.id}}">
+        <view class="house-info">
+          <text class="house-title">{{item.title}}</text>
+          <view class="house-tags">
+            <text class="house-tag" wx:if="{{item.layout}}">{{item.layout}}</text>
+            <text class="house-tag" wx:if="{{item.area}}">{{item.area}}㎡</text>
+          </view>
+          <text class="house-community" wx:if="{{item.communityName}}">📍 {{item.communityName}}</text>
+          <text class="house-price" wx:if="{{item.price}}">¥{{item.price}}/月</text>
+        </view>
+      </view>
+    </view>
+    <view class="empty-state" wx:else>
+      <text class="empty-text">暂无热门房源</text>
+    </view>
+  </view>
+
+  <!-- 商家推荐 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">商家推荐</text>
+      <text class="section-more" bindtap="viewMoreMerchants">查看更多 ›</text>
+    </view>
+    <view class="merchant-list" wx:if="{{merchants.length > 0}}">
+      <view
+        class="merchant-card"
+        wx:for="{{merchants}}"
+        wx:key="id"
+        bindtap="handleMerchant"
+        data-phone="{{item.phone}}">
+        <view class="merchant-info">
+          <view class="merchant-top">
+            <text class="merchant-name">{{item.name}}</text>
+            <text class="merchant-category" wx:if="{{item.category}}">{{item.category}}</text>
+          </view>
+          <text class="merchant-address" wx:if="{{item.address}}">📍 {{item.address}}</text>
+          <view class="merchant-phone-row">
+            <text class="merchant-phone">📞 {{item.phone}}</text>
+            <text class="merchant-call-btn">拨打</text>
           </view>
         </view>
       </view>
     </view>
+    <view class="empty-state" wx:else>
+      <text class="empty-text">暂无推荐商家</text>
+    </view>
   </view>
 
+  <!-- 底部静态欢迎信息 -->
   <view class="section">
     <view class="section-header">
       <text class="section-title">最新动态</text>
     </view>
-    <view class="news-list">
-      <view class="news-item" wx:for="{{news}}" wx:key="id" bindtap="handleNews" data-id="{{item.id}}">
-        <view class="news-content">
-          <text class="news-title">{{item.title}}</text>
-          <text class="news-time">{{item.time}}</text>
-        </view>
-        <image class="news-arrow" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABqklEQVR4nO2ZzU7DMBCFP2gHkAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAON8AKdU2xQv8g4AAAAASUVORK5CYII=" mode="aspectFit" />
-      </view>
+    <view class="welcome-card">
+      <text class="welcome-title">欢迎使用社区租赁服务</text>
+      <text class="welcome-desc">我们致力于为您提供便捷的房屋租赁、维修服务和商家查询体验。如有任何问题，请通过「联系客服」与我们沟通，祝您生活愉快！</text>
     </view>
   </view>
 </view>

@@ -1,0 +1,109 @@
+<view class="page" wx:if="{{!loading}}">
+  <!-- 顶部图片轮播 -->
+  <view class="image-section">
+    <swiper
+      wx:if="{{imageList.length > 0}}"
+      class="image-swiper"
+      indicator-dots="{{imageList.length > 1}}"
+      indicator-color="rgba(255,255,255,0.5)"
+      indicator-active-color="#ffffff"
+      autoplay
+      circular
+    >
+      <swiper-item
+        wx:for="{{imageList}}"
+        wx:key="*this"
+        bindtap="previewImage"
+        data-url="{{item}}"
+      >
+        <image class="house-image" src="{{item}}" mode="aspectFill" />
+      </swiper-item>
+    </swiper>
+
+    <!-- 无图占位 -->
+    <view wx:else class="image-placeholder">
+      <text class="placeholder-icon">🏠</text>
+      <text class="placeholder-text">暂无房源图片</text>
+    </view>
+  </view>
+
+  <!-- 房源基本信息 -->
+  <view class="info-card base-info">
+    <view class="house-title">{{houseInfo.houseTitle || '未命名房源'}}</view>
+    <view class="price-row">
+      <text class="price">{{houseInfo.housePrice || houseInfo.price || 0}}</text>
+      <text class="price-unit">元/月</text>
+    </view>
+    <view class="tag-row">
+      <text class="tag" wx:if="{{houseInfo.houseType}}">{{houseInfo.houseType}}</text>
+      <text class="tag" wx:if="{{houseInfo.houseArea || houseInfo.area}}">{{houseInfo.houseArea || houseInfo.area}}㎡</text>
+    </view>
+  </view>
+
+  <!-- 房源详细信息 -->
+  <view class="info-card">
+    <view class="card-title">房源详情</view>
+    <view class="detail-item">
+      <text class="detail-label">楼层</text>
+      <text class="detail-value">{{houseInfo.floor || '-'}}</text>
+    </view>
+    <view class="detail-item">
+      <text class="detail-label">朝向</text>
+      <text class="detail-value">{{houseInfo.orientation || '-'}}</text>
+    </view>
+    <view class="detail-item">
+      <text class="detail-label">装修</text>
+      <text class="detail-value">{{houseInfo.decoration || '-'}}</text>
+    </view>
+    <view class="detail-item">
+      <text class="detail-label">面积</text>
+      <text class="detail-value">{{houseInfo.houseArea || houseInfo.area || '-'}}㎡</text>
+    </view>
+    <view class="detail-item">
+      <text class="detail-label">户型</text>
+      <text class="detail-value">{{houseInfo.houseType || '-'}}</text>
+    </view>
+  </view>
+
+  <!-- 小区与地址 -->
+  <view class="info-card">
+    <view class="card-title">位置信息</view>
+    <view class="detail-item">
+      <text class="detail-label">小区</text>
+      <text class="detail-value">{{houseInfo.communityName || '-'}}</text>
+    </view>
+    <view class="detail-item address-item">
+      <text class="detail-label">地址</text>
+      <text class="detail-value address-value">{{houseInfo.houseAddress || houseInfo.address || '-'}}</text>
+    </view>
+  </view>
+
+  <!-- 联系方式 -->
+  <view class="info-card contact-card" wx:if="{{houseInfo.ownerPhone || houseInfo.landlordPhone || houseInfo.phone}}">
+    <view class="contact-info">
+      <view class="contact-avatar">📞</view>
+      <view class="contact-text">
+        <view class="contact-name">房东</view>
+        <view class="contact-phone">{{houseInfo.ownerPhone || houseInfo.landlordPhone || houseInfo.phone}}</view>
+      </view>
+    </view>
+    <view class="contact-call-btn" bindtap="callOwner">立即拨打</view>
+  </view>
+
+  <!-- 底部操作栏占位，避免内容被遮挡 -->
+  <view class="bottom-placeholder"></view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar">
+    <view class="action-favorite {{isFavorited ? 'favorited' : ''}}" bindtap="toggleFavorite">
+      <text class="favorite-icon">{{isFavorited ? '❤️' : '🤍'}}</text>
+      <text class="favorite-text">{{isFavorited ? '已收藏' : '收藏'}}</text>
+    </view>
+    <view class="action-contact" bindtap="callOwner">联系房东</view>
+  </view>
+</view>
+
+<!-- 加载中状态 -->
+<view class="loading-state" wx:if="{{loading}}">
+  <text class="loading-text">加载中...</text>
+</view>

@@ -1,0 +1,28 @@
+- [x] Checkpoint 1: `utils/index.js` 封装了统一的 request 方法，支持 baseUrl、token 注入、401 跳转、错误提示
+- [x] Checkpoint 2: `utils/api.js` 包含所有后端 API 调用方法（用户、房屋、电话簿、消息、维修、邀请、商城、收藏、浏览、轮播图、小区）
+- [x] Checkpoint 3: 登录页可正常登录并保存用户信息到本地存储，登录后跳转首页
+- [x] Checkpoint 4: 首页轮播图展示真实数据（调用 `/rental/banner/validList`）
+- [x] Checkpoint 5: 首页热门房源展示真实数据（调用房屋列表接口）
+- [x] Checkpoint 6: 房屋列表页支持下拉刷新、上拉加载，数据来自后端接口
+- [x] Checkpoint 7: 房屋详情页展示完整房源信息，浏览记录自动上报
+- [x] Checkpoint 8: 房屋详情页收藏/取消收藏功能正常
+- [x] Checkpoint 9: 电话簿页展示真实商家数据，支持分类筛选和搜索
+- [x] Checkpoint 10: 电话簿页点击商家可拨打电话
+- [x] Checkpoint 11: 消息中心展示消息列表，未读数量徽标正确显示
+- [x] Checkpoint 12: 消息详情页自动标记已读
+- [x] Checkpoint 13: 维修申请页可成功提交维修申请
+- [x] Checkpoint 14: 维修记录页展示维修状态和时间线
+- [x] Checkpoint 15: 邀请页展示邀请统计（总人数、已认证人数）和邀请列表
+- [x] Checkpoint 16: 邀请分享功能正常（生成分享卡片）
+- [x] Checkpoint 17: 商城页展示上架商品列表和用户配额
+- [x] Checkpoint 18: 商品兑换功能正常，兑换后配额正确扣减
+- [x] Checkpoint 19: 兑换记录页展示用户兑换历史
+- [x] Checkpoint 20: 房屋发布页可发布房源，发布后配额扣减
+- [x] Checkpoint 21: 个人中心展示真实用户信息（头像、昵称、手机号）
+- [x] Checkpoint 22: 个人中心未登录时显示登录引导
+- [x] Checkpoint 23: 个人中心菜单项可正确跳转到对应功能页
+- [x] Checkpoint 24: 实名认证页可提交认证信息
+- [x] Checkpoint 25: 收藏列表页展示收藏房源，可取消收藏
+- [x] Checkpoint 26: tabBar 包含首页、房屋、电话簿、我的四个 tab，图标正确显示
+- [x] Checkpoint 27: 所有新增页面在 `app.json` 中已注册路由
+- [x] Checkpoint 28: 网页预览版同步更新所有新增页面的预览效果

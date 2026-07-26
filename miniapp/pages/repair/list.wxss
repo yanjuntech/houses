@@ -1,0 +1,184 @@
+.page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 30rpx;
+}
+
+/* ===================== 顶部 tab 栏 ===================== */
+.tab-bar {
+  display: flex;
+  background-color: #ffffff;
+  border-bottom: 1rpx solid #eeeeee;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #666666;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #4080ff;
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 6rpx;
+  background-color: #4080ff;
+  border-radius: 3rpx;
+}
+
+/* ===================== 维修记录列表 ===================== */
+.repair-list {
+  padding: 20rpx 24rpx;
+}
+
+.repair-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.repair-card:active {
+  opacity: 0.92;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.repair-no {
+  font-size: 24rpx;
+  color: #999999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+/* 状态标签 */
+.status-tag {
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  flex-shrink: 0;
+}
+
+.status-pending {
+  color: #ff9500;
+  background: rgba(255, 149, 0, 0.1);
+}
+
+.status-processing {
+  color: #4080ff;
+  background: rgba(64, 128, 255, 0.1);
+}
+
+.status-done {
+  color: #4caf50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.status-cancelled {
+  color: #999999;
+  background: rgba(153, 153, 153, 0.1);
+}
+
+/* 信息行 */
+.card-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12rpx;
+}
+
+.row-icon {
+  font-size: 24rpx;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+}
+
+.row-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.desc-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+}
+
+/* 卡片底部 */
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f5f5f5;
+}
+
+.create-time {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.arrow {
+  font-size: 36rpx;
+  color: #cccccc;
+}
+
+/* ===================== 空状态 ===================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  color: #c0c4cc;
+  margin-bottom: 24rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999999;
+}
+
+/* ===================== 加载更多 ===================== */
+.loadmore {
+  text-align: center;
+  padding: 30rpx 0;
+}
+
+.loadmore-text {
+  font-size: 24rpx;
+  color: #999999;
+}

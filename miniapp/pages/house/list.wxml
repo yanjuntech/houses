@@ -1,0 +1,125 @@
+<view class="page">
+  <!-- 顶部搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="搜索房源标题"
+        placeholder-class="search-placeholder"
+        value="{{searchValue}}"
+        bindinput="onSearchInput"
+        bindconfirm="handleSearch"
+        confirm-type="search"
+      />
+    </view>
+    <view class="search-btn" bindtap="handleSearch">搜索</view>
+  </view>
+
+  <!-- 筛选区域 -->
+  <view class="filter-bar">
+    <picker
+      class="filter-item"
+      mode="selector"
+      range="{{communityOptions}}"
+      range-key="communityName"
+      value="{{communityIndex}}"
+      bindchange="onCommunityChange"
+    >
+      <view class="filter-text {{communityIndex > 0 ? 'filter-text-active' : ''}}">
+        <text>{{communityOptions[communityIndex].communityName || '全部小区'}}</text>
+        <text class="filter-arrow">▾</text>
+      </view>
+    </picker>
+
+    <picker
+      class="filter-item"
+      mode="selector"
+      range="{{houseTypeOptions}}"
+      value="{{houseTypeIndex}}"
+      bindchange="onHouseTypeChange"
+    >
+      <view class="filter-text {{houseTypeIndex > 0 ? 'filter-text-active' : ''}}">
+        <text>{{houseTypeOptions[houseTypeIndex]}}</text>
+        <text class="filter-arrow">▾</text>
+      </view>
+    </picker>
+
+    <picker
+      class="filter-item"
+      mode="selector"
+      range="{{priceRangeOptions}}"
+      value="{{priceRangeIndex}}"
+      bindchange="onPriceRangeChange"
+    >
+      <view class="filter-text {{priceRangeIndex > 0 ? 'filter-text-active' : ''}}">
+        <text>{{priceRangeOptions[priceRangeIndex]}}</text>
+        <text class="filter-arrow">▾</text>
+      </view>
+    </picker>
+
+    <view class="filter-reset" bindtap="handleFilter">重置</view>
+  </view>
+
+  <!-- 房源列表 -->
+  <view class="house-list">
+    <view
+      class="house-card"
+      wx:for="{{houseList}}"
+      wx:key="houseId"
+      data-id="{{item.houseId}}"
+      bindtap="goDetail"
+    >
+      <!-- 图片占位区 -->
+      <view class="house-cover">
+        <image
+          wx:if="{{item.coverImage}}"
+          class="cover-image"
+          src="{{item.coverImage}}"
+          mode="aspectFill"
+        />
+        <view wx:else class="cover-placeholder">
+          <text class="placeholder-icon">🏠</text>
+          <text class="placeholder-text">暂无图片</text>
+        </view>
+        <view wx:if="{{item.houseType}}" class="house-type-tag">{{item.houseType}}</view>
+      </view>
+
+      <!-- 房源信息 -->
+      <view class="house-info">
+        <view class="house-title">{{item.houseTitle || '未命名房源'}}</view>
+        <view class="house-price-row">
+          <text class="house-price">{{item.housePrice || item.price || 0}}</text>
+          <text class="price-unit">元/月</text>
+        </view>
+        <view class="house-meta">
+          <text class="meta-item">{{item.houseType || '-'}}</text>
+          <text class="meta-divider">|</text>
+          <text class="meta-item">{{item.houseArea || item.area || '-'}}㎡</text>
+        </view>
+        <view class="house-community">
+          <text class="community-name">{{item.communityName || '未知小区'}}</text>
+        </view>
+        <view class="house-address">
+          <text class="address-icon">📍</text>
+          <text class="address-text">{{item.houseAddress || item.address || '暂无地址'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && houseList.length === 0}}">
+    <text class="empty-icon">🏠</text>
+    <text class="empty-text">暂无符合条件的房源</text>
+    <view class="empty-btn" bindtap="handleFilter">重置筛选</view>
+  </view>
+
+  <!-- 上拉加载更多提示 -->
+  <view class="loadmore" wx:if="{{houseList.length > 0}}">
+    <text class="loadmore-text" wx:if="{{loading}}">加载中...</text>
+    <text class="loadmore-text" wx:elif="{{!hasMore}}">没有更多房源了</text>
+    <text class="loadmore-text" wx:else>上拉加载更多</text>
+  </view>
+</view>

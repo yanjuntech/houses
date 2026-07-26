@@ -1,23 +1,83 @@
-const baseUrl = ''
+// 后端服务基础地址（开发环境）
+const baseUrl = 'http://localhost:8080'
+
+// 登录页路径，用于 401 自动跳转
+const LOGIN_PAGE = '/pages/login/login'
+
+// 处理登录失效：清除登录信息并跳转登录页
+function handleUnauthorized() {
+  try {
+    wx.removeStorageSync('token')
+    wx.removeStorageSync('userInfo')
+  } catch (e) {
+    console.error('清除登录信息失败:', e)
+  }
+  // 避免重复跳转
+  const pages = getCurrentPages()
+  const currentRoute = pages.length ? '/' + pages[pages.length - 1].route : ''
+  if (currentRoute !== LOGIN_PAGE) {
+    wx.reLaunch({ url: LOGIN_PAGE })
+  }
+}
+
+// 统一错误提示
+function showErrorToast(message) {
+  if (!message) return
+  wx.showToast({
+    title: message,
+    icon: 'none',
+    duration: 2000
+  })
+}
 
 function request(options) {
   return new Promise((resolve, reject) => {
+    // 自动注入 token（从本地存储读取）
+    const token = wx.getStorageSync('token') || ''
+    const header = {
+      'Content-Type': 'application/json',
+      ...options.header
+    }
+    if (token) {
+      header['Authorization'] = 'Bearer ' + token
+    }
+
     wx.request({
       url: baseUrl + options.url,
       method: options.method || 'GET',
       data: options.data || {},
-      header: {
-        'Content-Type': 'application/json',
-        ...options.header
-      },
+      header,
       success(res) {
+        // 401 未授权：清除登录信息并跳转登录页
+        if (res.statusCode === 401) {
+          handleUnauthorized()
+          showErrorToast('登录已失效，请重新登录')
+          reject(new Error('登录已失效，请重新登录'))
+          return
+        }
+
         if (res.statusCode === 200) {
-          resolve(res.data)
+          // 兼容后端统一返回结构 {code, message, data}
+          const resData = res.data
+          if (resData && typeof resData === 'object' && 'code' in resData) {
+            // code 为 200 视为业务成功
+            if (resData.code === 200) {
+              resolve(resData.data !== undefined ? resData.data : resData)
+            } else {
+              showErrorToast(resData.message || '请求失败')
+              reject(new Error(resData.message || '请求失败'))
+            }
+          } else {
+            resolve(resData)
+          }
         } else {
-          reject(new Error(`请求失败，状态码：${res.statusCode}`))
+          const errMsg = `请求失败，状态码：${res.statusCode}`
+          showErrorToast(errMsg)
+          reject(new Error(errMsg))
         }
       },
       fail(err) {
+        showErrorToast('网络异常，请稍后重试')
         reject(err)
       }
     })
@@ -209,6 +269,7 @@ function delay(ms) {
 }
 
 module.exports = {
+  baseUrl,
   request,
   get,
   post,

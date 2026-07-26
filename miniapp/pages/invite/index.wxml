@@ -1,0 +1,82 @@
+<!-- 邀请管理页 -->
+<view class="invite-page">
+  <!-- 顶部邀请统计卡片 -->
+  <view class="stats-card">
+    <view class="stats-header">
+      <text class="stats-title">邀请统计</text>
+      <text class="stats-subtitle">邀请好友，共享好礼</text>
+    </view>
+    <view class="stats-body">
+      <view class="stats-item">
+        <text class="stats-value">{{statistics.totalCount}}</text>
+        <text class="stats-label">总邀请</text>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <text class="stats-value verified">{{statistics.verifiedCount}}</text>
+        <text class="stats-label">已认证</text>
+      </view>
+      <view class="stats-divider"></view>
+      <view class="stats-item">
+        <text class="stats-value pending">{{statistics.pendingCount}}</text>
+        <text class="stats-label">待认证</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 中部邀请操作区 -->
+  <view class="action-card">
+    <view class="invite-code-row">
+      <text class="invite-code-label">我的邀请码</text>
+      <view class="invite-code-box" bindtap="handleCopyInviteCode">
+        <text class="invite-code-value">{{inviteCode}}</text>
+        <text class="copy-icon">📋</text>
+      </view>
+    </view>
+    <view class="action-buttons">
+      <button class="action-btn primary" open-type="share">
+        <text class="btn-icon">🤝</text>
+        <text class="btn-text">邀请好友</text>
+      </button>
+      <view class="action-btn secondary" bindtap="handleCopyInviteLink">
+        <text class="btn-icon">🔗</text>
+        <text class="btn-text">复制邀请链接</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部邀请列表 -->
+  <view class="list-section">
+    <view class="list-header">
+      <text class="list-title">邀请列表</text>
+      <text class="list-count">共 {{inviteList.length}} 人</text>
+    </view>
+
+    <!-- 列表区域 -->
+    <view class="invite-list" wx:if="{{inviteList.length > 0}}">
+      <view class="invite-item" wx:for="{{inviteList}}" wx:key="id">
+        <image class="invite-avatar" src="{{item.avatar}}" mode="aspectFill" />
+        <view class="invite-info">
+          <view class="invite-top">
+            <text class="invite-nickname">{{item.nickname}}</text>
+            <text class="status-tag {{item.verified ? 'verified' : 'unverified'}}">{{item.verifyStatusText}}</text>
+          </view>
+          <view class="invite-bottom">
+            <text class="invite-phone" wx:if="{{item.phoneMasked}}">{{item.phoneMasked}}</text>
+            <text class="invite-time">{{item.formatTime}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && inviteList.length === 0}}">
+      <text class="empty-icon">🎁</text>
+      <text class="empty-text">还没有邀请过好友</text>
+      <text class="empty-tip">快去邀请好友一起加入吧</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading-tip" wx:if="{{loading}}">加载中...</view>
+  </view>
+</view>

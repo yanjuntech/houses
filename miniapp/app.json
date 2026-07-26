@@ -1,7 +1,23 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/login/login",
+    "pages/message/list",
+    "pages/message/detail",
+    "pages/house/list",
+    "pages/house/detail",
+    "pages/house/publish",
+    "pages/phonebook/index",
+    "pages/repair/apply",
+    "pages/repair/list",
+    "pages/repair/detail",
+    "pages/invite/index",
+    "pages/mall/index",
+    "pages/mall/record",
+    "pages/favorite/list",
+    "pages/profile/edit",
+    "pages/profile/verify"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -21,6 +37,18 @@
         "text": "首页",
         "iconPath": "images/tab/home.png",
         "selectedIconPath": "images/tab/home-active.png"
+      },
+      {
+        "pagePath": "pages/house/list",
+        "text": "房屋",
+        "iconPath": "images/tab/house.png",
+        "selectedIconPath": "images/tab/house-active.png"
+      },
+      {
+        "pagePath": "pages/phonebook/index",
+        "text": "电话簿",
+        "iconPath": "images/tab/phonebook.png",
+        "selectedIconPath": "images/tab/phonebook-active.png"
       },
       {
         "pagePath": "pages/profile/profile",

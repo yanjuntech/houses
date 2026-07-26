@@ -1,0 +1,71 @@
+<view class="page">
+  <!-- 收藏列表 -->
+  <view class="favorite-list" wx:if="{{favoriteList.length > 0}}">
+    <view
+      class="favorite-card"
+      wx:for="{{favoriteList}}"
+      wx:key="houseId"
+    >
+      <!-- 卡片主体（可点击跳转详情） -->
+      <view
+        class="card-content"
+        data-id="{{item.houseId}}"
+        bindtap="goDetail"
+      >
+        <!-- 封面图 -->
+        <view class="house-cover">
+          <image
+            wx:if="{{item.coverImage}}"
+            class="cover-image"
+            src="{{item.coverImage}}"
+            mode="aspectFill"
+          />
+          <view wx:else class="cover-placeholder">
+            <text class="placeholder-icon">🏠</text>
+            <text class="placeholder-text">暂无图片</text>
+          </view>
+          <view wx:if="{{item.houseType}}" class="house-type-tag">{{item.houseType}}</view>
+        </view>
+
+        <!-- 房源信息 -->
+        <view class="house-info">
+          <view class="house-title">{{item.houseTitle || '未命名房源'}}</view>
+          <view class="house-meta">
+            <text class="meta-item">{{item.houseType || '-'}}</text>
+            <text class="meta-divider">|</text>
+            <text class="meta-item">{{item.houseArea || '-'}}㎡</text>
+            <text class="meta-divider">|</text>
+            <text class="meta-item">{{item.houseFloor || '-'}}</text>
+          </view>
+          <view class="house-community">
+            <text class="community-name">{{item.communityName || '未知小区'}}</text>
+          </view>
+          <view class="house-price-row">
+            <text class="house-price">{{item.housePrice || 0}}</text>
+            <text class="price-unit">元/月</text>
+          </view>
+          <view class="favorite-time" wx:if="{{item.favoriteTime}}">
+            <text class="time-icon">⏰</text>
+            <text class="time-text">收藏于 {{item.favoriteTime}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 卡片底部操作区 -->
+      <view class="card-footer">
+        <view
+          class="cancel-btn"
+          data-id="{{item.houseId}}"
+          catchtap="handleCancel"
+        >取消收藏</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && favoriteList.length === 0}}">
+    <text class="empty-icon">💙</text>
+    <text class="empty-text">暂无收藏的房源</text>
+    <view class="empty-btn" bindtap="goHouseList">去逛逛</view>
+  </view>
+</view>

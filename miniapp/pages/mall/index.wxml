@@ -1,0 +1,90 @@
+<view class="page">
+  <!-- 顶部用户配额卡片（蓝色渐变） -->
+  <view class="quota-card">
+    <view class="quota-main">
+      <view class="quota-row">
+        <view class="quota-item">
+          <view class="quota-value">{{quota.inviteCount}}</view>
+          <view class="quota-label">邀请人数</view>
+        </view>
+        <view class="quota-divider"></view>
+        <view class="quota-item">
+          <view class="quota-value">{{quota.availableCount}}</view>
+          <view class="quota-label">可兑换次数</view>
+        </view>
+        <view class="quota-divider"></view>
+        <view class="quota-item">
+          <view class="quota-value">{{quota.usedCount}}</view>
+          <view class="quota-label">已使用次数</view>
+        </view>
+      </view>
+    </view>
+    <!-- 右上角兑换记录按钮 -->
+    <view class="record-btn" bindtap="goRecord">
+      <text class="record-btn-text">兑换记录</text>
+    </view>
+  </view>
+
+  <!-- 商品列表标题 -->
+  <view class="section-title">
+    <text class="title-text">全部商品</text>
+    <text class="title-count">共{{productList.length}}件</text>
+  </view>
+
+  <!-- 商品网格（2列） -->
+  <view class="product-grid" wx:if="{{productList.length > 0}}">
+    <view
+      class="product-card"
+      wx:for="{{productList}}"
+      wx:key="productId"
+    >
+      <!-- 商品图片（正方形） -->
+      <view class="product-image-wrap">
+        <image
+          wx:if="{{item.productImage}}"
+          class="product-image"
+          src="{{item.productImage}}"
+          mode="aspectFill"
+          lazy-load
+        />
+        <view wx:else class="product-image-placeholder">
+          <text class="placeholder-icon">🎁</text>
+          <text class="placeholder-text">暂无图片</text>
+        </view>
+        <!-- 库存标签 -->
+        <view wx:if="{{item.stock !== undefined && item.stock !== null && item.stock !== ''}}" class="stock-tag">
+          库存 {{item.stock}}
+        </view>
+      </view>
+
+      <!-- 商品信息 -->
+      <view class="product-info">
+        <view class="product-name">{{item.productName || '未命名商品'}}</view>
+        <view class="product-desc">{{item.productDesc || '暂无描述'}}</view>
+        <view class="product-bottom">
+          <view class="required-count">
+            <text class="required-num">{{item.requiredCount || 0}}</text>
+            <text class="required-unit">人</text>
+          </view>
+          <view
+            class="exchange-btn {{!item.canExchange ? 'exchange-btn-disabled' : ''}}"
+            data-product="{{item}}"
+            bindtap="handleExchange"
+          >立即兑换</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{loading && productList.length === 0}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && productList.length === 0}}">
+    <text class="empty-icon">🛍️</text>
+    <text class="empty-text">商城暂无商品</text>
+    <view class="empty-btn" bindtap="initData">刷新</view>
+  </view>
+</view>

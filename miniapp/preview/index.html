@@ -15,10 +15,79 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: #f0f2f5;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
             min-height: 100vh;
             padding: 20px;
+            gap: 15px;
+        }
+
+        /* 顶部页面切换器 */
+        .page-switcher {
+            width: 375px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            padding: 12px;
+        }
+
+        .switcher-title {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .switcher-scroll {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 4px;
+        }
+
+        .switcher-scroll::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .switcher-scroll::-webkit-scrollbar-thumb {
+            background: #ddd;
+            border-radius: 2px;
+        }
+
+        .switcher-group {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 14px;
+        }
+
+        .switcher-group-label {
+            font-size: 11px;
+            color: #bbb;
+            margin-right: 6px;
+            font-weight: 600;
+        }
+
+        .switcher-btn {
+            display: inline-block;
+            padding: 5px 11px;
+            font-size: 12px;
+            border-radius: 14px;
+            background: #f0f2f5;
+            color: #333;
+            cursor: pointer;
+            border: none;
+            margin-right: 5px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .switcher-btn:hover {
+            background: #e3ecff;
+        }
+
+        .switcher-btn.active {
+            background: #4080ff;
+            color: #ffffff;
         }
 
         .phone-frame {
@@ -30,6 +99,14 @@
             overflow: hidden;
             position: relative;
             border: 10px solid #1a1a1a;
+        }
+
+        .phone-frame.no-tab .tab-bar {
+            display: none;
+        }
+
+        .phone-frame.no-tab .page-container {
+            height: calc(100% - 44px - 44px);
         }
 
         .status-bar {
@@ -59,17 +136,205 @@
             z-index: 100;
         }
 
+        .nav-back {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 26px;
+            color: #333;
+            cursor: pointer;
+            width: 30px;
+            line-height: 1;
+            display: none;
+            user-select: none;
+        }
+
+        .phone-frame.no-tab .nav-back {
+            display: block;
+        }
+
         .page-container {
             height: calc(100% - 44px - 44px - 50px);
             overflow-y: auto;
             position: relative;
+            background: #f5f5f5;
         }
 
-        /* 首页样式 */
-        .index-page {
+        /* 页面通用 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
             display: block;
         }
 
+        /* 通用组件 */
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 14px;
+            margin: 10px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background: #4080ff;
+            color: #ffffff;
+            border: none;
+            border-radius: 22px;
+            padding: 12px 0;
+            font-size: 15px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-green {
+            background: #07c160;
+            color: #ffffff;
+            border: none;
+            border-radius: 22px;
+            padding: 12px 0;
+            font-size: 15px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-outline {
+            background: #ffffff;
+            color: #4080ff;
+            border: 1px solid #4080ff;
+            border-radius: 22px;
+            padding: 11px 0;
+            font-size: 14px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            width: auto;
+            font-size: 12px;
+            border-radius: 14px;
+        }
+
+        .tag {
+            font-size: 10px;
+            color: #4080ff;
+            background: #f0f5ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 4px;
+            margin-bottom: 2px;
+            display: inline-block;
+        }
+
+        .form-card {
+            background: #ffffff;
+            margin: 10px;
+            border-radius: 12px;
+            padding: 4px 14px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group:last-child {
+            border-bottom: none;
+        }
+
+        .form-group label {
+            width: 80px;
+            font-size: 14px;
+            color: #333;
+            flex-shrink: 0;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: #333;
+            background: transparent;
+            font-family: inherit;
+            resize: none;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #bbb;
+        }
+
+        .form-group textarea {
+            min-height: 60px;
+        }
+
+        .form-group input:disabled {
+            color: #999;
+        }
+
+        .form-select {
+            flex: 1;
+            font-size: 14px;
+            color: #999;
+        }
+
+        .form-submit-wrap {
+            padding: 20px 15px 30px;
+        }
+
+        .status-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .status-pending {
+            color: #faad14;
+            background: #fff7e6;
+        }
+
+        .status-processing {
+            color: #4080ff;
+            background: #f0f5ff;
+        }
+
+        .status-done {
+            color: #52c41a;
+            background: #f6ffed;
+        }
+
+        .status-cancel {
+            color: #999;
+            background: #f5f5f5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #bbb;
+            font-size: 14px;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        /* 首页样式 */
         .index-page .header {
             position: relative;
             padding-top: 20px;
@@ -138,6 +403,7 @@
             flex-direction: column;
             align-items: center;
             width: 50px;
+            cursor: pointer;
         }
 
         .index-page .action-icon {
@@ -178,6 +444,7 @@
         .index-page .section-more {
             font-size: 13px;
             color: #999;
+            cursor: pointer;
         }
 
         .index-page .service-list {
@@ -193,6 +460,7 @@
             overflow: hidden;
             margin-bottom: 10px;
             box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
         }
 
         .index-page .service-image {
@@ -233,16 +501,6 @@
             flex-wrap: wrap;
         }
 
-        .index-page .tag {
-            font-size: 10px;
-            color: #4080ff;
-            background: #f0f5ff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-right: 4px;
-            margin-bottom: 2px;
-        }
-
         .index-page .news-list {
             background: #ffffff;
             border-radius: 12px;
@@ -255,6 +513,7 @@
             align-items: center;
             padding: 12px;
             border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
         }
 
         .index-page .news-item:last-child {
@@ -288,10 +547,6 @@
         }
 
         /* 个人中心样式 */
-        .profile-page {
-            display: none;
-        }
-
         .profile-page .user-header {
             position: relative;
             padding-bottom: 20px;
@@ -353,6 +608,7 @@
             align-items: center;
             justify-content: center;
             font-size: 14px;
+            cursor: pointer;
         }
 
         .profile-page .user-stats {
@@ -372,6 +628,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            cursor: pointer;
         }
 
         .profile-page .stat-value {
@@ -448,6 +705,1020 @@
             color: #ccc;
         }
 
+        /* 通用搜索栏 */
+        .search-bar-white {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            margin: 10px;
+            border-radius: 22px;
+            padding: 10px 14px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-bar-white span {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .search-bar-white span:first-child {
+            margin-right: 8px;
+            font-size: 15px;
+        }
+
+        /* 登录页 */
+        .login-page {
+            background: #ffffff;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 80px 30px 30px;
+        }
+
+        .login-page.active {
+            display: flex;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            margin-bottom: 16px;
+            box-shadow: 0 6px 16px rgba(64, 128, 255, 0.3);
+        }
+
+        .login-app-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .login-slogan {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 50px;
+        }
+
+        .login-input-wrap {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .login-input-prefix {
+            font-size: 16px;
+            color: #333;
+            margin-right: 12px;
+            padding-right: 12px;
+            border-right: 1px solid #eee;
+        }
+
+        .login-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #333;
+            background: transparent;
+        }
+
+        .login-input::placeholder {
+            color: #ccc;
+        }
+
+        .login-btn {
+            margin-bottom: 20px;
+        }
+
+        .login-agreement {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .login-checkbox {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid #4080ff;
+            color: #4080ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            margin-right: 6px;
+            background: #f0f5ff;
+        }
+
+        /* 房屋列表页 */
+        .filter-bar {
+            display: flex;
+            background: #ffffff;
+            margin: 0 10px 10px;
+            border-radius: 10px;
+            padding: 10px 0;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-item {
+            flex: 1;
+            text-align: center;
+            font-size: 13px;
+            color: #333;
+            border-right: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+
+        .filter-item:last-child {
+            border-right: none;
+        }
+
+        .house-list {
+            padding: 0 10px;
+        }
+
+        .house-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            cursor: pointer;
+        }
+
+        .house-img {
+            width: 100px;
+            height: 90px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .house-info {
+            flex: 1;
+            margin-left: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-width: 0;
+        }
+
+        .house-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .house-tags {
+            margin: 4px 0;
+        }
+
+        .house-meta {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .house-addr {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .house-price {
+            color: #f56c6c;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .house-price span {
+            font-size: 11px;
+            font-weight: 400;
+        }
+
+        .fav-remove {
+            font-size: 12px;
+            color: #999;
+            align-self: center;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        /* 房屋详情页 */
+        .detail-swiper {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            color: #fff;
+        }
+
+        .detail-main {
+            padding: 0 0 70px;
+        }
+
+        .detail-main .card {
+            margin: 10px;
+        }
+
+        .detail-price {
+            color: #f56c6c;
+            font-size: 26px;
+            font-weight: 600;
+            padding: 14px 15px 4px;
+        }
+
+        .detail-price span {
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        .detail-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #333;
+            padding: 0 15px 8px;
+        }
+
+        .detail-tags {
+            padding: 0 15px 12px;
+        }
+
+        .detail-meta-grid {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 0 15px;
+        }
+
+        .detail-meta-grid > div {
+            width: 33.33%;
+            margin-bottom: 12px;
+        }
+
+        .detail-meta-grid label {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 3px;
+        }
+
+        .detail-meta-grid span {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .detail-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .detail-addr {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .contact-row,
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .contact-row span:first-child,
+        .info-row label {
+            color: #999;
+        }
+
+        .contact-row span:last-child,
+        .info-row span {
+            color: #333;
+        }
+
+        .detail-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .detail-bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            border-top: 1px solid #f0f0f0;
+            z-index: 1000;
+            gap: 12px;
+        }
+
+        .favorite-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .contact-btn {
+            flex: 1;
+        }
+
+        /* 电话簿页 */
+        .category-tabs {
+            display: flex;
+            background: #ffffff;
+            margin: 0 10px 10px;
+            border-radius: 10px;
+            padding: 8px;
+            gap: 6px;
+            flex-wrap: wrap;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .cat-item {
+            padding: 5px 12px;
+            font-size: 12px;
+            color: #666;
+            background: #f5f5f5;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .cat-item.active {
+            background: #4080ff;
+            color: #fff;
+        }
+
+        .merchant-list {
+            padding: 0 10px;
+        }
+
+        .merchant-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .merchant-icon {
+            width: 44px;
+            height: 44px;
+            background: #f0f5ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .merchant-info {
+            flex: 1;
+            margin-left: 12px;
+            min-width: 0;
+        }
+
+        .merchant-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .merchant-cat {
+            font-size: 12px;
+            color: #4080ff;
+            margin-bottom: 3px;
+        }
+
+        .merchant-addr {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .call-btn {
+            width: 36px;
+            height: 36px;
+            background: #07c160;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* 消息列表页 */
+        .unread-summary {
+            padding: 12px 15px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .unread-count {
+            color: #f56c6c;
+            font-weight: 600;
+        }
+
+        .message-list {
+            background: #ffffff;
+            margin: 0 10px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .message-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 12px;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+        }
+
+        .message-item:last-child {
+            border-bottom: none;
+        }
+
+        .msg-icon {
+            width: 40px;
+            height: 40px;
+            background: #f0f5ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+
+        .msg-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .msg-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .msg-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .msg-time {
+            font-size: 11px;
+            color: #bbb;
+        }
+
+        .msg-preview {
+            font-size: 12px;
+            color: #999;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .msg-dot {
+            width: 8px;
+            height: 8px;
+            background: #f56c6c;
+            border-radius: 50%;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+
+        /* 消息详情页 */
+        .msg-detail-card {
+            background: #ffffff;
+            margin: 10px;
+            border-radius: 12px;
+            padding: 18px 15px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .msg-detail-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .msg-detail-meta {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .msg-detail-body {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* 维修记录列表页 */
+        .status-tabs {
+            display: flex;
+            background: #ffffff;
+            margin: 10px;
+            border-radius: 10px;
+            padding: 6px;
+            gap: 4px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-tab {
+            flex: 1;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            padding: 6px 0;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .status-tab.active {
+            background: #4080ff;
+            color: #fff;
+        }
+
+        .repair-list {
+            padding: 0 10px;
+        }
+
+        .repair-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+        }
+
+        .repair-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .repair-no {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .repair-desc {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .repair-meta {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 维修详情页 */
+        .repair-detail-status {
+            background: #ffffff;
+            margin: 10px;
+            border-radius: 12px;
+            padding: 18px 15px;
+            text-align: center;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .repair-detail-status .status-tag {
+            font-size: 13px;
+            padding: 4px 14px;
+            margin-bottom: 8px;
+        }
+
+        .repair-detail-status .repair-no {
+            font-size: 12px;
+        }
+
+        .timeline {
+            margin-top: 6px;
+        }
+
+        .timeline-node {
+            display: flex;
+            position: relative;
+            padding-bottom: 18px;
+            padding-left: 24px;
+        }
+
+        .timeline-node:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-node::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 12px;
+            bottom: -4px;
+            width: 2px;
+            background: #e0e0e0;
+        }
+
+        .timeline-node:last-child::before {
+            display: none;
+        }
+
+        .node-dot {
+            position: absolute;
+            left: 0;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px #e0e0e0;
+        }
+
+        .timeline-node.done .node-dot {
+            background: #52c41a;
+            box-shadow: 0 0 0 1px #52c41a;
+        }
+
+        .timeline-node.active .node-dot {
+            background: #4080ff;
+            box-shadow: 0 0 0 1px #4080ff;
+        }
+
+        .node-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .timeline-node.done .node-title,
+        .timeline-node.active .node-title {
+            font-weight: 600;
+        }
+
+        .node-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 邀请页 */
+        .invite-stats {
+            display: flex;
+            background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
+            margin: 10px;
+            border-radius: 12px;
+            padding: 18px 0;
+            color: #fff;
+        }
+
+        .invite-stat {
+            flex: 1;
+            text-align: center;
+        }
+
+        .invite-stat .num {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .invite-stat .label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .invite-card {
+            background: #ffffff;
+            margin: 0 10px 10px;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .invite-code-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f5f5f5;
+            margin-bottom: 12px;
+        }
+
+        .invite-code-row span:first-child {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .invite-code {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4080ff;
+            letter-spacing: 1px;
+        }
+
+        .invite-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .invite-actions .btn-primary,
+        .invite-actions .btn-outline {
+            flex: 1;
+        }
+
+        .invite-list-title {
+            padding: 6px 15px;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .invite-list {
+            background: #ffffff;
+            margin: 0 10px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .invite-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .invite-item:last-child {
+            border-bottom: none;
+        }
+
+        .invite-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0f5ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .invite-info {
+            flex: 1;
+            margin-left: 10px;
+            min-width: 0;
+        }
+
+        .invite-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .invite-phone {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .invite-status {
+            text-align: right;
+        }
+
+        .invite-time {
+            font-size: 11px;
+            color: #bbb;
+            margin-top: 4px;
+        }
+
+        /* 商城页 */
+        .quota-card {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+            margin: 10px;
+            border-radius: 12px;
+            padding: 16px;
+            color: #fff;
+        }
+
+        .quota-info {
+            flex: 1;
+        }
+
+        .quota-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .quota-num {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .quota-record {
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 8px 14px;
+            border-radius: 16px;
+            cursor: pointer;
+        }
+
+        .goods-grid {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 0 5px;
+            justify-content: space-between;
+        }
+
+        .goods-card {
+            width: calc(50% - 10px);
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 0 5px 10px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+            padding-bottom: 10px;
+        }
+
+        .goods-img {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .goods-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+            padding: 8px 10px 4px;
+        }
+
+        .goods-cost {
+            font-size: 11px;
+            color: #f56c6c;
+            padding: 0 10px 8px;
+        }
+
+        .goods-card .btn-sm {
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* 兑换记录页 */
+        .record-list {
+            padding: 0 10px;
+        }
+
+        .record-item {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .record-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .record-info {
+            flex: 1;
+            margin-left: 12px;
+            min-width: 0;
+        }
+
+        .record-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .record-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .record-status {
+            text-align: right;
+        }
+
+        .record-cost {
+            font-size: 11px;
+            color: #bbb;
+            margin-top: 4px;
+        }
+
+        /* 编辑资料页 */
+        .avatar-picker {
+            text-align: center;
+            padding: 24px 0 10px;
+        }
+
+        .avatar-current {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #f0f5ff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .avatar-tip {
+            font-size: 12px;
+            color: #4080ff;
+        }
+
+        /* 实名认证页 */
+        .verify-status-card {
+            text-align: center;
+            background: #ffffff;
+            margin: 10px;
+            border-radius: 12px;
+            padding: 24px 15px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .verify-icon {
+            font-size: 44px;
+            margin-bottom: 10px;
+        }
+
+        .verify-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
         /* tabBar */
         .tab-bar {
             position: absolute;
@@ -487,17 +1758,66 @@
     </style>
 </head>
 <body>
-    <div class="phone-frame">
+    <!-- 顶部页面切换器 -->
+    <div class="page-switcher">
+        <div class="switcher-title">📱 页面预览切换器（共 18 个页面）</div>
+        <div class="switcher-scroll" id="switcherScroll">
+            <div class="switcher-group">
+                <span class="switcher-group-label">Tab</span>
+                <button class="switcher-btn active" data-switch="index">首页</button>
+                <button class="switcher-btn" data-switch="houseList">房屋</button>
+                <button class="switcher-btn" data-switch="phonebook">电话簿</button>
+                <button class="switcher-btn" data-switch="profile">我的</button>
+            </div>
+            <div class="switcher-group">
+                <span class="switcher-group-label">用户</span>
+                <button class="switcher-btn" data-switch="login">登录</button>
+                <button class="switcher-btn" data-switch="profileEdit">编辑资料</button>
+                <button class="switcher-btn" data-switch="profileVerify">实名认证</button>
+            </div>
+            <div class="switcher-group">
+                <span class="switcher-group-label">房屋</span>
+                <button class="switcher-btn" data-switch="houseDetail">房屋详情</button>
+                <button class="switcher-btn" data-switch="housePublish">房屋发布</button>
+                <button class="switcher-btn" data-switch="favorite">收藏列表</button>
+            </div>
+            <div class="switcher-group">
+                <span class="switcher-group-label">消息</span>
+                <button class="switcher-btn" data-switch="messageList">消息列表</button>
+                <button class="switcher-btn" data-switch="messageDetail">消息详情</button>
+            </div>
+            <div class="switcher-group">
+                <span class="switcher-group-label">维修</span>
+                <button class="switcher-btn" data-switch="repairApply">维修申请</button>
+                <button class="switcher-btn" data-switch="repairList">维修记录</button>
+                <button class="switcher-btn" data-switch="repairDetail">维修详情</button>
+            </div>
+            <div class="switcher-group">
+                <span class="switcher-group-label">邀请</span>
+                <button class="switcher-btn" data-switch="invite">邀请管理</button>
+            </div>
+            <div class="switcher-group">
+                <span class="switcher-group-label">商城</span>
+                <button class="switcher-btn" data-switch="mall">兑换商城</button>
+                <button class="switcher-btn" data-switch="mallRecord">兑换记录</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="phone-frame" id="phoneFrame">
         <div class="status-bar">
             <span>9:41</span>
             <span>📶 🔋</span>
         </div>
 
-        <div class="nav-bar" id="navTitle">首页</div>
+        <div class="nav-bar">
+            <div class="nav-back" id="navBack">‹</div>
+            <div id="navTitle">首页</div>
+        </div>
 
         <div class="page-container">
             <!-- 首页 -->
-            <div class="index-page" id="indexPage">
+            <div class="page index-page active" id="indexPage">
                 <div class="header">
                     <div class="header-bg"></div>
                     <div class="header-content">
@@ -512,25 +1832,25 @@
                 </div>
 
                 <div class="quick-actions">
-                    <div class="action-item">
+                    <div class="action-item" data-nav="houseList">
                         <div class="action-icon">🏠</div>
                         <span class="action-name">房屋租赁</span>
                     </div>
-                    <div class="action-item">
+                    <div class="action-item" data-nav="repairApply">
                         <div class="action-icon">🔧</div>
                         <span class="action-name">维修服务</span>
                     </div>
-                    <div class="action-item">
+                    <div class="action-item" data-nav="phonebook">
                         <div class="action-icon">📋</div>
-                        <span class="action-name">合同管理</span>
+                        <span class="action-name">电话簿</span>
                     </div>
-                    <div class="action-item">
+                    <div class="action-item" data-nav="messageList">
                         <div class="action-icon">💬</div>
                         <span class="action-name">社区互动</span>
                     </div>
-                    <div class="action-item">
-                        <div class="action-icon">📞</div>
-                        <span class="action-name">联系客服</span>
+                    <div class="action-item" data-nav="invite">
+                        <div class="action-icon">🎁</div>
+                        <span class="action-name">邀请有礼</span>
                     </div>
                 </div>
 
@@ -540,7 +1860,7 @@
                         <span class="section-more">查看更多 ›</span>
                     </div>
                     <div class="service-list">
-                        <div class="service-card">
+                        <div class="service-card" data-nav="repairApply">
                             <div class="service-image">🛠</div>
                             <div class="service-info">
                                 <span class="service-name">在线报修</span>
@@ -551,7 +1871,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="service-card">
+                        <div class="service-card" data-nav="houseList">
                             <div class="service-image">🏡</div>
                             <div class="service-info">
                                 <span class="service-name">房屋租售</span>
@@ -562,18 +1882,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="service-card">
+                        <div class="service-card" data-nav="mall">
                             <div class="service-image">💳</div>
                             <div class="service-info">
-                                <span class="service-name">费用缴纳</span>
-                                <span class="service-desc">水电费在线缴纳</span>
+                                <span class="service-name">积分商城</span>
+                                <span class="service-desc">邀请兑换好礼</span>
                                 <div class="service-tags">
                                     <span class="tag">便捷</span>
                                     <span class="tag">安全</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="service-card">
+                        <div class="service-card" data-nav="messageList">
                             <div class="service-image">📢</div>
                             <div class="service-info">
                                 <span class="service-name">社区公告</span>
@@ -592,28 +1912,28 @@
                         <span class="section-title">最新动态</span>
                     </div>
                     <div class="news-list">
-                        <div class="news-item">
+                        <div class="news-item" data-nav="messageDetail">
                             <div class="news-content">
                                 <span class="news-title">小区垃圾分类新规定实施通知</span>
                                 <span class="news-time">2小时前</span>
                             </div>
                             <span class="news-arrow">›</span>
                         </div>
-                        <div class="news-item">
+                        <div class="news-item" data-nav="messageDetail">
                             <div class="news-content">
                                 <span class="news-title">暑期儿童安全知识讲座报名开始</span>
                                 <span class="news-time">5小时前</span>
                             </div>
                             <span class="news-arrow">›</span>
                         </div>
-                        <div class="news-item">
+                        <div class="news-item" data-nav="messageDetail">
                             <div class="news-content">
                                 <span class="news-title">停车场系统升级维护公告</span>
                                 <span class="news-time">1天前</span>
                             </div>
                             <span class="news-arrow">›</span>
                         </div>
-                        <div class="news-item">
+                        <div class="news-item" data-nav="messageDetail">
                             <div class="news-content">
                                 <span class="news-title">业主大会会议纪要发布</span>
                                 <span class="news-time">2天前</span>
@@ -625,7 +1945,7 @@
             </div>
 
             <!-- 个人中心 -->
-            <div class="profile-page" id="profilePage">
+            <div class="page profile-page" id="profilePage">
                 <div class="user-header">
                     <div class="header-bg"></div>
                     <div class="user-info">
@@ -634,7 +1954,7 @@
                             <span class="nickname">用户昵称</span>
                             <span class="phone">138****8888</span>
                         </div>
-                        <div class="edit-btn">✏️</div>
+                        <div class="edit-btn" data-nav="profileEdit">✏️</div>
                     </div>
                     <div class="user-stats">
                         <div class="stat-item">
@@ -642,9 +1962,9 @@
                             <span class="stat-label">我的订单</span>
                         </div>
                         <div class="stat-divider"></div>
-                        <div class="stat-item">
+                        <div class="stat-item" data-nav="favorite">
                             <span class="stat-value">2</span>
-                            <span class="stat-label">优惠券</span>
+                            <span class="stat-label">我的收藏</span>
                         </div>
                         <div class="stat-divider"></div>
                         <div class="stat-item">
@@ -655,48 +1975,52 @@
                 </div>
 
                 <div class="menu-section">
-                    <div class="menu-item">
-                        <span class="menu-icon">📋</span>
-                        <span class="menu-text">我的订单</span>
-                        <span class="menu-badge">2</span>
-                        <span class="menu-arrow">›</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="menu-icon">🎫</span>
-                        <span class="menu-text">优惠券</span>
-                        <span class="menu-arrow">›</span>
-                    </div>
-                    <div class="menu-item">
+                    <div class="menu-item" data-nav="houseList">
                         <span class="menu-icon">🏠</span>
                         <span class="menu-text">我的房屋</span>
                         <span class="menu-arrow">›</span>
                     </div>
-                    <div class="menu-item">
+                    <div class="menu-item" data-nav="favorite">
                         <span class="menu-icon">❤️</span>
                         <span class="menu-text">我的收藏</span>
                         <span class="menu-badge">5</span>
                         <span class="menu-arrow">›</span>
                     </div>
-                    <div class="menu-item">
+                    <div class="menu-item" data-nav="repairList">
                         <span class="menu-icon">📝</span>
                         <span class="menu-text">报修记录</span>
                         <span class="menu-arrow">›</span>
                     </div>
-                    <div class="menu-item">
+                    <div class="menu-item" data-nav="messageList">
                         <span class="menu-icon">💬</span>
                         <span class="menu-text">消息通知</span>
                         <span class="menu-badge">3</span>
                         <span class="menu-arrow">›</span>
                     </div>
+                    <div class="menu-item" data-nav="invite">
+                        <span class="menu-icon">🎁</span>
+                        <span class="menu-text">邀请有礼</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item" data-nav="mall">
+                        <span class="menu-icon">🎫</span>
+                        <span class="menu-text">积分商城</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
                 </div>
 
                 <div class="menu-section">
-                    <div class="menu-item">
-                        <span class="menu-icon">🔔</span>
-                        <span class="menu-text">通知设置</span>
+                    <div class="menu-item" data-nav="profileEdit">
+                        <span class="menu-icon">⚙️</span>
+                        <span class="menu-text">编辑资料</span>
                         <span class="menu-arrow">›</span>
                     </div>
-                    <div class="menu-item">
+                    <div class="menu-item" data-nav="profileVerify">
+                        <span class="menu-icon">🪪</span>
+                        <span class="menu-text">实名认证</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item" data-nav="login">
                         <span class="menu-icon">🔒</span>
                         <span class="menu-text">账号安全</span>
                         <span class="menu-arrow">›</span>
@@ -704,11 +2028,6 @@
                     <div class="menu-item">
                         <span class="menu-icon">❓</span>
                         <span class="menu-text">帮助中心</span>
-                        <span class="menu-arrow">›</span>
-                    </div>
-                    <div class="menu-item">
-                        <span class="menu-icon">📞</span>
-                        <span class="menu-text">联系客服</span>
                         <span class="menu-arrow">›</span>
                     </div>
                     <div class="menu-item">
@@ -722,14 +2041,692 @@
                     <span class="version">版本号：1.0.0</span>
                 </div>
             </div>
+
+            <!-- 登录页 -->
+            <div class="page login-page" id="loginPage">
+                <div class="login-logo">🏠</div>
+                <div class="login-app-name">智慧社区</div>
+                <div class="login-slogan">让社区生活更便捷</div>
+                <div class="login-input-wrap">
+                    <span class="login-input-prefix">+86</span>
+                    <input class="login-input" placeholder="请输入手机号" />
+                </div>
+                <button class="btn-green login-btn">微信一键登录</button>
+                <div class="login-agreement">
+                    <span class="login-checkbox">✓</span>
+                    <span>我已阅读并同意《用户协议》和《隐私政策》</span>
+                </div>
+            </div>
+
+            <!-- 房屋列表页 -->
+            <div class="page house-list-page" id="houseListPage">
+                <div class="search-bar-white">
+                    <span>🔍</span>
+                    <span>搜索小区/户型</span>
+                </div>
+                <div class="filter-bar">
+                    <div class="filter-item">小区 ▾</div>
+                    <div class="filter-item">户型 ▾</div>
+                    <div class="filter-item">价格 ▾</div>
+                </div>
+                <div class="house-list">
+                    <div class="house-card" data-nav="houseDetail">
+                        <div class="house-img">🏡</div>
+                        <div class="house-info">
+                            <div>
+                                <div class="house-title">阳光花园 3室2厅 精装修</div>
+                                <div class="house-tags">
+                                    <span class="tag">精装</span>
+                                    <span class="tag">朝南</span>
+                                    <span class="tag">随时入住</span>
+                                </div>
+                            </div>
+                            <div class="house-meta">120㎡ | 中楼层 | 阳光花园</div>
+                            <div class="house-addr">📍 浦东新区世纪大道100号</div>
+                            <div class="house-price">8500<span>元/月</span></div>
+                        </div>
+                    </div>
+                    <div class="house-card" data-nav="houseDetail">
+                        <div class="house-img">🏘️</div>
+                        <div class="house-info">
+                            <div>
+                                <div class="house-title">翠湖天地 2室1厅 拎包入住</div>
+                                <div class="house-tags">
+                                    <span class="tag">精装</span>
+                                    <span class="tag">近地铁</span>
+                                </div>
+                            </div>
+                            <div class="house-meta">89㎡ | 高楼层 | 翠湖天地</div>
+                            <div class="house-addr">📍 黄浦区湖滨路200号</div>
+                            <div class="house-price">6800<span>元/月</span></div>
+                        </div>
+                    </div>
+                    <div class="house-card" data-nav="houseDetail">
+                        <div class="house-img">🏠</div>
+                        <div class="house-info">
+                            <div>
+                                <div class="house-title">万科城 4室2厅 豪华装修</div>
+                                <div class="house-tags">
+                                    <span class="tag">豪装</span>
+                                    <span class="tag">学区</span>
+                                    <span class="tag">车位</span>
+                                </div>
+                            </div>
+                            <div class="house-meta">160㎡ | 低楼层 | 万科城</div>
+                            <div class="house-addr">📍 闵行区万源路88号</div>
+                            <div class="house-price">12000<span>元/月</span></div>
+                        </div>
+                    </div>
+                    <div class="house-card" data-nav="houseDetail">
+                        <div class="house-img">🏡</div>
+                        <div class="house-info">
+                            <div>
+                                <div class="house-title">和平小区 1室1厅 简装</div>
+                                <div class="house-tags">
+                                    <span class="tag">简装</span>
+                                    <span class="tag">合租</span>
+                                </div>
+                            </div>
+                            <div class="house-meta">45㎡ | 顶层 | 和平小区</div>
+                            <div class="house-addr">📍 徐汇区漕溪北路66号</div>
+                            <div class="house-price">3200<span>元/月</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 15px;"></div>
+            </div>
+
+            <!-- 房屋详情页 -->
+            <div class="page house-detail-page" id="houseDetailPage">
+                <div class="detail-swiper">🏡</div>
+                <div class="detail-main">
+                    <div class="detail-price">8500<span>元/月</span></div>
+                    <div class="detail-title">阳光花园 3室2厅 精装修</div>
+                    <div class="detail-tags">
+                        <span class="tag">精装</span>
+                        <span class="tag">朝南</span>
+                        <span class="tag">随时入住</span>
+                        <span class="tag">近地铁</span>
+                    </div>
+                    <div class="detail-meta-grid">
+                        <div><label>户型</label><span>3室2厅</span></div>
+                        <div><label>面积</label><span>120㎡</span></div>
+                        <div><label>楼层</label><span>中楼层/18层</span></div>
+                        <div><label>朝向</label><span>南</span></div>
+                        <div><label>装修</label><span>精装</span></div>
+                        <div><label>小区</label><span>阳光花园</span></div>
+                    </div>
+                    <div class="card">
+                        <div class="detail-addr">📍 浦东新区世纪大道100号</div>
+                    </div>
+                    <div class="card">
+                        <div class="detail-section-title">联系人信息</div>
+                        <div class="contact-row"><span>联系人</span><span>王先生</span></div>
+                        <div class="contact-row"><span>电话</span><span>138****8888</span></div>
+                    </div>
+                    <div class="card">
+                        <div class="detail-section-title">房源描述</div>
+                        <div class="detail-desc">房屋南北通透，采光极佳，配套齐全，拎包入住。周边交通便利，近地铁2号线，商业配套一应俱全。小区环境优美，物业管理完善，适合家庭居住。</div>
+                    </div>
+                </div>
+                <div class="detail-bottom-bar">
+                    <div class="favorite-btn" data-nav="favorite">❤️<span>收藏</span></div>
+                    <button class="btn-primary contact-btn">联系房东</button>
+                </div>
+            </div>
+
+            <!-- 房屋发布页 -->
+            <div class="page house-publish-page" id="housePublishPage">
+                <div class="form-card">
+                    <div class="form-group"><label>小区名称</label><input placeholder="请输入小区名称" /></div>
+                    <div class="form-group"><label>户型</label><div class="form-select">请选择户型 ▾</div></div>
+                    <div class="form-group"><label>面积</label><input placeholder="请输入面积（㎡）" /></div>
+                    <div class="form-group"><label>租金</label><input placeholder="请输入租金（元/月）" /></div>
+                    <div class="form-group"><label>楼层</label><input placeholder="如 5/18" /></div>
+                    <div class="form-group"><label>朝向</label><div class="form-select">请选择朝向 ▾</div></div>
+                    <div class="form-group"><label>装修</label><div class="form-select">请选择装修 ▾</div></div>
+                    <div class="form-group"><label>详细地址</label><input placeholder="请输入详细地址" /></div>
+                    <div class="form-group"><label>房源描述</label><textarea placeholder="请输入房源描述"></textarea></div>
+                </div>
+                <div class="form-submit-wrap"><button class="btn-primary">发布房源</button></div>
+            </div>
+
+            <!-- 电话簿页 -->
+            <div class="page phonebook-page" id="phonebookPage">
+                <div class="search-bar-white">
+                    <span>🔍</span>
+                    <span>搜索商家</span>
+                </div>
+                <div class="category-tabs">
+                    <span class="cat-item active">全部</span>
+                    <span class="cat-item">餐饮</span>
+                    <span class="cat-item">超市</span>
+                    <span class="cat-item">维修</span>
+                    <span class="cat-item">家政</span>
+                    <span class="cat-item">快递</span>
+                </div>
+                <div class="merchant-list">
+                    <div class="merchant-card">
+                        <div class="merchant-icon">🍜</div>
+                        <div class="merchant-info">
+                            <div class="merchant-name">老张拉面馆</div>
+                            <div class="merchant-cat">餐饮 · 中餐</div>
+                            <div class="merchant-addr">📍 商业街A12号</div>
+                        </div>
+                        <div class="call-btn">📞</div>
+                    </div>
+                    <div class="merchant-card">
+                        <div class="merchant-icon">🛒</div>
+                        <div class="merchant-info">
+                            <div class="merchant-name">好邻居便利店</div>
+                            <div class="merchant-cat">超市 · 24小时</div>
+                            <div class="merchant-addr">📍 小区南门旁</div>
+                        </div>
+                        <div class="call-btn">📞</div>
+                    </div>
+                    <div class="merchant-card">
+                        <div class="merchant-icon">🔧</div>
+                        <div class="merchant-info">
+                            <div class="merchant-name">便民维修服务</div>
+                            <div class="merchant-cat">维修 · 水电</div>
+                            <div class="merchant-addr">📍 物业中心2楼</div>
+                        </div>
+                        <div class="call-btn">📞</div>
+                    </div>
+                    <div class="merchant-card">
+                        <div class="merchant-icon">🧹</div>
+                        <div class="merchant-info">
+                            <div class="merchant-name">洁家家政服务</div>
+                            <div class="merchant-cat">家政 · 保洁</div>
+                            <div class="merchant-addr">📍 写字楼B座308</div>
+                        </div>
+                        <div class="call-btn">📞</div>
+                    </div>
+                    <div class="merchant-card">
+                        <div class="merchant-icon">📦</div>
+                        <div class="merchant-info">
+                            <div class="merchant-name">顺丰快递网点</div>
+                            <div class="merchant-cat">快递 · 代收</div>
+                            <div class="merchant-addr">📍 小区东门</div>
+                        </div>
+                        <div class="call-btn">📞</div>
+                    </div>
+                </div>
+                <div style="height: 15px;"></div>
+            </div>
+
+            <!-- 消息列表页 -->
+            <div class="page message-list-page" id="messageListPage">
+                <div class="unread-summary">未读消息 <span class="unread-count">3</span> 条</div>
+                <div class="message-list">
+                    <div class="message-item" data-nav="messageDetail">
+                        <div class="msg-icon">📢</div>
+                        <div class="msg-content">
+                            <div class="msg-row">
+                                <span class="msg-title">垃圾分类通知</span>
+                                <span class="msg-time">2小时前</span>
+                            </div>
+                            <div class="msg-preview">小区垃圾分类新规定将于本周实施...</div>
+                        </div>
+                        <div class="msg-dot"></div>
+                    </div>
+                    <div class="message-item" data-nav="messageDetail">
+                        <div class="msg-icon">🔧</div>
+                        <div class="msg-content">
+                            <div class="msg-row">
+                                <span class="msg-title">维修进度更新</span>
+                                <span class="msg-time">5小时前</span>
+                            </div>
+                            <div class="msg-preview">您的维修工单已派单，师傅即将上门...</div>
+                        </div>
+                        <div class="msg-dot"></div>
+                    </div>
+                    <div class="message-item" data-nav="messageDetail">
+                        <div class="msg-icon">💳</div>
+                        <div class="msg-content">
+                            <div class="msg-row">
+                                <span class="msg-title">缴费成功通知</span>
+                                <span class="msg-time">昨天</span>
+                            </div>
+                            <div class="msg-preview">本月物业费 280 元已缴纳成功...</div>
+                        </div>
+                        <div class="msg-dot"></div>
+                    </div>
+                    <div class="message-item" data-nav="messageDetail">
+                        <div class="msg-icon">📢</div>
+                        <div class="msg-content">
+                            <div class="msg-row">
+                                <span class="msg-title">停车场维护公告</span>
+                                <span class="msg-time">1天前</span>
+                            </div>
+                            <div class="msg-preview">停车场系统将于本周六进行升级维护...</div>
+                        </div>
+                    </div>
+                    <div class="message-item" data-nav="messageDetail">
+                        <div class="msg-icon">📋</div>
+                        <div class="msg-content">
+                            <div class="msg-row">
+                                <span class="msg-title">业主大会纪要</span>
+                                <span class="msg-time">2天前</span>
+                            </div>
+                            <div class="msg-preview">2026年第二次业主大会会议纪要已发布...</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 15px;"></div>
+            </div>
+
+            <!-- 消息详情页 -->
+            <div class="page message-detail-page" id="messageDetailPage">
+                <div class="msg-detail-card">
+                    <div class="msg-detail-title">小区垃圾分类新规定实施通知</div>
+                    <div class="msg-detail-meta">📢 系统通知 · 2026-07-26 10:30 · 已读</div>
+                    <div class="msg-detail-body">各位业主您好：<br><br>为响应环保号召，共建绿色社区，小区将于本周一（7月28日）起正式实施垃圾分类新规定。请各位业主按以下要求进行垃圾分类投放：<br><br>1. 厨余垃圾：投入绿色垃圾桶<br>2. 可回收物：投入蓝色垃圾桶<br>3. 有害垃圾：投入红色垃圾桶<br>4. 其他垃圾：投入灰色垃圾桶<br><br>投放时间：每日 07:00-09:00、18:00-20:00<br><br>感谢您的配合！</div>
+                </div>
+            </div>
+
+            <!-- 维修申请页 -->
+            <div class="page repair-apply-page" id="repairApplyPage">
+                <div class="form-card">
+                    <div class="form-group"><label>联系人</label><input placeholder="请输入联系人姓名" /></div>
+                    <div class="form-group"><label>联系电话</label><input placeholder="请输入手机号" /></div>
+                    <div class="form-group"><label>详细地址</label><input placeholder="如 3栋502室" /></div>
+                    <div class="form-group"><label>问题描述</label><textarea placeholder="请描述维修问题"></textarea></div>
+                    <div class="form-group"><label>期望上门</label><div class="form-select">请选择上门时间 ▾</div></div>
+                </div>
+                <div class="form-submit-wrap"><button class="btn-primary">提交申请</button></div>
+            </div>
+
+            <!-- 维修记录列表页 -->
+            <div class="page repair-list-page" id="repairListPage">
+                <div class="status-tabs">
+                    <span class="status-tab active">全部</span>
+                    <span class="status-tab">待处理</span>
+                    <span class="status-tab">处理中</span>
+                    <span class="status-tab">已完成</span>
+                    <span class="status-tab">已取消</span>
+                </div>
+                <div class="repair-list">
+                    <div class="repair-card" data-nav="repairDetail">
+                        <div class="repair-row">
+                            <span class="repair-no">单号：WX20260726001</span>
+                            <span class="status-tag status-pending">待处理</span>
+                        </div>
+                        <div class="repair-desc">厨房水龙头漏水</div>
+                        <div class="repair-meta">📍 3栋502室 · 2026-07-26 09:00</div>
+                    </div>
+                    <div class="repair-card" data-nav="repairDetail">
+                        <div class="repair-row">
+                            <span class="repair-no">单号：WX20260725008</span>
+                            <span class="status-tag status-processing">处理中</span>
+                        </div>
+                        <div class="repair-desc">客厅灯不亮</div>
+                        <div class="repair-meta">📍 3栋502室 · 2026-07-25 14:30</div>
+                    </div>
+                    <div class="repair-card" data-nav="repairDetail">
+                        <div class="repair-row">
+                            <span class="repair-no">单号：WX20260720015</span>
+                            <span class="status-tag status-done">已完成</span>
+                        </div>
+                        <div class="repair-desc">空调不制冷</div>
+                        <div class="repair-meta">📍 3栋502室 · 2026-07-20 10:00</div>
+                    </div>
+                    <div class="repair-card" data-nav="repairDetail">
+                        <div class="repair-row">
+                            <span class="repair-no">单号：WX20260715003</span>
+                            <span class="status-tag status-cancel">已取消</span>
+                        </div>
+                        <div class="repair-desc">门锁更换</div>
+                        <div class="repair-meta">📍 3栋502室 · 2026-07-15 16:00</div>
+                    </div>
+                </div>
+                <div style="height: 15px;"></div>
+            </div>
+
+            <!-- 维修详情页 -->
+            <div class="page repair-detail-page" id="repairDetailPage">
+                <div class="repair-detail-status">
+                    <div class="status-tag status-processing">处理中</div>
+                    <div class="repair-no">维修单号：WX20260725008</div>
+                </div>
+                <div class="card">
+                    <div class="detail-section-title">报修信息</div>
+                    <div class="info-row"><label>联系人</label><span>张先生</span></div>
+                    <div class="info-row"><label>联系电话</label><span>138****8888</span></div>
+                    <div class="info-row"><label>详细地址</label><span>3栋502室</span></div>
+                    <div class="info-row"><label>问题描述</label><span>客厅灯不亮</span></div>
+                    <div class="info-row"><label>提交时间</label><span>2026-07-25 14:30</span></div>
+                </div>
+                <div class="card">
+                    <div class="detail-section-title">处理进度</div>
+                    <div class="timeline">
+                        <div class="timeline-node done">
+                            <div class="node-dot"></div>
+                            <div class="node-info">
+                                <div class="node-title">已提交</div>
+                                <div class="node-time">07-25 14:30</div>
+                            </div>
+                        </div>
+                        <div class="timeline-node done">
+                            <div class="node-dot"></div>
+                            <div class="node-info">
+                                <div class="node-title">已确认</div>
+                                <div class="node-time">07-25 16:00</div>
+                            </div>
+                        </div>
+                        <div class="timeline-node active">
+                            <div class="node-dot"></div>
+                            <div class="node-info">
+                                <div class="node-title">维修中</div>
+                                <div class="node-time">07-26 09:00</div>
+                            </div>
+                        </div>
+                        <div class="timeline-node">
+                            <div class="node-dot"></div>
+                            <div class="node-info">
+                                <div class="node-title">维修完成</div>
+                                <div class="node-time">待完成</div>
+                            </div>
+                        </div>
+                        <div class="timeline-node">
+                            <div class="node-dot"></div>
+                            <div class="node-info">
+                                <div class="node-title">租客确认</div>
+                                <div class="node-time">待确认</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 15px;"></div>
+            </div>
+
+            <!-- 邀请管理页 -->
+            <div class="page invite-page" id="invitePage">
+                <div class="invite-stats">
+                    <div class="invite-stat">
+                        <div class="num">8</div>
+                        <div class="label">总邀请</div>
+                    </div>
+                    <div class="invite-stat">
+                        <div class="num">5</div>
+                        <div class="label">已认证</div>
+                    </div>
+                    <div class="invite-stat">
+                        <div class="num">3</div>
+                        <div class="label">待认证</div>
+                    </div>
+                </div>
+                <div class="invite-card">
+                    <div class="invite-code-row">
+                        <span>我的邀请码</span>
+                        <span class="invite-code">WX8888</span>
+                    </div>
+                    <div class="invite-actions">
+                        <button class="btn-primary">邀请好友</button>
+                        <button class="btn-outline">复制链接</button>
+                    </div>
+                </div>
+                <div class="invite-list-title">邀请记录</div>
+                <div class="invite-list">
+                    <div class="invite-item">
+                        <div class="invite-avatar">👤</div>
+                        <div class="invite-info">
+                            <div class="invite-name">张*明</div>
+                            <div class="invite-phone">138****1234</div>
+                        </div>
+                        <div class="invite-status">
+                            <span class="status-tag status-done">已认证</span>
+                            <div class="invite-time">07-20</div>
+                        </div>
+                    </div>
+                    <div class="invite-item">
+                        <div class="invite-avatar">👤</div>
+                        <div class="invite-info">
+                            <div class="invite-name">李*华</div>
+                            <div class="invite-phone">139****5678</div>
+                        </div>
+                        <div class="invite-status">
+                            <span class="status-tag status-done">已认证</span>
+                            <div class="invite-time">07-18</div>
+                        </div>
+                    </div>
+                    <div class="invite-item">
+                        <div class="invite-avatar">👤</div>
+                        <div class="invite-info">
+                            <div class="invite-name">王*强</div>
+                            <div class="invite-phone">137****9012</div>
+                        </div>
+                        <div class="invite-status">
+                            <span class="status-tag status-pending">待认证</span>
+                            <div class="invite-time">07-15</div>
+                        </div>
+                    </div>
+                    <div class="invite-item">
+                        <div class="invite-avatar">👤</div>
+                        <div class="invite-info">
+                            <div class="invite-name">赵*芳</div>
+                            <div class="invite-phone">136****3456</div>
+                        </div>
+                        <div class="invite-status">
+                            <span class="status-tag status-pending">待认证</span>
+                            <div class="invite-time">07-12</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 15px;"></div>
+            </div>
+
+            <!-- 兑换商城页 -->
+            <div class="page mall-page" id="mallPage">
+                <div class="quota-card">
+                    <div class="quota-info">
+                        <div class="quota-label">邀请人数</div>
+                        <div class="quota-num">8 人</div>
+                    </div>
+                    <div class="quota-info">
+                        <div class="quota-label">可兑换</div>
+                        <div class="quota-num">3 次</div>
+                    </div>
+                    <div class="quota-record" data-nav="mallRecord">兑换记录 ›</div>
+                </div>
+                <div class="goods-grid">
+                    <div class="goods-card">
+                        <div class="goods-img">🧴</div>
+                        <div class="goods-name">洗护套装</div>
+                        <div class="goods-cost">需邀请 3 人</div>
+                        <button class="btn-primary btn-sm">兑换</button>
+                    </div>
+                    <div class="goods-card">
+                        <div class="goods-img">☕</div>
+                        <div class="goods-name">保温杯</div>
+                        <div class="goods-cost">需邀请 5 人</div>
+                        <button class="btn-primary btn-sm">兑换</button>
+                    </div>
+                    <div class="goods-card">
+                        <div class="goods-img">🎧</div>
+                        <div class="goods-name">蓝牙耳机</div>
+                        <div class="goods-cost">需邀请 10 人</div>
+                        <button class="btn-primary btn-sm">兑换</button>
+                    </div>
+                    <div class="goods-card">
+                        <div class="goods-img">🧹</div>
+                        <div class="goods-name">家政服务</div>
+                        <div class="goods-cost">需邀请 6 人</div>
+                        <button class="btn-primary btn-sm">兑换</button>
+                    </div>
+                    <div class="goods-card">
+                        <div class="goods-img">🎫</div>
+                        <div class="goods-name">物业费券</div>
+                        <div class="goods-cost">需邀请 4 人</div>
+                        <button class="btn-primary btn-sm">兑换</button>
+                    </div>
+                    <div class="goods-card">
+                        <div class="goods-img">🎁</div>
+                        <div class="goods-name">神秘礼包</div>
+                        <div class="goods-cost">需邀请 15 人</div>
+                        <button class="btn-primary btn-sm">兑换</button>
+                    </div>
+                </div>
+                <div style="height: 15px;"></div>
+            </div>
+
+            <!-- 兑换记录页 -->
+            <div class="page mall-record-page" id="mallRecordPage">
+                <div class="record-list">
+                    <div class="record-item">
+                        <div class="record-img">🧴</div>
+                        <div class="record-info">
+                            <div class="record-name">洗护套装</div>
+                            <div class="record-time">2026-07-25 14:30</div>
+                        </div>
+                        <div class="record-status">
+                            <span class="status-tag status-done">已兑换</span>
+                            <div class="record-cost">消耗 3 人</div>
+                        </div>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-img">🎫</div>
+                        <div class="record-info">
+                            <div class="record-name">物业费券 50元</div>
+                            <div class="record-time">2026-07-20 10:15</div>
+                        </div>
+                        <div class="record-status">
+                            <span class="status-tag status-processing">处理中</span>
+                            <div class="record-cost">消耗 4 人</div>
+                        </div>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-img">☕</div>
+                        <div class="record-info">
+                            <div class="record-name">保温杯</div>
+                            <div class="record-time">2026-07-10 16:45</div>
+                        </div>
+                        <div class="record-status">
+                            <span class="status-tag status-done">已兑换</span>
+                            <div class="record-cost">消耗 5 人</div>
+                        </div>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-img">🧹</div>
+                        <div class="record-info">
+                            <div class="record-name">家政服务</div>
+                            <div class="record-time">2026-07-05 09:00</div>
+                        </div>
+                        <div class="record-status">
+                            <span class="status-tag status-cancel">已取消</span>
+                            <div class="record-cost">消耗 6 人</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 15px;"></div>
+            </div>
+
+            <!-- 收藏列表页 -->
+            <div class="page favorite-page" id="favoritePage">
+                <div class="house-list" style="padding-top: 10px;">
+                    <div class="house-card" data-nav="houseDetail">
+                        <div class="house-img">🏡</div>
+                        <div class="house-info">
+                            <div>
+                                <div class="house-title">阳光花园 3室2厅</div>
+                                <div class="house-tags">
+                                    <span class="tag">精装</span>
+                                    <span class="tag">朝南</span>
+                                </div>
+                            </div>
+                            <div class="house-meta">120㎡ | 中楼层</div>
+                            <div class="house-price">8500<span>元/月</span></div>
+                        </div>
+                        <div class="fav-remove">取消</div>
+                    </div>
+                    <div class="house-card" data-nav="houseDetail">
+                        <div class="house-img">🏘️</div>
+                        <div class="house-info">
+                            <div>
+                                <div class="house-title">翠湖天地 2室1厅</div>
+                                <div class="house-tags">
+                                    <span class="tag">精装</span>
+                                    <span class="tag">近地铁</span>
+                                </div>
+                            </div>
+                            <div class="house-meta">89㎡ | 高楼层</div>
+                            <div class="house-price">6800<span>元/月</span></div>
+                        </div>
+                        <div class="fav-remove">取消</div>
+                    </div>
+                    <div class="house-card" data-nav="houseDetail">
+                        <div class="house-img">🏠</div>
+                        <div class="house-info">
+                            <div>
+                                <div class="house-title">万科城 4室2厅</div>
+                                <div class="house-tags">
+                                    <span class="tag">豪装</span>
+                                    <span class="tag">学区</span>
+                                </div>
+                            </div>
+                            <div class="house-meta">160㎡ | 低楼层</div>
+                            <div class="house-price">12000<span>元/月</span></div>
+                        </div>
+                        <div class="fav-remove">取消</div>
+                    </div>
+                </div>
+                <div style="height: 15px;"></div>
+            </div>
+
+            <!-- 编辑资料页 -->
+            <div class="page profile-edit-page" id="profileEditPage">
+                <div class="avatar-picker">
+                    <div class="avatar-current">👤</div>
+                    <div class="avatar-tip">点击更换头像</div>
+                </div>
+                <div class="form-card">
+                    <div class="form-group"><label>昵称</label><input value="用户昵称" /></div>
+                    <div class="form-group"><label>手机号</label><input value="138****8888" disabled /></div>
+                    <div class="form-group">
+                        <label>性别</label>
+                        <div class="form-select">未设置 ▾</div>
+                    </div>
+                    <div class="form-group">
+                        <label>所在小区</label>
+                        <div class="form-select">阳光花园 ▾</div>
+                    </div>
+                </div>
+                <div class="form-submit-wrap"><button class="btn-primary">保存</button></div>
+            </div>
+
+            <!-- 实名认证页 -->
+            <div class="page profile-verify-page" id="profileVerifyPage">
+                <div class="verify-status-card">
+                    <div class="verify-icon">✅</div>
+                    <div class="verify-text">已完成实名认证</div>
+                </div>
+                <div class="card">
+                    <div class="detail-section-title">认证信息</div>
+                    <div class="info-row"><label>姓名</label><span>张*</span></div>
+                    <div class="info-row"><label>身份证号</label><span>3201**********1234</span></div>
+                    <div class="info-row"><label>认证时间</label><span>2026-07-01</span></div>
+                </div>
+                <div class="form-submit-wrap">
+                    <button class="btn-outline">重新认证</button>
+                </div>
+            </div>
         </div>
 
+        <!-- tabBar -->
         <div class="tab-bar">
-            <div class="tab-item active" data-page="index">
+            <div class="tab-item active" data-tab="index">
                 <span class="tab-icon">🏠</span>
                 <span class="tab-text">首页</span>
             </div>
-            <div class="tab-item" data-page="profile">
+            <div class="tab-item" data-tab="houseList">
+                <span class="tab-icon">🏘️</span>
+                <span class="tab-text">房屋</span>
+            </div>
+            <div class="tab-item" data-tab="phonebook">
+                <span class="tab-icon">📞</span>
+                <span class="tab-text">电话簿</span>
+            </div>
+            <div class="tab-item" data-tab="profile">
                 <span class="tab-icon">👤</span>
                 <span class="tab-text">我的</span>
             </div>
@@ -737,49 +2734,176 @@
     </div>
 
     <script>
-        const tabs = document.querySelectorAll('.tab-item');
-        const indexPage = document.getElementById('indexPage');
-        const profilePage = document.getElementById('profilePage');
+        // 页面元数据
+        const pages = {
+            index:        { title: '首页',     isTab: true },
+            houseList:    { title: '房屋',     isTab: true },
+            phonebook:    { title: '电话簿',   isTab: true },
+            profile:      { title: '我的',     isTab: true },
+            login:        { title: '登录',     isTab: false },
+            profileEdit:  { title: '编辑资料', isTab: false },
+            profileVerify:{ title: '实名认证', isTab: false },
+            houseDetail:  { title: '房屋详情', isTab: false },
+            housePublish: { title: '发布房源', isTab: false },
+            favorite:     { title: '我的收藏', isTab: false },
+            messageList:  { title: '消息',     isTab: false },
+            messageDetail:{ title: '消息详情', isTab: false },
+            repairApply:  { title: '维修申请', isTab: false },
+            repairList:   { title: '维修记录', isTab: false },
+            repairDetail: { title: '维修详情', isTab: false },
+            invite:       { title: '邀请管理', isTab: false },
+            mall:         { title: '兑换商城', isTab: false },
+            mallRecord:   { title: '兑换记录', isTab: false }
+        };
+
+        const pageIdMap = {
+            index: 'indexPage',
+            profile: 'profilePage',
+            login: 'loginPage',
+            houseList: 'houseListPage',
+            houseDetail: 'houseDetailPage',
+            housePublish: 'housePublishPage',
+            phonebook: 'phonebookPage',
+            messageList: 'messageListPage',
+            messageDetail: 'messageDetailPage',
+            repairApply: 'repairApplyPage',
+            repairList: 'repairListPage',
+            repairDetail: 'repairDetailPage',
+            invite: 'invitePage',
+            mall: 'mallPage',
+            mallRecord: 'mallRecordPage',
+            favorite: 'favoritePage',
+            profileEdit: 'profileEditPage',
+            profileVerify: 'profileVerifyPage'
+        };
+
+        const phoneFrame = document.getElementById('phoneFrame');
         const navTitle = document.getElementById('navTitle');
+        const navBack = document.getElementById('navBack');
+        const tabItems = document.querySelectorAll('.tab-item');
+        const switcherBtns = document.querySelectorAll('.switcher-btn');
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const page = tab.dataset.page;
+        let currentPage = 'index';
+        let pageStack = [];
 
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
+        function showToast(text) {
+            const toast = document.createElement('div');
+            toast.textContent = text;
+            toast.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.7);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-size: 14px;
+                z-index: 9999;
+                pointer-events: none;
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 1500);
+        }
 
-                if (page === 'index') {
-                    indexPage.style.display = 'block';
-                    profilePage.style.display = 'none';
-                    navTitle.textContent = '首页';
-                } else {
-                    indexPage.style.display = 'none';
-                    profilePage.style.display = 'block';
-                    navTitle.textContent = '我的';
-                }
+        function showPage(pageId) {
+            const meta = pages[pageId];
+            if (!meta) return;
+
+            // 切换页面显示
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(pageIdMap[pageId]);
+            if (target) target.classList.add('active');
+
+            // 更新导航栏标题
+            navTitle.textContent = meta.title;
+
+            // tab 页：显示 tabBar + 隐藏返回；非 tab 页：隐藏 tabBar + 显示返回
+            if (meta.isTab) {
+                phoneFrame.classList.remove('no-tab');
+            } else {
+                phoneFrame.classList.add('no-tab');
+            }
+
+            // 更新 tabBar 高亮
+            tabItems.forEach(t => {
+                t.classList.toggle('active', t.dataset.tab === pageId);
+            });
+
+            // 更新顶部切换器高亮
+            switcherBtns.forEach(b => {
+                b.classList.toggle('active', b.dataset.switch === pageId);
+            });
+
+            // 滚动归位
+            document.querySelector('.page-container').scrollTop = 0;
+
+            currentPage = pageId;
+        }
+
+        // 模拟小程序 navigateTo（带历史栈，可返回）
+        function navigateTo(pageId) {
+            if (pageId === currentPage) return;
+            pageStack.push(currentPage);
+            showPage(pageId);
+        }
+
+        // 模拟小程序 switchTab（清空历史栈）
+        function switchTab(pageId) {
+            pageStack = [];
+            showPage(pageId);
+        }
+
+        // 顶部切换器：直接跳转（重置历史栈，便于预览）
+        switcherBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = btn.dataset.switch;
+                pageStack = [];
+                showPage(target);
             });
         });
 
-        document.querySelectorAll('.menu-item, .service-card, .news-item, .action-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const toast = document.createElement('div');
-                toast.textContent = '功能开发中';
-                toast.style.cssText = `
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    background: rgba(0, 0, 0, 0.7);
-                    color: white;
-                    padding: 10px 20px;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    z-index: 9999;
-                `;
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 1500);
+        // 底部 tabBar
+        tabItems.forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.tab);
             });
+        });
+
+        // 返回按钮
+        navBack.addEventListener('click', () => {
+            if (pageStack.length > 0) {
+                const prev = pageStack.pop();
+                showPage(prev);
+            } else {
+                switchTab('index');
+            }
+        });
+
+        // 页面内导航：带 data-nav 的元素跳转，其余可点击元素提示"功能开发中"
+        document.addEventListener('click', (e) => {
+            const navEl = e.target.closest('[data-nav]');
+            if (navEl) {
+                e.stopPropagation();
+                navigateTo(navEl.dataset.nav);
+                return;
+            }
+            const clickable = e.target.closest(
+                '.menu-item:not([data-nav]), .service-card:not([data-nav]), .news-item:not([data-nav]), .action-item:not([data-nav]), .call-btn, .btn-primary, .btn-green, .btn-outline, .filter-item, .cat-item, .status-tab, .fav-remove, .section-more, .edit-btn:not([data-nav])'
+            );
+            if (clickable) {
+                showToast('功能开发中');
+            }
+        });
+
+        // 分类/状态 tab 切换（仅高亮，不跳页）
+        document.addEventListener('click', (e) => {
+            const cat = e.target.closest('.cat-item, .status-tab');
+            if (cat) {
+                const siblings = cat.parentElement.querySelectorAll('.cat-item, .status-tab');
+                siblings.forEach(s => s.classList.remove('active'));
+                cat.classList.add('active');
+            }
         });
     </script>
 </body>

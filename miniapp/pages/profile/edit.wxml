@@ -1,0 +1,34 @@
+<!-- 编辑资料页 -->
+<view class="edit-page">
+  <!-- 头像 -->
+  <view class="form-card">
+    <view class="form-item" bindtap="chooseAvatar">
+      <text class="form-label">头像</text>
+      <view class="form-value avatar-value">
+        <image class="form-avatar" src="{{avatar || defaultAvatar}}" mode="aspectFill" />
+        <image class="menu-arrow" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABqklEQVR4nO2ZzU7DMBCFP2gHkAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAON8AKdU2xQv8g4AAAAASUVORK5CYII=" mode="aspectFit" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 昵称 -->
+  <view class="form-card">
+    <view class="form-item nickname-item">
+      <text class="form-label">昵称</text>
+      <input
+        class="form-input"
+        type="text"
+        maxlength="20"
+        placeholder="请输入昵称"
+        placeholder-class="input-placeholder"
+        value="{{nickname}}"
+        bindinput="onNicknameInput"
+      />
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="btn-wrap">
+    <button class="btn-save" bindtap="handleSave">保存</button>
+  </view>
+</view>

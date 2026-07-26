@@ -1,0 +1,85 @@
+<view class="page" wx:if="{{!loading && repairInfo}}">
+  <!-- 状态卡片 -->
+  <view class="status-card">
+    <view class="status-info">
+      <view class="status-label-row">
+        <text class="status-label">维修单号</text>
+        <text class="status-tag {{statusClass}}">{{statusText}}</text>
+      </view>
+      <view class="status-no">{{repairInfo.repairNo || repairInfo.repairId}}</view>
+    </view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="info-card">
+    <view class="card-title">维修信息</view>
+    <view class="detail-item">
+      <text class="detail-label">联系人</text>
+      <text class="detail-value">{{repairInfo.contactName || '-'}}</text>
+    </view>
+    <view class="detail-item">
+      <text class="detail-label">联系电话</text>
+      <text class="detail-value">{{repairInfo.contactPhone || '-'}}</text>
+    </view>
+    <view class="detail-item">
+      <text class="detail-label">房屋地址</text>
+      <text class="detail-value">{{repairInfo.houseAddress || '-'}}</text>
+    </view>
+    <view class="detail-item">
+      <text class="detail-label">期望上门</text>
+      <text class="detail-value">{{repairInfo.appointmentDate || '-'}}</text>
+    </view>
+    <view class="detail-item">
+      <text class="detail-label">创建时间</text>
+      <text class="detail-value">{{repairInfo.formatTime}}</text>
+    </view>
+    <view class="detail-item detail-item-column">
+      <text class="detail-label">问题描述</text>
+      <text class="detail-value detail-desc">{{repairInfo.description || '-'}}</text>
+    </view>
+  </view>
+
+  <!-- 维修进度时间线 -->
+  <view class="info-card">
+    <view class="card-title">维修进度</view>
+    <view class="timeline" wx:if="{{!isCancelled}}">
+      <view
+        wx:for="{{timelineSteps}}"
+        wx:key="key"
+        class="timeline-item {{item.state}}"
+      >
+        <view class="timeline-left">
+          <view class="timeline-node">
+            <text wx:if="{{item.state === 'done'}}" class="node-check">✓</text>
+            <text wx:elif="{{item.state === 'current'}}" class="node-current"></text>
+            <text wx:else class="node-todo"></text>
+          </view>
+          <view
+            wx:if="{{index < timelineSteps.length - 1}}"
+            class="timeline-line {{item.state === 'done' ? 'line-done' : ''}}"
+          ></view>
+        </view>
+        <view class="timeline-content">
+          <view class="timeline-title {{item.state === 'current' ? 'title-current' : ''}} {{item.state === 'done' ? 'title-done' : ''}}">{{item.title}}</view>
+          <view class="timeline-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="cancelled-tip" wx:else>
+      <text class="cancelled-icon">✕</text>
+      <text class="cancelled-text">该维修申请已取消</text>
+    </view>
+  </view>
+
+  <!-- 底部操作按钮 -->
+  <view class="bottom-placeholder" wx:if="{{canCancel || canConfirm}}"></view>
+  <view class="action-bar" wx:if="{{canCancel || canConfirm}}">
+    <view wx:if="{{canCancel}}" class="action-btn cancel-btn" bindtap="handleCancel">取消维修</view>
+    <view wx:if="{{canConfirm}}" class="action-btn confirm-btn" bindtap="handleConfirm">确认完成</view>
+  </view>
+</view>
+
+<!-- 加载中状态 -->
+<view class="loading-state" wx:if="{{loading}}">
+  <text class="loading-text">加载中...</text>
+</view>
