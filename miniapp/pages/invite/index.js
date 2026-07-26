@@ -1,10 +1,10 @@
 // 邀请管理页
 const app = getApp()
 const { inviteApi } = require('../../utils/api.js')
-const { showToast, formatDateTime, maskPhone } = require('../../utils/index.js')
+const { showToast, formatDateTime, maskPhone, normalizeList } = require('../../utils/index.js')
 
-// 默认头像（被邀请人未提供头像时使用）
-const DEFAULT_AVATAR = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI9FhqRjMicavia04bibPFpicSibrFY2dXDGZj9zSXQAjBc3q3y0nSIc2JqGgVia0TQpkRuBpDz6Q/0'
+// 默认头像（被邀请人未提供头像时使用，从全局配置引入）
+const { defaultAvatar: DEFAULT_AVATAR } = require('../../utils/config.js')
 
 Page({
   data: {
@@ -82,12 +82,7 @@ Page({
       .inviteList(userId)
       .then((res) => {
         // 兼容后端返回数组或 { list, rows, records }
-        let list = []
-        if (Array.isArray(res)) {
-          list = res
-        } else if (res) {
-          list = res.list || res.rows || res.records || []
-        }
+        const list = normalizeList(res)
         // 格式化每一条邀请记录
         const formatted = list.map((item) => {
           return {

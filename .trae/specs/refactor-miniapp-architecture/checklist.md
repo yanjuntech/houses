@@ -1,24 +1,24 @@
-- [ ] Checkpoint 1: `utils/config.js` 已创建，包含 baseUrl、客服电话、默认头像路径配置
-- [ ] Checkpoint 2: `app.js` 中已移除未使用的 `globalData.baseUrl` 和重复的 `isEmpty` 函数
-- [ ] Checkpoint 3: `utils/index.js` 中的 `baseUrl` 改为从 `utils/config.js` 引入
-- [ ] Checkpoint 4: `project.config.json` 已添加 `packOptions.ignore` 排除 `preview/` 目录
-- [ ] Checkpoint 5: `utils/api.js` 中已删除未被调用的 `chatApi`
-- [ ] Checkpoint 6: `utils/index.js` 中已新增 `normalizeList`、`parseCoverImage`、`maskPhone` 函数
-- [ ] Checkpoint 7: 14 处重复的列表数据规范化逻辑已替换为 `normalizeList` 调用
-- [ ] Checkpoint 8: `utils/constants.js` 已创建，包含维修状态映射 `STATUS_MAP`
-- [ ] Checkpoint 9: `utils/validate.js` 已创建，包含手机号校验正则
-- [ ] Checkpoint 10: `pages/index/index.js` 中重复的 `isEmpty` 和 `normalizeList` 已删除
-- [ ] Checkpoint 11: `components/common` 组件已在至少 4 个列表页注册并使用
-- [ ] Checkpoint 12: `utils/api.js` 中已新增 `uploadApi.uploadImage` 接口
-- [ ] Checkpoint 13: `house/publish.js` 的图片上传逻辑已改为先上传服务器获取 URL
-- [ ] Checkpoint 14: `profile/edit.js` 的头像上传逻辑已改为调用上传接口
-- [ ] Checkpoint 15: `wx.chooseImage` 已全部升级为 `wx.chooseMedia`
-- [ ] Checkpoint 16: 页面 wxss 中与 `app.wxss` 重复的样式定义已清理
-- [ ] Checkpoint 17: 所有 Toast 调用已统一为 `utils.showToast`
-- [ ] Checkpoint 18: `requireLogin()` 统一登录拦截方法已实现并替换各页面不一致的校验
-- [ ] Checkpoint 19: `profile.wxml` 中损坏的 base64 箭头已替换为 emoji
-- [ ] Checkpoint 20: 默认头像外链已替换为本地图片资源
-- [ ] Checkpoint 21: 列表页 `<image>` 已添加 `lazy-load` 属性
-- [ ] Checkpoint 22: `userApi` 中已新增 `realNameVerify` 接口
-- [ ] Checkpoint 23: `profile/verify.js` 已改为调用后端实名认证接口
-- [ ] Checkpoint 24: 身份证号明文存储本地存储的逻辑已移除
+- [x] Checkpoint 1: `utils/config.js` 已创建，包含 baseUrl、客服电话、默认头像路径配置
+- [x] Checkpoint 2: `app.js` 中已移除未使用的 `globalData.baseUrl` 和重复的 `isEmpty` 函数
+- [x] Checkpoint 3: `utils/index.js` 中的 `baseUrl` 改为从 `utils/config.js` 引入
+- [x] Checkpoint 4: `project.config.json` 已添加 `packOptions.ignore` 排除 `preview/` 目录
+- [x] Checkpoint 5: `utils/api.js` 中已删除未被调用的 `chatApi`
+- [x] Checkpoint 6: `utils/index.js` 中已新增 `normalizeList`、`parseCoverImage`、`maskPhone` 函数
+- [x] Checkpoint 7: 14 处重复的列表数据规范化逻辑已替换为 `normalizeList` 调用
+- [x] Checkpoint 8: `utils/constants.js` 已创建，包含维修状态映射 `STATUS_MAP`
+- [x] Checkpoint 9: `utils/validate.js` 已创建，包含手机号校验正则
+- [x] Checkpoint 10: `pages/index/index.js` 中重复的 `isEmpty` 和 `normalizeList` 已删除
+- [x] Checkpoint 11: `components/common` 组件已在至少 4 个列表页注册并使用
+- [x] Checkpoint 12: `utils/api.js` 中已新增 `uploadApi.uploadImage` 接口
+- [x] Checkpoint 13: `house/publish.js` 的图片上传逻辑已改为先上传服务器获取 URL
+- [x] Checkpoint 14: `profile/edit.js` 的头像上传逻辑已改为调用上传接口
+- [x] Checkpoint 15: `wx.chooseImage` 已全部升级为 `wx.chooseMedia`
+- [x] Checkpoint 16: 页面 wxss 中与 `app.wxss` 重复的样式定义已清理
+- [x] Checkpoint 17: 所有 Toast 调用已统一为 `utils.showToast`
+- [x] Checkpoint 18: `requireLogin()` 统一登录拦截方法已实现并替换各页面不一致的校验
+- [x] Checkpoint 19: `profile.wxml` 中损坏的 base64 箭头已替换为 emoji
+- [x] Checkpoint 20: 默认头像外链已替换为本地图片资源
+- [x] Checkpoint 21: 列表页 `<image>` 已添加 `lazy-load` 属性
+- [x] Checkpoint 22: `userApi` 中已新增 `realNameVerify` 接口
+- [x] Checkpoint 23: `profile/verify.js` 已改为调用后端实名认证接口
+- [x] Checkpoint 24: 身份证号明文存储本地存储的逻辑已移除

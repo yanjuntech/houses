@@ -1,6 +1,6 @@
 // 电话簿页面
 const api = require('../../utils/api.js')
-const { showToast } = require('../../utils/index.js')
+const { showToast, normalizeList } = require('../../utils/index.js')
 
 Page({
   data: {
@@ -42,7 +42,7 @@ Page({
     wx.showLoading({ title: '加载中', mask: true })
     api.phonebookApi.selectAll()
       .then((res) => {
-        const list = Array.isArray(res) ? res : (res && res.list) || []
+        const list = normalizeList(res)
         this.setData({
           allMerchants: list,
           filteredMerchants: list

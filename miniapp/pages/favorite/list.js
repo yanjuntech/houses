@@ -1,5 +1,5 @@
 const { favoriteApi } = require('../../utils/api.js')
-const { showToast, showLoading, hideLoading, showModal, getUserInfo, parseCoverImage, requireLogin } = require('../../utils/index.js')
+const { showToast, showLoading, hideLoading, showModal, getUserInfo, parseCoverImage, requireLogin, normalizeList } = require('../../utils/index.js')
 
 Page({
   data: {
@@ -44,15 +44,8 @@ Page({
     showLoading('加载中')
 
     favoriteApi.userFavorite(userId).then(res => {
-      // 兼容数组与 {rows}/{list} 两种返回结构
-      let list = []
-      if (Array.isArray(res)) {
-        list = res
-      } else if (res && Array.isArray(res.rows)) {
-        list = res.rows
-      } else if (res && Array.isArray(res.list)) {
-        list = res.list
-      }
+      // 兼容数组与 {rows}/{list} 等多种返回结构
+      const list = normalizeList(res)
 
       // 规范化封面图与收藏时间
       const normalized = list.map(item => ({

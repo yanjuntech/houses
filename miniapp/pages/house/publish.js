@@ -1,6 +1,6 @@
 const app = getApp()
 const { communityApi, houseApi, mallApi, uploadApi } = require('../../utils/api.js')
-const { showToast, showLoading, hideLoading, showModal, formatDate, requireLogin } = require('../../utils/index.js')
+const { showToast, showLoading, hideLoading, showModal, formatDate, requireLogin, normalizeList } = require('../../utils/index.js')
 const { PHONE_REG } = require('../../utils/validate.js')
 
 // 房屋类型选项
@@ -67,7 +67,7 @@ Page({
   // 加载小区列表
   loadCommunityOptions() {
     communityApi.selectAll().then(res => {
-      const list = Array.isArray(res) ? res : (res && res.rows) || []
+      const list = normalizeList(res)
       const options = [{ communityId: '', communityName: '请选择小区' }, ...list]
       this.setData({ communityOptions: options })
     }).catch(() => {

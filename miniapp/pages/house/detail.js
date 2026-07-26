@@ -1,6 +1,6 @@
 const app = getApp()
 const { houseApi, favoriteApi, browseApi } = require('../../utils/api.js')
-const { showToast, showLoading, hideLoading, showModal } = require('../../utils/index.js')
+const { showToast, showLoading, hideLoading, showModal, normalizeList } = require('../../utils/index.js')
 
 Page({
   data: {
@@ -85,7 +85,7 @@ Page({
       return
     }
     favoriteApi.userFavorite(userInfo.userId).then(res => {
-      const list = Array.isArray(res) ? res : (res && res.rows) || []
+      const list = normalizeList(res)
       const favorited = list.some(item => String(item.houseId) === String(this.data.houseId))
       this.setData({ isFavorited: favorited })
     }).catch(() => {

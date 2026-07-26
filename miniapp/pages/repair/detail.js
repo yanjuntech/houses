@@ -61,12 +61,7 @@ Page({
 
     this.setData({ loading: true })
     repairApi.list({ userId, pageNum: 1, pageSize: 100 }).then(res => {
-      let list = []
-      if (Array.isArray(res)) {
-        list = res
-      } else if (res) {
-        list = res.rows || res.list || res.records || []
-      }
+      const list = utils.normalizeList(res)
       const info = list.find(item => String(item.repairId) === String(this.data.repairId)) || null
       if (!info) {
         utils.showToast('维修单不存在')

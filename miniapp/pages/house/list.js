@@ -1,5 +1,5 @@
 const { houseApi, communityApi } = require('../../utils/api.js')
-const { showToast, parseCoverImage } = require('../../utils/index.js')
+const { showToast, parseCoverImage, normalizeList } = require('../../utils/index.js')
 
 // 户型筛选项
 const HOUSE_TYPE_OPTIONS = ['全部', '整租', '合租', '单间']
@@ -70,7 +70,7 @@ Page({
   // 加载小区选项列表
   loadCommunityOptions() {
     communityApi.selectAll().then(res => {
-      const list = Array.isArray(res) ? res : (res && res.rows) || []
+      const list = normalizeList(res)
       // 在首部增加"全部小区"选项
       const options = [{ communityId: '', communityName: '全部小区' }, ...list]
       this.setData({ communityOptions: options })
@@ -109,18 +109,8 @@ Page({
 
     houseApi.list(params).then(res => {
       // 兼容 {rows, total} 与数组两种返回结构
-      let list = []
-      let total = 0
-      if (Array.isArray(res)) {
-        list = res
-        total = res.length
-      } else if (res && Array.isArray(res.rows)) {
-        list = res.rows
-        total = res.total || 0
-      } else if (res && Array.isArray(res.list)) {
-        list = res.list
-        total = res.total || 0
-      }
+      const list = normalizeList(res)
+      const total = Array.isArray(res) ? list.length : ((res && res.total) || 0)
 
       // 为每个房源规范化图片字段
       const normalized = list.map(item => ({

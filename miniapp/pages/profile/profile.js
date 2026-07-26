@@ -1,12 +1,13 @@
 // 个人中心页
 const app = getApp()
 const { messageApi, favoriteApi, browseApi, mallApi } = require('../../utils/api.js')
-const { showToast, showModal, getUserInfo, maskPhone } = require('../../utils/index.js')
+const { showToast, showModal, getUserInfo, maskPhone, normalizeList } = require('../../utils/index.js')
+const { defaultAvatar } = require('../../utils/config.js')
 
 Page({
   data: {
-    // 默认头像
-    defaultAvatar: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20avatar%20icon%20simple%20minimal%20design&image_size=square',
+    // 默认头像（从全局配置引入）
+    defaultAvatar,
     // 是否已登录
     isLoggedIn: false,
     // 用户信息
@@ -93,17 +94,13 @@ Page({
 
     // 收藏数
     favoriteApi.userFavorite(userId).then(res => {
-      let count = 0
-      if (Array.isArray(res)) count = res.length
-      else if (res) count = (res.rows || res.list || res.records || []).length
+      const count = normalizeList(res).length
       this.setData({ 'userStats.favorites': count })
     }).catch(err => console.error('获取收藏数失败:', err))
 
     // 浏览记录数
     browseApi.userBrowse(userId).then(res => {
-      let count = 0
-      if (Array.isArray(res)) count = res.length
-      else if (res) count = (res.rows || res.list || res.records || []).length
+      const count = normalizeList(res).length
       this.setData({ 'userStats.browses': count })
     }).catch(err => console.error('获取浏览数失败:', err))
 

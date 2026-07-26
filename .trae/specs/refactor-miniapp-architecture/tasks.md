@@ -15,7 +15,7 @@
   - [ ] SubTask 2.5: 创建 `utils/validate.js` 提取手机号校验正则 `PHONE_REG`，替换 4 个文件中的重复定义
   - [ ] SubTask 2.6: 删除 `pages/index/index.js` 中重复的 `isEmpty` 和 `normalizeList` 函数
 
-- [ ] Task 3: 公共组件复用 - 启用三态组件
+- [x] Task 3: 公共组件复用 - 启用三态组件
   - [ ] SubTask 3.1: 检查 `components/common` 组件功能是否完整，必要时增强（支持自定义空状态文案和图标）
   - [ ] SubTask 3.2: 在 `house/list.js` 的 json 中注册 common 组件，替换页面内空状态实现
   - [ ] SubTask 3.3: 在 `repair/list.js` 的 json 中注册 common 组件，替换页面内空状态实现
@@ -23,13 +23,13 @@
   - [ ] SubTask 3.5: 在 `message/list.js` 的 json 中注册 common 组件，替换页面内空状态实现
   - [ ] SubTask 3.6: 在 `mall/index.js` 和 `mall/record.js` 的 json 中注册 common 组件
 
-- [ ] Task 4: 功能 TODO 修复 - 图片上传
+- [x] Task 4: 功能 TODO 修复 - 图片上传
   - [ ] SubTask 4.1: 在 `utils/api.js` 中新增 `uploadApi.uploadImage(filePath)` 接口，封装 `wx.uploadFile`
   - [ ] SubTask 4.2: 修改 `house/publish.js` 的 `handleSubmit` 方法，先上传图片获取 URL 再提交房源
   - [ ] SubTask 4.3: 修改 `profile/edit.js` 的头像上传逻辑，调用上传接口获取 URL 后保存
   - [ ] SubTask 4.4: 将 `wx.chooseImage` 升级为 `wx.chooseMedia`（house/publish.js、profile/edit.js、repair/apply.js）
 
-- [ ] Task 5: UI/UX 统一 - 样式与交互
+- [x] Task 5: UI/UX 统一 - 样式与交互
   - [ ] SubTask 5.1: 清理页面 wxss 中与 `app.wxss` 重复的 `.card`、`.tag`、`.btn-primary` 等定义
   - [ ] SubTask 5.2: 统一所有页面的 Toast 调用为 `utils.showToast`，移除直接 `wx.showToast` 调用
   - [ ] SubTask 5.3: 在 `app.js` 或 `utils/index.js` 中新增 `requireLogin()` 统一登录拦截方法，替换各页面不一致的登录校验
@@ -41,6 +41,9 @@
   - [ ] SubTask 6.1: 在 `utils/api.js` 的 `userApi` 中新增 `realNameVerify(data)` 接口
   - [ ] SubTask 6.2: 修改 `profile/verify.js` 调用后端实名认证接口，移除纯前端校验和本地标记
   - [ ] SubTask 6.3: 移除身份证号明文存储本地存储的逻辑
+
+- [x] Task 7: 修复 normalizeList 替换不完整问题
+  - [ ] SubTask 7.1: 在以下 14 个文件中，将内联的列表数据规范化逻辑替换为 normalizeList 调用
 
 # Task Dependencies
 - [Task 2] depends on [Task 1]（工具函数提取依赖配置清理完成）

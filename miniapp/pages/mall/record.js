@@ -1,6 +1,6 @@
 const app = getApp()
 const { mallApi } = require('../../utils/api.js')
-const { showToast, showLoading, hideLoading } = require('../../utils/index.js')
+const { showToast, showLoading, hideLoading, normalizeList } = require('../../utils/index.js')
 
 // 兑换状态映射：0 已兑换（绿色）、1 已生效（蓝色）、2 已失效（灰色）
 const STATUS_MAP = {
@@ -44,14 +44,7 @@ Page({
     if (!done) showLoading('加载中')
 
     mallApi.userRecord(this.data.userId).then(res => {
-      let list = []
-      if (Array.isArray(res)) {
-        list = res
-      } else if (res && Array.isArray(res.rows)) {
-        list = res.rows
-      } else if (res && Array.isArray(res.list)) {
-        list = res.list
-      }
+      const list = normalizeList(res)
 
       const recordList = list.map(item => {
         const statusKey = Number(item.status)

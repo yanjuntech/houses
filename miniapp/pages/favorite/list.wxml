@@ -19,6 +19,7 @@
             class="cover-image"
             src="{{item.coverImage}}"
             mode="aspectFill"
+            lazy-load
           />
           <view wx:else class="cover-placeholder">
             <text class="placeholder-icon">🏠</text>

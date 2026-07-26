@@ -65,15 +65,8 @@ Page({
       .list(userId, pageNum, pageSize)
       .then((res) => {
         // 兼容后端返回 { rows, total } 或 { list, total } 或数组
-        let list = []
-        let total = 0
-        if (Array.isArray(res)) {
-          list = res
-          total = res.length
-        } else if (res) {
-          list = res.rows || res.list || res.records || []
-          total = res.total || list.length
-        }
+        const list = utils.normalizeList(res)
+        const total = (res && res.total) || list.length
 
         // 格式化时间并按标签过滤
         const formatted = list.map((item) => {

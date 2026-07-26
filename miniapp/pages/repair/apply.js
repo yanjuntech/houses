@@ -1,7 +1,7 @@
 // 维修申请页
 const app = getApp()
 const { repairApi, rentalContractApi } = require('../../utils/api.js')
-const { showToast, showLoading, hideLoading } = require('../../utils/index.js')
+const { showToast, showLoading, hideLoading, normalizeList } = require('../../utils/index.js')
 const { isValidPhone } = require('../../utils/validate.js')
 
 Page({
@@ -49,15 +49,8 @@ Page({
   loadMyRentals(tenantId) {
     this.setData({ rentalsLoading: true })
     rentalContractApi.myRentals(tenantId).then(res => {
-      // 兼容后端返回数组或 { list } 结构
-      let list = []
-      if (Array.isArray(res)) {
-        list = res
-      } else if (res && Array.isArray(res.list)) {
-        list = res.list
-      } else if (res && Array.isArray(res.rows)) {
-        list = res.rows
-      }
+      // 兼容后端返回数组或 { list } 等结构
+      const list = normalizeList(res)
       this.setData({
         rentals: list,
         hasRentals: list.length > 0,

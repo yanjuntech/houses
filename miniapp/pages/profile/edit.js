@@ -2,11 +2,12 @@
 const app = getApp()
 const { uploadApi } = require('../../utils/api.js')
 const { showToast, showLoading, hideLoading, getUserInfo, setUserInfo } = require('../../utils/index.js')
+const { defaultAvatar } = require('../../utils/config.js')
 
 Page({
   data: {
-    // 默认头像
-    defaultAvatar: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=user%20avatar%20icon%20simple%20minimal%20design&image_size=square',
+    // 默认头像（从全局配置引入）
+    defaultAvatar,
     // 当前头像
     avatar: '',
     // 新选择的本地头像路径（需上传到服务器）

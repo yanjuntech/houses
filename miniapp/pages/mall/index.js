@@ -1,6 +1,6 @@
 const app = getApp()
 const { mallApi } = require('../../utils/api.js')
-const { showToast, showLoading, hideLoading, showModal, requireLogin } = require('../../utils/index.js')
+const { showToast, showLoading, hideLoading, showModal, requireLogin, normalizeList } = require('../../utils/index.js')
 
 Page({
   data: {
@@ -66,14 +66,7 @@ Page({
   loadProducts() {
     this.setData({ loading: true })
     mallApi.productList().then(res => {
-      let list = []
-      if (Array.isArray(res)) {
-        list = res
-      } else if (res && Array.isArray(res.rows)) {
-        list = res.rows
-      } else if (res && Array.isArray(res.list)) {
-        list = res.list
-      }
+      const list = normalizeList(res)
       // 仅展示上架商品（status=0）
       const products = list.filter(item => item.status === 0 || item.status === '0')
       this.setData({ productList: products, loading: false })
