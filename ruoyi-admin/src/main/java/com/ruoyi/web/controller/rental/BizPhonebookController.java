@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.annotation.Log;
@@ -42,6 +43,20 @@ public class BizPhonebookController extends BaseController
     public TableDataInfo list(BizPhonebook bizPhonebook)
     {
         startPage();
+        List<BizPhonebook> list = bizPhonebookService.selectBizPhonebookList(bizPhonebook);
+        return getDataTable(list);
+    }
+
+    /**
+     * 获取电话簿列表（POST方式，避免URL中文编码问题）
+     */
+    @PreAuthorize("@ss.hasPermi('biz:rental:phonebook:list')")
+    @PostMapping("/list")
+    public TableDataInfo listByPost(@RequestBody BizPhonebook bizPhonebook,
+                                    @RequestParam(defaultValue = "1") Integer pageNum,
+                                    @RequestParam(defaultValue = "10") Integer pageSize)
+    {
+        com.github.pagehelper.PageHelper.startPage(pageNum, pageSize);
         List<BizPhonebook> list = bizPhonebookService.selectBizPhonebookList(bizPhonebook);
         return getDataTable(list);
     }

@@ -2,10 +2,15 @@ import request from '@/utils/request'
 
 // 查询电话簿列表
 export function listPhonebook(query) {
+  const pageNum = query.pageNum || 1
+  const pageSize = query.pageSize || 10
+  const data = { ...query }
+  delete data.pageNum
+  delete data.pageSize
   return request({
-    url: '/rental/phonebook/list',
-    method: 'get',
-    params: query
+    url: '/rental/phonebook/list?pageNum=' + pageNum + '&pageSize=' + pageSize,
+    method: 'post',
+    data: data
   })
 }
 
