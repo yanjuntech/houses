@@ -386,6 +386,75 @@
             color: #999;
         }
 
+        /* 轮播图 */
+        .index-page .banner-wrap {
+            padding: 0 10px;
+            margin-bottom: 15px;
+        }
+
+        .index-page .banner-swiper {
+            width: 100%;
+            height: 150px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .index-page .banner-slides {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .index-page .banner-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .index-page .banner-slide-1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .index-page .banner-slide-2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .index-page .banner-slide-3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .index-page .banner-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+        }
+
+        .index-page .banner-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .index-page .banner-dot.active {
+            background: #ffffff;
+            width: 18px;
+            border-radius: 3px;
+        }
+
         .index-page .quick-actions {
             display: flex;
             justify-content: space-around;
@@ -1831,6 +1900,22 @@
                     </div>
                 </div>
 
+                <!-- 轮播图 -->
+                <div class="banner-wrap">
+                    <div class="banner-swiper" id="bannerSwiper">
+                        <div class="banner-slides" id="bannerSlides">
+                            <div class="banner-slide banner-slide-1" data-nav="houseList">🏠 精选好房 优惠不断</div>
+                            <div class="banner-slide banner-slide-2" data-nav="repairApply">🔧 在线报修 极速响应</div>
+                            <div class="banner-slide banner-slide-3" data-nav="mall">🎁 邀请有礼 兑换好物</div>
+                        </div>
+                        <div class="banner-dots" id="bannerDots">
+                            <div class="banner-dot active"></div>
+                            <div class="banner-dot"></div>
+                            <div class="banner-dot"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="quick-actions">
                     <div class="action-item" data-nav="houseList">
                         <div class="action-icon">🏠</div>
@@ -2905,6 +2990,41 @@
                 cat.classList.add('active');
             }
         });
+
+        // ========== 轮播图自动播放 ==========
+        (function() {
+            const slides = document.getElementById('bannerSlides');
+            const dots = document.querySelectorAll('#bannerDots .banner-dot');
+            if (!slides || dots.length === 0) return;
+            let current = 0;
+            const total = dots.length;
+
+            function go(index) {
+                current = (index + total) % total;
+                slides.style.transform = 'translateX(-' + (current * 100) + '%)';
+                dots.forEach((d, i) => d.classList.toggle('active', i === current));
+            }
+
+            // 自动播放
+            let timer = setInterval(() => go(current + 1), 4000);
+
+            // 鼠标悬停暂停
+            const swiper = document.getElementById('bannerSwiper');
+            if (swiper) {
+                swiper.addEventListener('mouseenter', () => clearInterval(timer));
+                swiper.addEventListener('mouseleave', () => {
+                    timer = setInterval(() => go(current + 1), 4000);
+                });
+            }
+
+            // 点击指示点切换
+            dots.forEach((dot, i) => {
+                dot.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    go(i);
+                });
+            });
+        })();
     </script>
 </body>
 </html>
