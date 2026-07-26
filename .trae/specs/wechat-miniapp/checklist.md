@@ -5,4 +5,4 @@
 - [x] Checkpoint 5: 工具函数和公共组件文件存在（utils/index.js、components/common/）
 - [x] Checkpoint 6: app.json 配置包含页面路由和 tabBar 配置
 - [x] Checkpoint 7: JSON 文件格式验证通过（可被 JSON.parse 解析）
-- [ ] Checkpoint 8: 在微信开发者工具中项目可正常打开和编译
+- [x] Checkpoint 8: 在微信开发者工具中项目可正常打开和编译

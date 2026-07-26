@@ -69,7 +69,7 @@
   - `programmatic` TR-5.2: 工具函数语法正确，可正常调用
 - **Notes**: 工具函数包含网络请求封装、日期格式化等常用功能
 
-## [/] Task 6: 配置 tabBar 和全局样式
+## [x] Task 6: 配置 tabBar 和全局样式
 - **Priority**: medium
 - **Depends On**: Task 2, Task 3, Task 4
 - **Description**: 
