@@ -1,7 +1,12 @@
 {
   "description": "微信小程序项目配置",
   "packOptions": {
-    "ignore": []
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "preview"
+      }
+    ]
   },
   "setting": {
     "urlCheck": false,

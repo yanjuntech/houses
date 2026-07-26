@@ -1,6 +1,7 @@
 const app = getApp()
-const { communityApi, houseApi, mallApi } = require('../../utils/api.js')
-const { showToast, showLoading, hideLoading, showModal, formatDate } = require('../../utils/index.js')
+const { communityApi, houseApi, mallApi, uploadApi } = require('../../utils/api.js')
+const { showToast, showLoading, hideLoading, showModal, formatDate, requireLogin } = require('../../utils/index.js')
+const { PHONE_REG } = require('../../utils/validate.js')
 
 // 房屋类型选项
 const HOUSE_TYPE_OPTIONS = ['整租', '合租', '单间']
@@ -8,8 +9,6 @@ const HOUSE_TYPE_OPTIONS = ['整租', '合租', '单间']
 const DIRECTION_OPTIONS = ['东', '南', '西', '北', '南北']
 // 装修选项
 const DECORATION_OPTIONS = ['毛坯', '简装', '精装', '豪装']
-// 手机号校验正则
-const PHONE_REG = /^1[3-9]\d{9}$/
 
 Page({
   data: {
@@ -56,11 +55,8 @@ Page({
   },
 
   onLoad() {
+    if (!requireLogin()) return
     const userInfo = app.getUserInfo()
-    if (!userInfo || !userInfo.userId) {
-      showToast('请先登录')
-      return
-    }
     this.setData({ userInfo })
     this.loadCommunityOptions()
     this.loadQuota(userInfo.userId)
@@ -163,12 +159,13 @@ Page({
       showToast('最多上传9张图片')
       return
     }
-    wx.chooseImage({
+    wx.chooseMedia({
       count: remain,
-      sizeType: ['compressed'],
+      mediaType: ['image'],
       sourceType: ['album', 'camera'],
+      sizeType: ['compressed'],
       success: (res) => {
-        const newPaths = res.tempFilePaths || []
+        const newPaths = (res.tempFiles || []).map(f => f.tempFilePath)
         const imageList = this.data.imageList.concat(newPaths).slice(0, 9)
         this.setData({ imageList })
       }
@@ -265,33 +262,39 @@ Page({
     }
 
     const userInfo = this.data.userInfo
-    // TODO: 生产环境需对接图片上传接口，将本地临时路径转为服务器URL
-    // 当前仅使用本地临时路径拼接，提交后图片无法在后端展示
-    const houseImage = this.data.imageList.join(',')
-
-    const data = {
-      userId: userInfo.userId,
-      communityId: this.data.form.communityId,
-      houseTitle: this.data.form.houseTitle.trim(),
-      houseType: this.data.form.houseType,
-      houseLayout: this.data.form.houseLayout || '',
-      houseArea: Number(this.data.form.houseArea),
-      housePrice: Number(this.data.form.housePrice),
-      houseFloor: this.data.form.houseFloor || '',
-      houseDirection: this.data.form.houseDirection || '',
-      houseDecoration: this.data.form.houseDecoration || '',
-      houseAddress: this.data.form.houseAddress.trim(),
-      houseImage,
-      houseDesc: this.data.form.houseDesc || '',
-      contactName: this.data.form.contactName.trim(),
-      contactPhone: this.data.form.contactPhone,
-      status: 0
-    }
-
     this.setData({ submitting: true })
     showLoading('发布中')
 
-    houseApi.add(data).then(() => {
+    // 先上传图片到服务器，再将返回的 URL 拼接为 houseImage 字段
+    const localImages = this.data.imageList || []
+    const uploadTask = localImages.length
+      ? Promise.all(localImages.map(filePath => uploadApi.uploadImage(filePath)))
+      : Promise.resolve([])
+
+    uploadTask.then(uploadedUrls => {
+      const houseImage = uploadedUrls.filter(Boolean).join(',')
+
+      const data = {
+        userId: userInfo.userId,
+        communityId: this.data.form.communityId,
+        houseTitle: this.data.form.houseTitle.trim(),
+        houseType: this.data.form.houseType,
+        houseLayout: this.data.form.houseLayout || '',
+        houseArea: Number(this.data.form.houseArea),
+        housePrice: Number(this.data.form.housePrice),
+        houseFloor: this.data.form.houseFloor || '',
+        houseDirection: this.data.form.houseDirection || '',
+        houseDecoration: this.data.form.houseDecoration || '',
+        houseAddress: this.data.form.houseAddress.trim(),
+        houseImage,
+        houseDesc: this.data.form.houseDesc || '',
+        contactName: this.data.form.contactName.trim(),
+        contactPhone: this.data.form.contactPhone,
+        status: 0
+      }
+
+      return houseApi.add(data)
+    }).then(() => {
       hideLoading()
       showToast('发布成功', 'success')
       // 延迟返回上一页，给提示留出展示时间
@@ -303,9 +306,10 @@ Page({
           }
         })
       }, 1000)
-    }).catch(() => {
+    }).catch(err => {
       hideLoading()
       this.setData({ submitting: false })
+      showToast(err && err.message ? err.message : '发布失败')
     })
   }
 })

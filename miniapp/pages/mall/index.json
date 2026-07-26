@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "兑换商城",
-  "usingComponents": {}
+  "usingComponents": {
+    "common": "/components/common/common"
+  }
 }

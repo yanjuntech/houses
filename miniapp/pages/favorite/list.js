@@ -1,5 +1,5 @@
 const { favoriteApi } = require('../../utils/api.js')
-const { showToast, showLoading, hideLoading, showModal, getUserInfo } = require('../../utils/index.js')
+const { showToast, showLoading, hideLoading, showModal, getUserInfo, parseCoverImage, requireLogin } = require('../../utils/index.js')
 
 Page({
   data: {
@@ -35,8 +35,7 @@ Page({
       return
     }
     const userId = this.data.userId
-    if (!userId) {
-      showToast('请先登录')
+    if (!requireLogin()) {
       done && done()
       return
     }
@@ -58,7 +57,7 @@ Page({
       // 规范化封面图与收藏时间
       const normalized = list.map(item => ({
         ...item,
-        coverImage: this.parseCoverImage(item),
+        coverImage: parseCoverImage(item),
         favoriteTime: this.formatFavoriteTime(item.createTime)
       }))
 
@@ -73,17 +72,6 @@ Page({
       hideLoading()
       done && done()
     })
-  },
-
-  // 解析房源封面图，支持字符串、逗号分隔、数组三种格式
-  parseCoverImage(item) {
-    let img = item.houseImage || item.image || item.cover || ''
-    if (Array.isArray(img) && img.length > 0) {
-      img = img[0]
-    } else if (typeof img === 'string' && img) {
-      img = img.split(',')[0]
-    }
-    return img
   },
 
   // 格式化收藏时间

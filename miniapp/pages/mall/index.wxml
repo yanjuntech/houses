@@ -76,15 +76,14 @@
     </view>
   </view>
 
-  <!-- 加载中 -->
-  <view class="loading-state" wx:if="{{loading && productList.length === 0}}">
-    <text class="loading-text">加载中...</text>
-  </view>
-
-  <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{!loading && productList.length === 0}}">
-    <text class="empty-icon">🛍️</text>
-    <text class="empty-text">商城暂无商品</text>
-    <view class="empty-btn" bindtap="initData">刷新</view>
-  </view>
+  <!-- 加载中 / 空状态 -->
+  <common
+    wx:if="{{productList.length === 0}}"
+    status="{{loading ? 'loading' : 'empty'}}"
+    loadingText="加载中..."
+    emptyIcon="🛍️"
+    emptyText="商城暂无商品"
+    emptyBtnText="刷新"
+    bindemptyBtnTap="initData"
+  />
 </view>

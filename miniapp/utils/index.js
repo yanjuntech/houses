@@ -1,5 +1,5 @@
-// 后端服务基础地址（开发环境）
-const baseUrl = 'http://localhost:8080'
+// 后端服务基础地址及全局配置（统一从 config.js 引入）
+const { baseUrl } = require('./config.js')
 
 // 登录页路径，用于 401 自动跳转
 const LOGIN_PAGE = '/pages/login/login'
@@ -235,6 +235,20 @@ function getUserInfo() {
   return getStorage('userInfo', {})
 }
 
+/**
+ * 统一登录校验，未登录则跳转登录页
+ * @returns {boolean} 是否已登录
+ */
+function requireLogin() {
+  const userInfo = getUserInfo()
+  if (isEmpty(userInfo)) {
+    showToast('请先登录')
+    wx.navigateTo({ url: '/pages/login/login' })
+    return false
+  }
+  return true
+}
+
 function setUserInfo(userInfo) {
   return setStorage('userInfo', userInfo)
 }
@@ -268,6 +282,35 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+// 兼容后端返回的数组或分页对象，统一取出数组
+function normalizeList(res) {
+  if (Array.isArray(res)) return res
+  if (res && Array.isArray(res.list)) return res.list
+  if (res && Array.isArray(res.rows)) return res.rows
+  if (res && Array.isArray(res.records)) return res.records
+  if (res && Array.isArray(res.data)) return res.data
+  return []
+}
+
+// 解析房源封面图，支持字符串、逗号分隔、数组三种格式
+function parseCoverImage(item) {
+  let img = item.houseImage || item.image || item.cover || ''
+  if (Array.isArray(img) && img.length > 0) {
+    img = img[0]
+  } else if (typeof img === 'string' && img) {
+    img = img.split(',')[0]
+  }
+  return img
+}
+
+// 手机号脱敏：138****8888
+function maskPhone(phone) {
+  if (!phone) return ''
+  const str = String(phone).trim()
+  if (str.length < 7) return str
+  return str.substring(0, 3) + '****' + str.substring(str.length - 4)
+}
+
 module.exports = {
   baseUrl,
   request,
@@ -288,11 +331,15 @@ module.exports = {
   hideLoading,
   showModal,
   getUserInfo,
+  requireLogin,
   setUserInfo,
   clearUserInfo,
   generateId,
   isEmpty,
   cloneDeep,
   getUrlParams,
-  delay
+  delay,
+  normalizeList,
+  parseCoverImage,
+  maskPhone
 }

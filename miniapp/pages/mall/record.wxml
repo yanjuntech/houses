@@ -25,14 +25,12 @@
     </view>
   </view>
 
-  <!-- 加载中 -->
-  <view class="loading-state" wx:if="{{loading && recordList.length === 0}}">
-    <text class="loading-text">加载中...</text>
-  </view>
-
-  <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{!loading && recordList.length === 0}}">
-    <text class="empty-icon">📭</text>
-    <text class="empty-text">暂无兑换记录</text>
-  </view>
+  <!-- 加载中 / 空状态 -->
+  <common
+    wx:if="{{recordList.length === 0}}"
+    status="{{loading ? 'loading' : 'empty'}}"
+    loadingText="加载中..."
+    emptyIcon="📭"
+    emptyText="暂无兑换记录"
+  />
 </view>

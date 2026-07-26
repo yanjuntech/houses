@@ -1,6 +1,6 @@
 const app = getApp()
 const { mallApi } = require('../../utils/api.js')
-const { showToast, showLoading, hideLoading, showModal } = require('../../utils/index.js')
+const { showToast, showLoading, hideLoading, showModal, requireLogin } = require('../../utils/index.js')
 
 Page({
   data: {
@@ -36,8 +36,7 @@ Page({
 
   // 初始化数据
   initData() {
-    if (!this.data.userId) {
-      showToast('请先登录')
+    if (!requireLogin()) {
       return
     }
     this.loadQuota()

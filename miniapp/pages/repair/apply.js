@@ -2,6 +2,7 @@
 const app = getApp()
 const { repairApi, rentalContractApi } = require('../../utils/api.js')
 const { showToast, showLoading, hideLoading } = require('../../utils/index.js')
+const { isValidPhone } = require('../../utils/validate.js')
 
 Page({
   data: {
@@ -118,7 +119,7 @@ Page({
       showToast('请输入联系电话')
       return false
     }
-    if (!/^1[3-9]\d{9}$/.test(contactPhone.trim())) {
+    if (!isValidPhone(contactPhone)) {
       showToast('请输入正确的手机号')
       return false
     }

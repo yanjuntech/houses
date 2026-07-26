@@ -1,5 +1,6 @@
 // 电话簿页面
 const api = require('../../utils/api.js')
+const { showToast } = require('../../utils/index.js')
 
 Page({
   data: {
@@ -134,7 +135,7 @@ Page({
   callPhone(e) {
     const phone = e.currentTarget.dataset.phone
     if (!phone) {
-      wx.showToast({ title: '暂无电话', icon: 'none' })
+      showToast('暂无电话')
       return
     }
     wx.makePhoneCall({

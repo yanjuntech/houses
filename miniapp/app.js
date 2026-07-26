@@ -23,9 +23,7 @@ App({
 
   globalData: {
     userInfo: null,
-    token: '',
-    // 后端服务基础地址（开发环境）
-    baseUrl: 'http://localhost:8080'
+    token: ''
   },
 
   /**
@@ -35,7 +33,7 @@ App({
   checkLogin() {
     const token = wx.getStorageSync('token')
     const userInfo = this.getUserInfo()
-    if (!token || !userInfo || isEmpty(userInfo)) {
+    if (!token || !userInfo || utils.isEmpty(userInfo)) {
       wx.reLaunch({ url: LOGIN_PAGE })
       return false
     }
@@ -65,10 +63,3 @@ App({
     wx.reLaunch({ url: LOGIN_PAGE })
   }
 })
-
-// 判空辅助函数
-function isEmpty(value) {
-  return value === null || value === undefined || value === '' ||
-    (Array.isArray(value) && value.length === 0) ||
-    (typeof value === 'object' && Object.keys(value).length === 0)
-}

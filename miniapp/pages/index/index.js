@@ -1,4 +1,5 @@
 const api = require('../../utils/api.js')
+const { normalizeList, isEmpty, showToast } = require('../../utils/index.js')
 const app = getApp()
 
 Page({
@@ -123,7 +124,7 @@ Page({
         wx.navigateTo({
           url: '/pages/house/list',
           fail: () => {
-            wx.showToast({ title: '页面跳转失败', icon: 'none' })
+            showToast('页面跳转失败')
           }
         })
       }
@@ -139,7 +140,7 @@ Page({
         wx.switchTab({
           url: '/pages/house/list',
           fail: () => {
-            wx.showToast({ title: '页面跳转失败', icon: 'none' })
+            showToast('页面跳转失败')
           }
         })
         break
@@ -148,7 +149,7 @@ Page({
         wx.navigateTo({
           url: '/pages/repair/apply',
           fail: () => {
-            wx.showToast({ title: '页面跳转失败', icon: 'none' })
+            showToast('页面跳转失败')
           }
         })
         break
@@ -157,7 +158,7 @@ Page({
         wx.switchTab({
           url: '/pages/phonebook/index',
           fail: () => {
-            wx.showToast({ title: '页面跳转失败', icon: 'none' })
+            showToast('页面跳转失败')
           }
         })
         break
@@ -166,7 +167,7 @@ Page({
         wx.navigateTo({
           url: '/pages/message/list',
           fail: () => {
-            wx.showToast({ title: '页面跳转失败', icon: 'none' })
+            showToast('页面跳转失败')
           }
         })
         break
@@ -182,7 +183,7 @@ Page({
         break
       case 6:
         // 设置 → 暂无
-        wx.showToast({ title: '暂无', icon: 'none' })
+        showToast('暂无')
         break
       default:
         break
@@ -195,7 +196,7 @@ Page({
     wx.navigateTo({
       url: '/pages/house/detail?houseId=' + id,
       fail: () => {
-        wx.showToast({ title: '页面跳转失败', icon: 'none' })
+        showToast('页面跳转失败')
       }
     })
   },
@@ -204,13 +205,13 @@ Page({
   handleMerchant(e) {
     const phone = e.currentTarget.dataset.phone
     if (!phone) {
-      wx.showToast({ title: '电话号码缺失', icon: 'none' })
+      showToast('电话号码缺失')
       return
     }
     wx.makePhoneCall({
       phoneNumber: String(phone),
       fail: () => {
-        wx.showToast({ title: '拨号已取消', icon: 'none' })
+        showToast('拨号已取消')
       }
     })
   },
@@ -220,7 +221,7 @@ Page({
     wx.switchTab({
       url: '/pages/house/list',
       fail: () => {
-        wx.showToast({ title: '页面跳转失败', icon: 'none' })
+        showToast('页面跳转失败')
       }
     })
   },
@@ -230,21 +231,11 @@ Page({
     wx.switchTab({
       url: '/pages/phonebook/index',
       fail: () => {
-        wx.showToast({ title: '页面跳转失败', icon: 'none' })
+        showToast('页面跳转失败')
       }
     })
   }
 })
-
-// 兼容后端返回的数组或分页对象 { list, total, ... }，统一取出数组
-function normalizeList(res) {
-  if (Array.isArray(res)) return res
-  if (res && Array.isArray(res.list)) return res.list
-  if (res && Array.isArray(res.rows)) return res.rows
-  if (res && Array.isArray(res.records)) return res.records
-  if (res && Array.isArray(res.data)) return res.data
-  return []
-}
 
 // 后端无数据或接口失败时的占位轮播图
 function getDefaultBanners() {
@@ -254,11 +245,4 @@ function getDefaultBanners() {
     title: '欢迎使用租房小助手',
     jumpUrl: ''
   }]
-}
-
-// 判空辅助函数
-function isEmpty(value) {
-  return value === null || value === undefined || value === '' ||
-    (Array.isArray(value) && value.length === 0) ||
-    (typeof value === 'object' && Object.keys(value).length === 0)
 }

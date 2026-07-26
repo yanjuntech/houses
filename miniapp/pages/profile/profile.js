@@ -1,7 +1,7 @@
 // 个人中心页
 const app = getApp()
 const { messageApi, favoriteApi, browseApi, mallApi } = require('../../utils/api.js')
-const { showToast, showModal, getUserInfo } = require('../../utils/index.js')
+const { showToast, showModal, getUserInfo, maskPhone } = require('../../utils/index.js')
 
 Page({
   data: {
@@ -74,7 +74,7 @@ Page({
     const userInfo = getUserInfo() || {}
     this.setData({
       userInfo,
-      maskedPhone: this.maskPhone(userInfo.phone)
+      maskedPhone: maskPhone(userInfo.phone)
     })
     // 更新实名认证状态标签
     const settingsList = this.data.settingsList.map(item => {
@@ -84,14 +84,6 @@ Page({
       return item
     })
     this.setData({ settingsList })
-  },
-
-  // 手机号脱敏：138****8888
-  maskPhone(phone) {
-    if (!phone) return ''
-    const str = String(phone)
-    if (str.length < 11) return str
-    return str.slice(0, 3) + '****' + str.slice(-4)
   },
 
   // 加载统计数据：收藏数、浏览数、邀请人数

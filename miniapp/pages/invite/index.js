@@ -1,7 +1,7 @@
 // 邀请管理页
 const app = getApp()
 const { inviteApi } = require('../../utils/api.js')
-const { showToast, formatDateTime } = require('../../utils/index.js')
+const { showToast, formatDateTime, maskPhone } = require('../../utils/index.js')
 
 // 默认头像（被邀请人未提供头像时使用）
 const DEFAULT_AVATAR = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI9FhqRjMicavia04bibPFpicSibrFY2dXDGZj9zSXQAjBc3q3y0nSIc2JqGgVia0TQpkRuBpDz6Q/0'
@@ -94,7 +94,7 @@ Page({
             ...item,
             avatar: this.normalizeAvatar(item.avatar || item.avatarUrl),
             nickname: this.normalizeNickname(item.nickname || item.nickName),
-            phoneMasked: this.maskPhone(item.phone || item.mobile || ''),
+            phoneMasked: maskPhone(item.phone || item.mobile || ''),
             verifyStatusText: this.isVerified(item) ? '已认证' : '未认证',
             verified: this.isVerified(item),
             formatTime: formatDateTime(item.inviteTime || item.createTime || item.createdAt)
@@ -132,17 +132,6 @@ Page({
   normalizeNickname(name) {
     if (!name) return '微信用户'
     return name
-  },
-
-  /**
-   * 手机号脱敏：138****8888
-   */
-  maskPhone(phone) {
-    if (!phone) return ''
-    const str = String(phone).trim()
-    // 仅处理长度大于等于 7 的手机号
-    if (str.length < 7) return str
-    return str.substring(0, 3) + '****' + str.substring(str.length - 4)
   },
 
   /**

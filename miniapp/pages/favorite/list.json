@@ -1,5 +1,7 @@
 {
-  "usingComponents": {},
+  "usingComponents": {
+    "common": "/components/common/common"
+  },
   "navigationBarTitleText": "我的收藏",
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark"

@@ -1,5 +1,5 @@
 const { houseApi, communityApi } = require('../../utils/api.js')
-const { showToast } = require('../../utils/index.js')
+const { showToast, parseCoverImage } = require('../../utils/index.js')
 
 // 户型筛选项
 const HOUSE_TYPE_OPTIONS = ['全部', '整租', '合租', '单间']
@@ -125,7 +125,7 @@ Page({
       // 为每个房源规范化图片字段
       const normalized = list.map(item => ({
         ...item,
-        coverImage: this.parseCoverImage(item)
+        coverImage: parseCoverImage(item)
       }))
 
       const newHouseList = reset ? normalized : this.data.houseList.concat(normalized)
@@ -143,17 +143,6 @@ Page({
     }).finally(() => {
       done && done()
     })
-  },
-
-  // 解析房源封面图，支持字符串、逗号分隔、数组三种格式
-  parseCoverImage(item) {
-    let img = item.houseImage || item.image || item.cover || ''
-    if (Array.isArray(img) && img.length > 0) {
-      img = img[0]
-    } else if (typeof img === 'string' && img) {
-      img = img.split(',')[0]
-    }
-    return img
   },
 
   // 搜索输入

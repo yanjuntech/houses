@@ -39,10 +39,12 @@
   </view>
 
   <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{!loading && repairList.length === 0}}">
-    <text class="empty-icon">🔧</text>
-    <text class="empty-text">暂无维修记录</text>
-  </view>
+  <common
+    wx:if="{{!loading && repairList.length === 0}}"
+    status="empty"
+    emptyIcon="🔧"
+    emptyText="暂无维修记录"
+  />
 
   <!-- 加载更多 -->
   <view class="loadmore" wx:if="{{repairList.length > 0}}">

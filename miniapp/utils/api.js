@@ -42,6 +42,14 @@ const userApi = {
    */
   bindPhone(data) {
     return post('/miniapp/user/bindPhone', data)
+  },
+
+  /**
+   * 实名认证
+   * @param {Object} data { userId, realName, idCard }
+   */
+  realNameVerify(data) {
+    return post('/miniapp/user/realNameVerify', data)
   }
 }
 
@@ -303,31 +311,46 @@ const browseApi = {
   }
 }
 
-/* ===================== 聊天消息模块 ===================== */
-const chatApi = {
+/* ===================== 文件上传模块 ===================== */
+/**
+ * 文件上传 API
+ */
+const uploadApi = {
   /**
-   * 发送消息
-   * @param {Object} data 消息内容
+   * 上传图片
+   * @param {string} filePath 本地临时文件路径
+   * @returns {Promise<string>} 服务器返回的图片 URL
    */
-  send(data) {
-    return post('/rental/message/send', data)
-  },
-
-  /**
-   * 获取聊天记录
-   * @param {string|number} userId1 用户1ID
-   * @param {string|number} userId2 用户2ID
-   */
-  history(userId1, userId2) {
-    return get('/rental/message/history', { userId1, userId2 })
-  },
-
-  /**
-   * 标记消息已读
-   * @param {string|number} messageId 消息ID
-   */
-  markAsRead(messageId) {
-    return put(`/rental/message/markAsRead/${messageId}`)
+  uploadImage(filePath) {
+    return new Promise((resolve, reject) => {
+      const { baseUrl } = require('./config.js')
+      const token = wx.getStorageSync('token') || ''
+      wx.uploadFile({
+        url: baseUrl + '/common/upload',
+        filePath: filePath,
+        name: 'file',
+        header: {
+          'Authorization': token
+        },
+        success(res) {
+          try {
+            const data = JSON.parse(res.data)
+            if (data.code === 200 || data.code === 0) {
+              // 返回格式可能是 { url: 'xxx' } 或 { data: { url: 'xxx' } } 或 { fileName: 'xxx' }
+              const url = data.url || (data.data && data.data.url) || data.fileName || data.data
+              resolve(url)
+            } else {
+              reject(new Error(data.msg || '上传失败'))
+            }
+          } catch (e) {
+            reject(new Error('解析上传响应失败'))
+          }
+        },
+        fail(err) {
+          reject(err)
+        }
+      })
+    })
   }
 }
 
@@ -344,5 +367,5 @@ module.exports = {
   mallApi,
   favoriteApi,
   browseApi,
-  chatApi
+  uploadApi
 }

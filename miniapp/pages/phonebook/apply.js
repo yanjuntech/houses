@@ -2,6 +2,7 @@
 const app = getApp()
 const { phonebookApi } = require('../../utils/api.js')
 const { showToast, showLoading, hideLoading } = require('../../utils/index.js')
+const { isValidPhone } = require('../../utils/validate.js')
 
 Page({
   data: {
@@ -86,12 +87,12 @@ Page({
       showToast('请填写联系电话1')
       return false
     }
-    if (!/^1[3-9]\d{9}$/.test(phone1.trim())) {
+    if (!isValidPhone(phone1)) {
       showToast('请输入正确的11位手机号')
       return false
     }
     // 电话2选填，但若填写需校验格式
-    if (phone2 && phone2.trim() && !/^1[3-9]\d{9}$/.test(phone2.trim())) {
+    if (phone2 && phone2.trim() && !isValidPhone(phone2)) {
       showToast('联系电话2 格式不正确')
       return false
     }

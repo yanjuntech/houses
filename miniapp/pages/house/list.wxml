@@ -110,11 +110,14 @@
   </view>
 
   <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{!loading && houseList.length === 0}}">
-    <text class="empty-icon">🏠</text>
-    <text class="empty-text">暂无符合条件的房源</text>
-    <view class="empty-btn" bindtap="handleFilter">重置筛选</view>
-  </view>
+  <common
+    wx:if="{{!loading && houseList.length === 0}}"
+    status="empty"
+    emptyIcon="🏠"
+    emptyText="暂无符合条件的房源"
+    emptyBtnText="重置筛选"
+    bindemptyBtnTap="handleFilter"
+  />
 
   <!-- 上拉加载更多提示 -->
   <view class="loadmore" wx:if="{{houseList.length > 0}}">

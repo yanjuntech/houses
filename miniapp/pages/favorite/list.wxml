@@ -63,9 +63,12 @@
   </view>
 
   <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{!loading && favoriteList.length === 0}}">
-    <text class="empty-icon">💙</text>
-    <text class="empty-text">暂无收藏的房源</text>
-    <view class="empty-btn" bindtap="goHouseList">去逛逛</view>
-  </view>
+  <common
+    wx:if="{{!loading && favoriteList.length === 0}}"
+    status="empty"
+    emptyIcon="💙"
+    emptyText="暂无收藏的房源"
+    emptyBtnText="去逛逛"
+    bindemptyBtnTap="goHouseList"
+  />
 </view>

@@ -1,6 +1,7 @@
 // 实名认证页
 const app = getApp()
 const { showToast, showModal, getUserInfo, setUserInfo } = require('../../utils/index.js')
+const { userApi } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -92,20 +93,31 @@ Page({
     }
 
     const userInfo = getUserInfo() || {}
-    const newUserInfo = {
-      ...userInfo,
-      realName: trimmedName,
-      idCard: trimmedId,
-      idCardVerified: 1
+    const userId = userInfo.userId
+    if (!userId) {
+      showToast('登录信息已失效，请重新登录')
+      return
     }
-    // TODO: 生产环境应调用后端实名认证接口（如 userApi.realNameVerify），将身份证号加密传输并由后端审核。
-    // 本次任务无专用接口，暂时保存到本地存储 userInfo 并标记 idCardVerified=1。
-    setUserInfo(newUserInfo)
-    app.globalData.userInfo = newUserInfo
 
-    showToast('认证成功', 'success')
-    setTimeout(() => {
-      wx.navigateBack()
-    }, 800)
+    userApi.realNameVerify({ userId, realName: trimmedName, idCard: trimmedId })
+      .then(() => {
+        // 认证成功：本地仅保存认证标记，不存储身份证号明文
+        const newUserInfo = {
+          ...userInfo,
+          realName: trimmedName,
+          idCardVerified: 1,
+          verifyStatus: '1'
+        }
+        setUserInfo(newUserInfo)
+        app.globalData.userInfo = newUserInfo
+
+        showToast('认证成功', 'success')
+        setTimeout(() => {
+          wx.navigateBack()
+        }, 800)
+      })
+      .catch(() => {
+        // 接口失败，错误提示已由请求层统一处理
+      })
   }
 })
