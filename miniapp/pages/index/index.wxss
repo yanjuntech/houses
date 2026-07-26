@@ -228,6 +228,21 @@
   border-radius: 20rpx;
 }
 
+.banner-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-placeholder-text {
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
 /* ============ 热门房源 ============ */
 .house-list {
   display: flex;

@@ -9,6 +9,7 @@
     "pages/house/detail",
     "pages/house/publish",
     "pages/phonebook/index",
+    "pages/phonebook/apply",
     "pages/repair/apply",
     "pages/repair/list",
     "pages/repair/detail",

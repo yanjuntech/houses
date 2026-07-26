@@ -1,5 +1,5 @@
 <view class="phonebook-page">
-  <!-- 顶部搜索栏 -->
+  <!-- 顶部搜索栏（跨左右两栏） -->
   <view class="search-wrap">
     <view class="search-bar">
       <text class="search-icon">🔍</text>
@@ -16,9 +16,10 @@
     </view>
   </view>
 
-  <!-- 分类标签横向滚动 -->
-  <scroll-view class="category-scroll" scroll-x="true" enhanced="true" show-scrollbar="{{false}}">
-    <view class="category-list">
+  <!-- 左右分栏内容 -->
+  <view class="content-wrap">
+    <!-- 左侧分类列表 -->
+    <scroll-view class="category-sidebar" scroll-y="true" enhanced="true" show-scrollbar="{{false}}">
       <view
         wx:for="{{categories}}"
         wx:key="value"
@@ -26,123 +27,63 @@
         data-value="{{item.value}}"
         bindtap="filterByCategory"
       >
-        {{item.label}}
+        <text class="category-label">{{item.label}}</text>
+        <text class="category-badge">{{item.count}}</text>
       </view>
-    </view>
-  </scroll-view>
+    </scroll-view>
 
-  <!-- 商家列表 -->
-  <view class="merchant-list" wx:if="{{filteredMerchants.length > 0}}">
-    <view
-      class="merchant-card"
-      wx:for="{{filteredMerchants}}"
-      wx:key="id"
-      data-phone="{{item.phone1 || item.phone || ''}}"
-      bindtap="callPhone"
-    >
-      <view class="merchant-main">
-        <view class="merchant-name-row">
-          <text class="merchant-name">{{item.merchantName || item.merchant_name || item.name}}</text>
-          <text class="merchant-cat-tag">{{categories[Number(item.category)] && categories[Number(item.category)].label || ''}}</text>
-        </view>
-        <view class="merchant-info-row" wx:if="{{item.address}}">
-          <text class="info-label">📍</text>
-          <text class="info-text">{{item.address}}</text>
-        </view>
-        <view class="merchant-info-row" wx:if="{{item.phone1 || item.phone}}">
-          <text class="info-label">☎</text>
-          <text class="info-text">{{item.phone1 || item.phone}}</text>
-        </view>
-        <view class="merchant-info-row" wx:if="{{item.phone2}}">
-          <text class="info-label">☎</text>
-          <text class="info-text">{{item.phone2}}</text>
-        </view>
-      </view>
-      <view
-        class="call-btn"
-        catchtap="callPhone"
-        data-phone="{{item.phone1 || item.phone || ''}}"
-      >
-        <text class="call-icon">📞</text>
-        <text class="call-text">拨打</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 空状态 -->
-  <view class="empty-state" wx:else>
-    <text class="empty-icon">📭</text>
-    <text class="empty-text">暂无商家信息</text>
-    <text class="empty-tip">您可以点击底部"申请收录"添加商家</text>
-  </view>
-
-  <!-- 底部申请收录按钮 -->
-  <view class="apply-bar">
-    <view class="apply-btn" bindtap="handleApply">
-      <text class="apply-icon">＋</text>
-      <text class="apply-text">申请收录</text>
-    </view>
-  </view>
-
-  <!-- 申请收录弹窗 -->
-  <view class="popup-mask" wx:if="{{showApplyPopup}}" bindtap="closeApplyPopup">
-    <view class="popup-content" catchtap="stopPropagation">
-      <view class="popup-header">
-        <text class="popup-title">申请收录商家</text>
-        <text class="popup-close" bindtap="closeApplyPopup">✕</text>
-      </view>
-      <view class="popup-body">
-        <view class="form-item">
-          <text class="form-label">商家名称</text>
-          <input
-            class="form-input"
-            type="text"
-            placeholder="请输入商家名称"
-            value="{{applyForm.merchantName}}"
-            bindinput="onMerchantNameInput"
-          />
-        </view>
-        <view class="form-item">
-          <text class="form-label">联系电话</text>
-          <input
-            class="form-input"
-            type="number"
-            placeholder="请输入联系电话"
-            value="{{applyForm.phone}}"
-            bindinput="onPhoneInput"
-          />
-        </view>
-        <view class="form-item">
-          <text class="form-label">商家分类</text>
-          <picker
-            class="form-picker"
-            range="{{categories}}"
-            range-key="label"
-            value="{{applyCategoryIndex}}"
-            bindchange="onCategoryChange"
-          >
-            <view class="picker-value">
-              <text wx:if="{{applyForm.category}}">{{categories[applyCategoryIndex].label}}</text>
-              <text wx:else class="picker-placeholder">请选择分类</text>
-              <text class="picker-arrow">›</text>
+    <!-- 右侧商家列表 -->
+    <scroll-view class="merchant-list" scroll-y="true" enhanced="true" show-scrollbar="{{false}}">
+      <block wx:if="{{filteredMerchants.length > 0}}">
+        <view
+          class="merchant-card"
+          wx:for="{{filteredMerchants}}"
+          wx:key="id"
+          data-phone="{{item.phone1 || item.phone || ''}}"
+          bindtap="callPhone"
+        >
+          <view class="merchant-main">
+            <view class="merchant-name-row">
+              <text class="merchant-name">{{item.merchantName || item.merchant_name || item.name}}</text>
+              <text class="merchant-cat-tag">{{categories[Number(item.category)] && categories[Number(item.category)].label || ''}}</text>
             </view>
-          </picker>
+            <view class="merchant-info-row" wx:if="{{item.address}}">
+              <text class="info-label">📍</text>
+              <text class="info-text">{{item.address}}</text>
+            </view>
+            <view class="merchant-info-row" wx:if="{{item.phone1 || item.phone}}">
+              <text class="info-label">☎</text>
+              <text class="info-text">{{item.phone1 || item.phone}}</text>
+            </view>
+            <view class="merchant-info-row" wx:if="{{item.phone2}}">
+              <text class="info-label">☎</text>
+              <text class="info-text">{{item.phone2}}</text>
+            </view>
+          </view>
+          <view
+            class="call-btn"
+            catchtap="callPhone"
+            data-phone="{{item.phone1 || item.phone || ''}}"
+          >
+            <text class="call-icon">📞</text>
+            <text class="call-text">拨打</text>
+          </view>
         </view>
-        <view class="form-item">
-          <text class="form-label">商家地址</text>
-          <input
-            class="form-input"
-            type="text"
-            placeholder="请输入商家地址"
-            value="{{applyForm.address}}"
-            bindinput="onAddressInput"
-          />
-        </view>
+        <view class="list-bottom-tip">没有更多了</view>
+      </block>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:else>
+        <text class="empty-icon">📭</text>
+        <text class="empty-text">暂无商家信息</text>
+        <text class="empty-tip">您可以点击右下角"申请收录"添加商家</text>
       </view>
-      <view class="popup-footer">
-        <view class="popup-btn cancel" bindtap="closeApplyPopup">取消</view>
-        <view class="popup-btn confirm" bindtap="submitApply">提交</view>
-      </view>
-    </view>
+    </scroll-view>
+  </view>
+
+  <!-- 右侧浮动申请收录按钮 -->
+  <view class="apply-fab" bindtap="handleApply">
+    <text class="apply-fab-icon">＋</text>
+    <text class="apply-fab-text">申请收录</text>
   </view>
 </view>

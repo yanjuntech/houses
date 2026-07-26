@@ -21,6 +21,22 @@ const userApi = {
   },
 
   /**
+   * 微信登录（通过 wx.login 获取的 code）
+   * @param {string} code 微信登录 code
+   */
+  loginByWechatCode(code) {
+    return post('/miniapp/user/loginByWechatCode', { code })
+  },
+
+  /**
+   * 更新用户资料
+   * @param {Object} data { id, nickname, avatar, wechatNickname, wechatAvatar, ... }
+   */
+  updateProfile(data) {
+    return put('/miniapp/user/updateProfile', data)
+  },
+
+  /**
    * 绑定手机号
    * @param {Object} data { userId, phone }
    */
@@ -123,6 +139,17 @@ const communityApi = {
    */
   apply(data) {
     return post('/rental/communityApply/apply', data)
+  }
+}
+
+/* ===================== 租赁合同模块 ===================== */
+const rentalContractApi = {
+  /**
+   * 获取当前用户作为租客的在租房屋列表（仅生效中合同）
+   * @param {string|number} tenantId 租客用户ID
+   */
+  myRentals(tenantId) {
+    return get(`/rental/rentalContract/myRentals/${tenantId}`)
   }
 }
 
@@ -311,6 +338,7 @@ module.exports = {
   houseApi,
   phonebookApi,
   communityApi,
+  rentalContractApi,
   repairApi,
   inviteApi,
   mallApi,

@@ -1,6 +1,6 @@
 // 维修申请页
 const app = getApp()
-const { repairApi } = require('../../utils/api.js')
+const { repairApi, rentalContractApi } = require('../../utils/api.js')
 const { showToast, showLoading, hideLoading } = require('../../utils/index.js')
 
 Page({
@@ -8,12 +8,19 @@ Page({
     form: {
       contactName: '',
       contactPhone: '',
-      houseAddress: '',
       description: '',
       appointmentDate: ''
     },
     submitting: false,
-    today: ''
+    today: '',
+    // 在租房屋列表
+    rentals: [],
+    hasRentals: true,
+    rentalsLoading: true,
+    selectedRentalId: '',
+    selectedRental: null,
+    // 当前租客信息（来自登录用户）
+    tenantId: ''
   },
 
   onLoad() {
@@ -23,8 +30,44 @@ Page({
     const userInfo = app.getUserInfo() || {}
     this.setData({
       today,
+      tenantId: userInfo.userId || '',
       'form.contactName': userInfo.nickname || userInfo.nickName || '',
       'form.contactPhone': userInfo.phone || ''
+    })
+
+    // 未登录直接提示
+    if (!userInfo.userId) {
+      this.setData({ rentalsLoading: false, hasRentals: false })
+      showToast('请先登录')
+      return
+    }
+    this.loadMyRentals(userInfo.userId)
+  },
+
+  // 加载当前用户在租房屋列表
+  loadMyRentals(tenantId) {
+    this.setData({ rentalsLoading: true })
+    rentalContractApi.myRentals(tenantId).then(res => {
+      // 兼容后端返回数组或 { list } 结构
+      let list = []
+      if (Array.isArray(res)) {
+        list = res
+      } else if (res && Array.isArray(res.list)) {
+        list = res.list
+      } else if (res && Array.isArray(res.rows)) {
+        list = res.rows
+      }
+      this.setData({
+        rentals: list,
+        hasRentals: list.length > 0,
+        rentalsLoading: false
+      })
+    }).catch(() => {
+      this.setData({
+        rentals: [],
+        hasRentals: false,
+        rentalsLoading: false
+      })
     })
   },
 
@@ -45,10 +88,6 @@ Page({
     this.setData({ 'form.contactPhone': e.detail.value })
   },
 
-  onHouseAddressInput(e) {
-    this.setData({ 'form.houseAddress': e.detail.value })
-  },
-
   onDescriptionInput(e) {
     this.setData({ 'form.description': e.detail.value })
   },
@@ -57,9 +96,20 @@ Page({
     this.setData({ 'form.appointmentDate': e.detail.value })
   },
 
+  // 选择在租房屋
+  onSelectRental(e) {
+    const rentalId = e.currentTarget.dataset.id
+    const rental = this.data.rentals.find(item => String(item.rentalId) === String(rentalId))
+    if (!rental) return
+    this.setData({
+      selectedRentalId: rentalId,
+      selectedRental: rental
+    })
+  },
+
   // 表单校验
   validate() {
-    const { contactName, contactPhone, houseAddress, description, appointmentDate } = this.data.form
+    const { contactName, contactPhone, description, appointmentDate } = this.data.form
     if (!contactName || !contactName.trim()) {
       showToast('请输入联系人姓名')
       return false
@@ -72,8 +122,8 @@ Page({
       showToast('请输入正确的手机号')
       return false
     }
-    if (!houseAddress || !houseAddress.trim()) {
-      showToast('请输入房屋地址')
+    if (!this.data.selectedRental) {
+      showToast('请选择需要维修的房屋')
       return false
     }
     if (!description || !description.trim()) {
@@ -90,15 +140,23 @@ Page({
   // 提交维修申请
   handleSubmit() {
     if (this.data.submitting) return
+    if (!this.data.hasRentals) {
+      showToast('您当前无在租房屋，无法提交维修申请')
+      return
+    }
     if (!this.validate()) return
 
     const userInfo = app.getUserInfo() || {}
-    const { contactName, contactPhone, houseAddress, description, appointmentDate } = this.data.form
+    const { contactName, contactPhone, description, appointmentDate } = this.data.form
+    const rental = this.data.selectedRental
     const submitData = {
       userId: userInfo.userId || userInfo.id || '',
+      houseId: rental.houseId,
+      tenantId: this.data.tenantId,
+      landlordId: rental.landlordId,
+      houseTitle: rental.houseTitle || '',
       contactName: contactName.trim(),
       contactPhone: contactPhone.trim(),
-      houseAddress: houseAddress.trim(),
       description: description.trim(),
       appointmentDate,
       applicantName: userInfo.nickname || userInfo.nickName || ''

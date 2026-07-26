@@ -71,6 +71,7 @@
           <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
         </template>
       </el-table-column>
+      <el-table-column label="跳转链接" align="center" prop="jumpUrl" :show-overflow-tooltip="true" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="160">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -166,6 +167,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
+            <el-form-item label="跳转链接" prop="jumpUrl">
+              <el-input v-model="form.jumpUrl" placeholder="请输入小程序内跳转路径，如 /pages/house/list" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="备注" prop="remark">
               <el-input v-model="form.remark" type="textarea" :rows="3" placeholder="请输入备注" />
             </el-form-item>
@@ -250,6 +256,7 @@ export default {
         contactPhone: undefined,
         sort: 0,
         status: "0",
+        jumpUrl: undefined,
         remark: undefined
       }
       this.resetForm("form")

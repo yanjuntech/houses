@@ -1,6 +1,5 @@
 // 电话簿页面
 const api = require('../../utils/api.js')
-const app = getApp()
 
 Page({
   data: {
@@ -12,34 +11,23 @@ Page({
     currentCategory: '',
     // 搜索关键词
     keyword: '',
-    // 分类列表
+    // 分类列表（含"全部"）
     categories: [
-      { value: '', label: '全部' },
-      { value: '1', label: '餐饮美食' },
-      { value: '2', label: '快递服务' },
-      { value: '3', label: '超市便利' },
-      { value: '4', label: '便民服务' },
-      { value: '5', label: '维修服务' },
-      { value: '6', label: '医疗健康' },
-      { value: '7', label: '教育培训' },
-      { value: '8', label: '建材五金' },
-      { value: '9', label: '装修服务' },
-      { value: '10', label: '宠物服务' },
-      { value: '11', label: '母婴用品' },
-      { value: '12', label: '法律服务' },
-      { value: '13', label: '房产服务' }
-    ],
-    // 申请收录弹窗显隐
-    showApplyPopup: false,
-    // 申请表单
-    applyForm: {
-      merchantName: '',
-      phone: '',
-      category: '',
-      address: ''
-    },
-    // 申请表单中分类选择索引
-    applyCategoryIndex: 0
+      { value: '', label: '全部', count: 0 },
+      { value: '1', label: '餐饮美食', count: 0 },
+      { value: '2', label: '快递服务', count: 0 },
+      { value: '3', label: '超市便利', count: 0 },
+      { value: '4', label: '便民服务', count: 0 },
+      { value: '5', label: '维修服务', count: 0 },
+      { value: '6', label: '医疗健康', count: 0 },
+      { value: '7', label: '教育培训', count: 0 },
+      { value: '8', label: '建材五金', count: 0 },
+      { value: '9', label: '装修服务', count: 0 },
+      { value: '10', label: '宠物服务', count: 0 },
+      { value: '11', label: '母婴用品', count: 0 },
+      { value: '12', label: '法律服务', count: 0 },
+      { value: '13', label: '房产服务', count: 0 }
+    ]
   },
 
   onLoad() {
@@ -57,6 +45,8 @@ Page({
         this.setData({
           allMerchants: list,
           filteredMerchants: list
+        }, () => {
+          this.updateCategoryCounts()
         })
       })
       .catch((err) => {
@@ -65,6 +55,27 @@ Page({
       .finally(() => {
         wx.hideLoading()
       })
+  },
+
+  /**
+   * 计算每个分类下的商家数量
+   */
+  updateCategoryCounts() {
+    const { allMerchants, categories } = this.data
+    const countMap = {}
+    allMerchants.forEach((item) => {
+      const cat = String(item.category || '')
+      if (cat) {
+        countMap[cat] = (countMap[cat] || 0) + 1
+      }
+    })
+    const newCategories = categories.map((c) => {
+      if (c.value === '') {
+        return { ...c, count: allMerchants.length }
+      }
+      return { ...c, count: countMap[c.value] || 0 }
+    })
+    this.setData({ categories: newCategories })
   },
 
   /**
@@ -78,11 +89,11 @@ Page({
   },
 
   /**
-   * 搜索输入
+   * 搜索输入：清空当前分类并高亮"全部"
    */
   handleSearch(e) {
     const keyword = e.detail.value || ''
-    this.setData({ keyword }, () => {
+    this.setData({ keyword, currentCategory: '' }, () => {
       this.doFilter()
     })
   },
@@ -135,112 +146,9 @@ Page({
   },
 
   /**
-   * 打开申请收录弹窗
+   * 申请收录：跳转到独立页
    */
   handleApply() {
-    this.setData({
-      showApplyPopup: true,
-      applyForm: {
-        merchantName: '',
-        phone: '',
-        category: '',
-        address: ''
-      },
-      applyCategoryIndex: 0
-    })
-  },
-
-  /**
-   * 关闭申请收录弹窗
-   */
-  closeApplyPopup() {
-    this.setData({ showApplyPopup: false })
-  },
-
-  /**
-   * 阻止冒泡
-   */
-  stopPropagation() {},
-
-  /**
-   * 申请表单输入：商家名称
-   */
-  onMerchantNameInput(e) {
-    this.setData({ 'applyForm.merchantName': e.detail.value })
-  },
-
-  /**
-   * 申请表单输入：电话
-   */
-  onPhoneInput(e) {
-    this.setData({ 'applyForm.phone': e.detail.value })
-  },
-
-  /**
-   * 申请表单输入：地址
-   */
-  onAddressInput(e) {
-    this.setData({ 'applyForm.address': e.detail.value })
-  },
-
-  /**
-   * 申请表单选择分类
-   */
-  onCategoryChange(e) {
-    const index = Number(e.detail.value)
-    // 分类列表中第 0 项是"全部"，提交申请时不应选"全部"，从第 1 项开始
-    const categories = this.data.categories
-    const selected = categories[index] || categories[1]
-    this.setData({
-      applyCategoryIndex: index,
-      'applyForm.category': selected ? selected.value : ''
-    })
-  },
-
-  /**
-   * 提交申请收录
-   */
-  submitApply() {
-    const { merchantName, phone, category, address } = this.data.applyForm
-    if (!merchantName || !merchantName.trim()) {
-      wx.showToast({ title: '请填写商家名称', icon: 'none' })
-      return
-    }
-    if (!phone || !phone.trim()) {
-      wx.showToast({ title: '请填写联系电话', icon: 'none' })
-      return
-    }
-    if (!category) {
-      wx.showToast({ title: '请选择商家分类', icon: 'none' })
-      return
-    }
-    if (!address || !address.trim()) {
-      wx.showToast({ title: '请填写商家地址', icon: 'none' })
-      return
-    }
-
-    // 获取当前用户信息
-    const userInfo = app.getUserInfo() || {}
-    const submitData = {
-      merchantName: merchantName.trim(),
-      phone: phone.trim(),
-      category,
-      address: address.trim(),
-      userId: userInfo.id || userInfo.userId || '',
-      applicantName: userInfo.nickName || userInfo.nickname || ''
-    }
-
-    wx.showLoading({ title: '提交中', mask: true })
-    api.phonebookApi.apply(submitData)
-      .then(() => {
-        wx.showToast({ title: '提交成功，待审核', icon: 'success' })
-        this.setData({ showApplyPopup: false })
-      })
-      .catch((err) => {
-        console.error('申请收录失败:', err)
-      })
-      .finally(() => {
-        wx.hideLoading()
-      })
+    wx.navigateTo({ url: '/pages/phonebook/apply' })
   }
 })

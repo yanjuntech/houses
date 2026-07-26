@@ -1,0 +1,36 @@
+- [x] Checkpoint 1: `BizMiniappUserController` 新增 `POST /miniapp/user/loginByWechatCode` 接口，调用微信 code2Session 换取 openid
+- [x] Checkpoint 2: 微信 appId 和 appSecret 配置在 `application.yml` 或 `sys_config` 中，可通过工具类读取
+- [x] Checkpoint 3: `PUT /miniapp/user/updateProfile` 公开接口可更新用户头像、昵称、微信信息
+- [x] Checkpoint 4: `utils/api.js` 新增 `userApi.loginByWechatCode(code)` 和 `userApi.updateProfile(data)` 方法
+- [x] Checkpoint 5: `pages/login/login.js` 微信登录流程：wx.login 获取 code → 调用 loginByWechatCode → 登录成功后获取头像昵称并调用 updateProfile
+- [x] Checkpoint 6: 登录页 UI 优化：微信登录按钮使用绿色突出展示
+- [x] Checkpoint 7: `BizRentalContractController` 新增 `GET /rental/rentalContract/myRentals/{tenantId}` 公开接口（@Anonymous）
+- [x] Checkpoint 8: 在租房屋查询返回字段完整（rentalId、houseId、houseTitle、communityName、landlordId、landlordName、landlordPhone 等）
+- [x] Checkpoint 9: `utils/api.js` 新增 `rentalContractApi.myRentals(tenantId)` 方法
+- [x] Checkpoint 10: `pages/repair/apply.js` onLoad 时加载在租房屋列表
+- [x] Checkpoint 11: 维修申请页将房屋地址输入框替换为在租房屋选择器
+- [x] Checkpoint 12: 维修申请提交数据携带 houseId、tenantId、landlordId、houseTitle，移除 houseAddress
+- [x] Checkpoint 13: 无在租房屋时提示并禁用提交按钮
+- [x] Checkpoint 14: `pages/phonebook/index.wxml` 采用左右分栏布局（左侧分类、右侧列表）
+- [x] Checkpoint 15: 电话簿左侧分类项可点击切换，当前分类高亮显示
+- [x] Checkpoint 16: 电话簿搜索时清空当前分类并高亮"全部"
+- [x] Checkpoint 17: 创建 `pages/phonebook/apply` 独立页面，包含完整申请表单
+- [x] Checkpoint 18: 电话簿申请收录表单校验正常（名称、电话、分类、地址必填）
+- [x] Checkpoint 19: 电话簿首页 `handleApply` 改为 `wx.navigateTo` 跳转到独立申请页
+- [x] Checkpoint 20: 原弹窗相关代码已删除
+- [x] Checkpoint 21: `app.json` 中注册 `pages/phonebook/apply` 路由
+- [x] Checkpoint 22: `pages/house/list` 页面右下角有"我要发布"浮动按钮
+- [x] Checkpoint 23: 点击"我要发布"未登录时跳转登录页，未实名认证时提示并跳转认证页
+- [x] Checkpoint 24: 已认证用户点击"我要发布"可正常跳转到房屋发布页
+- [x] Checkpoint 25: 首页轮播图无数据时展示默认占位图
+- [x] Checkpoint 26: 首页轮播图始终显示（移除 wx:if 条件）
+- [x] Checkpoint 27: 点击轮播图可跳转到 jumpUrl 配置的页面
+- [x] Checkpoint 28: `BizBanner` 实体新增 jumpUrl 字段，Mapper XML 包含该字段
+- [x] Checkpoint 29: 数据库 biz_banner 表新增 jump_url 字段
+- [ ] Checkpoint 30: 后端重新编译启动成功，所有新增接口可访问
+- [ ] Checkpoint 31: 微信登录流程端到端验证通过
+- [ ] Checkpoint 32: 维修申请选择在租房屋并提交成功
+- [ ] Checkpoint 33: 电话簿左右分栏布局切换分类和搜索功能正常
+- [ ] Checkpoint 34: 电话簿申请收录独立页提交成功
+- [ ] Checkpoint 35: 房屋发布入口权限校验正常
+- [ ] Checkpoint 36: 首页轮播图占位与跳转功能正常

@@ -224,5 +224,28 @@ Page({
     wx.navigateTo({
       url: `/pages/house/detail?houseId=${houseId}`
     })
+  },
+
+  // 我要发布 - 校验登录与实名认证后跳转发布页
+  handlePublish() {
+    const app = getApp()
+    const userInfo = app.getUserInfo()
+
+    // 1. 校验登录状态
+    if (!userInfo || Object.keys(userInfo).length === 0) {
+      showToast('请先登录')
+      wx.navigateTo({ url: '/pages/login/login' })
+      return
+    }
+
+    // 2. 校验实名认证状态（verifyStatus === '1' 表示已认证）
+    if (userInfo.verifyStatus !== '1') {
+      showToast('请先完成实名认证')
+      wx.navigateTo({ url: '/pages/profile/verify' })
+      return
+    }
+
+    // 3. 通过校验，跳转发布页
+    wx.navigateTo({ url: '/pages/house/publish' })
   }
 })

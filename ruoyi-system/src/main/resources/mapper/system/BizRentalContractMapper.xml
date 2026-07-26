@@ -57,6 +57,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="tenantName != null and tenantName != ''">
 				AND tenant_name like concat('%', #{tenantName}, '%')
 			</if>
+			<if test="tenantId != null">
+				AND tenant_id = #{tenantId}
+			</if>
 			<if test="tenantPhone != null and tenantPhone != ''">
 				AND tenant_phone = #{tenantPhone}
 			</if>

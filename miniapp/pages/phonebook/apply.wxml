@@ -1,0 +1,100 @@
+<view class="page">
+  <view class="form-card">
+    <view class="card-title">商家信息</view>
+
+    <view class="form-item">
+      <text class="form-label">商家名称</text>
+      <input
+        class="form-input"
+        type="text"
+        placeholder="请输入商家名称"
+        placeholder-class="form-placeholder"
+        value="{{form.merchantName}}"
+        bindinput="onMerchantNameInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">联系电话1</text>
+      <input
+        class="form-input"
+        type="number"
+        maxlength="11"
+        placeholder="请输入手机号"
+        placeholder-class="form-placeholder"
+        value="{{form.phone1}}"
+        bindinput="onPhone1Input"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">联系电话2</text>
+      <input
+        class="form-input"
+        type="number"
+        maxlength="11"
+        placeholder="选填，请输入手机号"
+        placeholder-class="form-placeholder"
+        value="{{form.phone2}}"
+        bindinput="onPhone2Input"
+      />
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">商家分类</text>
+      <picker
+        class="form-picker"
+        range="{{categories}}"
+        range-key="label"
+        value="{{categoryIndex}}"
+        bindchange="onCategoryChange"
+      >
+        <view class="picker-value">
+          <text wx:if="{{form.category}}">{{categories[categoryIndex].label}}</text>
+          <text wx:else class="form-placeholder">请选择分类</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="form-label">商家地址</text>
+      <input
+        class="form-input"
+        type="text"
+        placeholder="请输入商家地址"
+        placeholder-class="form-placeholder"
+        value="{{form.address}}"
+        bindinput="onAddressInput"
+      />
+    </view>
+
+    <view class="form-item form-item-textarea">
+      <text class="form-label">备注</text>
+      <textarea
+        class="form-textarea"
+        placeholder="选填，补充说明信息"
+        placeholder-class="form-placeholder"
+        value="{{form.remark}}"
+        bindinput="onRemarkInput"
+        maxlength="200"
+        auto-height
+      />
+    </view>
+  </view>
+
+  <view class="tips-card">
+    <text class="tips-icon">💡</text>
+    <view class="tips-content">
+      <text class="tips-text">提交后将由管理员审核，审核通过后将在电话簿中展示。</text>
+      <text class="tips-text">请确保填写信息真实有效，以便顺利通过审核。</text>
+    </view>
+  </view>
+
+  <view class="bottom-placeholder"></view>
+  <view class="action-bar">
+    <view class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="handleSubmit">
+      {{submitting ? '提交中...' : '提交申请'}}
+    </view>
+  </view>
+</view>

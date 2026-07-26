@@ -12,7 +12,9 @@ Page({
     // 加载状态
     loading: false,
     // 登录成功后跳转的目标页面
-    redirect: ''
+    redirect: '',
+    // 登录错误提示文案
+    errorMsg: ''
   },
 
   onLoad(options) {
@@ -84,52 +86,84 @@ Page({
   handleWechatLogin() {
     if (this.data.loading) return
 
-    // 校验协议勾选
-    if (!this.checkAgreement()) return
+    // 1. 校验协议勾选
+    if (!this.data.agreed) {
+      const msg = '请先阅读并同意用户协议和隐私政策'
+      this.setData({ errorMsg: msg })
+      utils.showToast(msg)
+      return
+    }
+    this.setData({ errorMsg: '', loading: true })
 
-    this.setData({ loading: true })
-
-    // 1. 调用 wx.login 获取 code
+    // 2. 调用 wx.login 获取 code
     wx.login({
       success: loginRes => {
         if (!loginRes.code) {
-          utils.showToast('微信登录失败')
-          this.setData({ loading: false })
+          this._showWechatError('微信登录失败，请重试')
           return
         }
 
-        // 2. 调用 wx.getUserProfile 获取用户信息
-        wx.getUserProfile({
-          desc: '用于完善用户资料',
-          success: profileRes => {
-            const userInfo = profileRes.userInfo || {}
-            // 3. 调用微信登录接口
-            api.userApi.loginByWechat({
-              openid: loginRes.code,
-              wechatNickname: userInfo.nickName,
-              wechatAvatar: userInfo.avatarUrl
-            })
-              .then(data => {
-                this.loginSuccess(data)
-              })
-              .catch(err => {
-                console.error('微信登录失败:', err)
-              })
-              .finally(() => {
+        // 3. 调用后端接口，使用 code 换取用户信息
+        api.userApi.loginByWechatCode(loginRes.code)
+          .then(loginData => {
+            if (!loginData || !loginData.userId) {
+              this._showWechatError('登录失败，请重试')
+              return
+            }
+
+            // 4. 调用 wx.getUserProfile 获取头像昵称
+            wx.getUserProfile({
+              desc: '用于完善用户资料',
+              success: profileRes => {
+                const wxUserInfo = profileRes.userInfo || {}
+                // 5. 调用更新资料接口
+                api.userApi.updateProfile({
+                  id: loginData.userId,
+                  nickname: wxUserInfo.nickName,
+                  avatar: wxUserInfo.avatarUrl,
+                  wechatNickname: wxUserInfo.nickName,
+                  wechatAvatar: wxUserInfo.avatarUrl
+                })
+                  .then(() => {
+                    // 6. 合并用户信息并保存
+                    const mergedUser = Object.assign({}, loginData, {
+                      nickname: wxUserInfo.nickName || loginData.nickname,
+                      avatar: wxUserInfo.avatarUrl || loginData.avatar,
+                      wechatNickname: wxUserInfo.nickName || loginData.wechatNickname,
+                      wechatAvatar: wxUserInfo.avatarUrl || loginData.wechatAvatar
+                    })
+                    this.setData({ loading: false })
+                    this.loginSuccess(mergedUser)
+                  })
+                  .catch(err => {
+                    console.error('更新用户资料失败:', err)
+                    // 资料更新失败，仍然使用原始登录数据完成登录
+                    this.setData({ loading: false })
+                    this.loginSuccess(loginData)
+                  })
+              },
+              fail: () => {
+                // 用户拒绝授权头像昵称，仍然可以使用原始数据完成登录
                 this.setData({ loading: false })
-              })
-          },
-          fail: () => {
-            utils.showToast('已取消授权')
-            this.setData({ loading: false })
-          }
-        })
+                this.loginSuccess(loginData)
+              }
+            })
+          })
+          .catch(err => {
+            console.error('微信登录失败:', err)
+            this._showWechatError('微信登录失败，请稍后重试')
+          })
       },
       fail: () => {
-        utils.showToast('微信登录失败')
-        this.setData({ loading: false })
+        this._showWechatError('微信登录失败，请稍后重试')
       }
     })
+  },
+
+  // 微信登录错误统一处理：关闭 loading、显示错误文案
+  _showWechatError(msg) {
+    this.setData({ loading: false, errorMsg: msg })
+    utils.showToast(msg)
   },
 
   // 登录成功统一处理：保存用户信息、更新 globalData、跳转页面

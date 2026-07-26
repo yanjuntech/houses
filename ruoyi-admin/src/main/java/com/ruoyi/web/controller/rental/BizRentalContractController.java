@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -128,5 +129,23 @@ public class BizRentalContractController extends BaseController
     public AjaxResult refreshExpire()
     {
         return toAjax(bizRentalContractService.refreshExpireStatus());
+    }
+
+    /**
+     * 查询我的在租房屋（小程序端公开接口）
+     * 返回当前用户作为租客的在租房屋列表，仅返回生效中的合同
+     */
+    @Anonymous
+    @GetMapping("/myRentals/{tenantId}")
+    public AjaxResult myRentals(@PathVariable("tenantId") Long tenantId)
+    {
+        // 先刷新到期状态
+        bizRentalContractService.refreshExpireStatus();
+        // 查询该租客的在租房屋（status 为 0=生效中 或 1=即将到期，排除 2=已过期 3=已取消）
+        BizRentalContract query = new BizRentalContract();
+        query.setTenantId(tenantId);
+        query.setStatus("0"); // 仅返回生效中的合同
+        List<BizRentalContract> list = bizRentalContractService.selectBizRentalContractList(query);
+        return success(list);
     }
 }

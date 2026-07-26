@@ -65,4 +65,9 @@ public class BizBanner extends BaseEntity
     @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     @JsonProperty("status")
     private String status;
+
+    /** 点击跳转链接（小程序内页面路径） */
+    @Excel(name = "跳转链接")
+    @JsonProperty("jumpUrl")
+    private String jumpUrl;
 }

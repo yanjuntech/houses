@@ -39,13 +39,18 @@
     <!-- 微信一键登录按钮 -->
     <button
       class="btn-wechat"
-      open-type="getUserInfo"
       bindtap="handleWechatLogin"
       loading="{{loading}}"
     >
       <text class="btn-wechat-icon">💬</text>
       <text>微信一键登录</text>
     </button>
+
+    <!-- 登录失败错误提示 -->
+    <view wx:if="{{errorMsg}}" class="error-tip">
+      <text class="error-icon">⚠</text>
+      <text class="error-text">{{errorMsg}}</text>
+    </view>
 
     <!-- 用户协议勾选 -->
     <view class="agreement">

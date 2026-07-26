@@ -154,6 +154,27 @@
   font-size: 36rpx;
 }
 
+/* 登录失败错误提示 */
+.error-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24rpx;
+  font-size: 26rpx;
+  color: #f56c6c;
+  line-height: 1.5;
+}
+
+.error-icon {
+  margin-right: 8rpx;
+  font-size: 28rpx;
+}
+
+.error-text {
+  flex: 1;
+  text-align: center;
+}
+
 /* 用户协议 */
 .agreement {
   display: flex;

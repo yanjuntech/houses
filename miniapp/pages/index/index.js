@@ -65,10 +65,31 @@ Page({
   loadBanners() {
     api.bannerApi.validList().then(res => {
       const banners = normalizeList(res)
-      this.setData({ banners })
+      if (banners && banners.length > 0) {
+        this.setData({ banners })
+      } else {
+        // 后端无数据时使用占位轮播图，保证首页轮播图始终展示
+        this.setData({ banners: getDefaultBanners() })
+      }
     }).catch(err => {
       console.error('加载轮播图失败:', err)
-      this.setData({ banners: [] })
+      // 接口失败时使用占位轮播图，保证首页轮播图始终展示
+      this.setData({ banners: getDefaultBanners() })
+    })
+  },
+
+  // 点击轮播图：根据 jumpUrl 跳转，无跳转链接则忽略
+  handleBannerTap(e) {
+    const url = e.currentTarget.dataset.url
+    if (!url) return
+    wx.navigateTo({
+      url: url,
+      fail: () => {
+        // 跳转失败可能是 tabbar 页面
+        if (url.startsWith('/pages/index/') || url.startsWith('/pages/house/') || url.startsWith('/pages/phonebook/') || url.startsWith('/pages/profile/')) {
+          wx.switchTab({ url: url, fail: () => {} })
+        }
+      }
     })
   },
 
@@ -223,6 +244,16 @@ function normalizeList(res) {
   if (res && Array.isArray(res.records)) return res.records
   if (res && Array.isArray(res.data)) return res.data
   return []
+}
+
+// 后端无数据或接口失败时的占位轮播图
+function getDefaultBanners() {
+  return [{
+    bannerId: 0,
+    image: '',  // 留空，由 wxss 显示默认背景
+    title: '欢迎使用租房小助手',
+    jumpUrl: ''
+  }]
 }
 
 // 判空辅助函数

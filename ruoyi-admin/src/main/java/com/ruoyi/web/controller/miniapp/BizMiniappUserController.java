@@ -41,6 +41,9 @@ public class BizMiniappUserController extends BaseController
     @Autowired
     private IBizUserMessageService bizUserMessageService;
 
+    @Autowired
+    private WechatLoginService wechatLoginService;
+
     /**
      * 查询小程序用户列表
      */
@@ -223,9 +226,71 @@ public class BizMiniappUserController extends BaseController
     }
 
     /**
+     * 微信登录（使用 code 换取 openid）
+     * 接收前端 wx.login 获取的 code，后端调用微信 code2Session 换取 openid
+     */
+    @Anonymous
+    @PostMapping("/loginByWechatCode")
+    public AjaxResult loginByWechatCode(@RequestBody Map<String, String> params)
+    {
+        String code = params.get("code");
+        if (code == null || code.isEmpty())
+        {
+            return error("code 不能为空");
+        }
+        // 调用微信 code2Session 换取 openid
+        String openid = wechatLoginService.code2Session(code);
+        if (openid == null || openid.isEmpty())
+        {
+            return error("微信登录失败，无法获取 openid");
+        }
+        // 根据 openid 查询用户
+        BizMiniappUser user = bizMiniappUserService.selectBizMiniappUserByOpenid(openid);
+        if (user == null)
+        {
+            // 用户不存在则自动注册
+            BizMiniappUser newUser = new BizMiniappUser();
+            newUser.setOpenid(openid);
+            newUser.setUserType("0");
+            newUser.setVerifyStatus("0");
+            newUser.setStatus("0");
+            newUser.setCreateBy("miniapp");
+            bizMiniappUserService.insertBizMiniappUser(newUser);
+            user = bizMiniappUserService.selectBizMiniappUserByOpenid(openid);
+        }
+        return success(user);
+    }
+
+    /**
+     * 更新用户资料（公开接口）
+     * 用于微信登录后补充头像、昵称等信息
+     */
+    @Anonymous
+    @Log(title = "小程序用户管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/updateProfile")
+    public AjaxResult updateProfile(@RequestBody BizMiniappUser bizMiniappUser)
+    {
+        if (bizMiniappUser.getUserId() == null)
+        {
+            return error("用户ID不能为空");
+        }
+        BizMiniappUser update = new BizMiniappUser();
+        update.setUserId(bizMiniappUser.getUserId());
+        update.setNickname(bizMiniappUser.getNickname());
+        update.setAvatar(bizMiniappUser.getAvatar());
+        update.setWechatNickname(bizMiniappUser.getWechatNickname());
+        update.setWechatAvatar(bizMiniappUser.getWechatAvatar());
+        update.setUpdateBy("miniapp");
+        return toAjax(bizMiniappUserService.updateBizMiniappUser(update));
+    }
+
+    /**
      * 微信登录（公开接口）
      * 登录时记录 wechat_nickname、wechat_avatar 到用户表
+     * @deprecated 该接口由前端直接传 openid，存在安全风险，请使用 {@link #loginByWechatCode(Map)} 替代，
+     *             由后端通过 wx.login 的 code 调用微信 code2Session 换取 openid
      */
+    @Deprecated
     @Anonymous
     @PostMapping("/loginByWechat")
     public AjaxResult loginByWechat(@RequestBody BizMiniappUser bizMiniappUser)

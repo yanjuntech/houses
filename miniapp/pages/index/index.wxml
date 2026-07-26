@@ -13,8 +13,8 @@
     </view>
   </view>
 
-  <!-- 轮播图：无数据时不显示 -->
-  <view class="banner-wrap" wx:if="{{banners.length > 0}}">
+  <!-- 轮播图：始终展示，无数据时使用占位图 -->
+  <view class="banner-wrap">
     <swiper
       class="banner-swiper"
       autoplay="{{true}}"
@@ -24,8 +24,11 @@
       indicator-dots="{{true}}"
       indicator-color="rgba(255,255,255,0.4)"
       indicator-active-color="#ffffff">
-      <swiper-item wx:for="{{banners}}" wx:key="id">
-        <image class="banner-image" src="{{item.imageUrl}}" mode="aspectFill" />
+      <swiper-item wx:for="{{banners}}" wx:key="bannerId" data-url="{{item.jumpUrl}}" bindtap="handleBannerTap">
+        <image wx:if="{{item.image}}" class="banner-image" src="{{item.image}}" mode="aspectFill" />
+        <view wx:else class="banner-placeholder">
+          <text class="banner-placeholder-text">{{item.title}}</text>
+        </view>
       </swiper-item>
     </swiper>
   </view>

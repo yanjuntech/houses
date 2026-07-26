@@ -145,3 +145,13 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+# 微信小程序配置
+wechat:
+  miniapp:
+    # 小程序 appId（请替换为真实 appId）
+    appid: wx1234567890abcdef
+    # 小程序 appSecret（请替换为真实 appSecret）
+    secret: your_secret_here
+    # code2Session 接口地址
+    auth-url: https://api.weixin.qq.com/sns/jscode2session

@@ -1,4 +1,52 @@
 <view class="page">
+  <!-- 在租房屋选择 -->
+  <view class="rental-card">
+    <view class="card-title">选择维修房屋</view>
+
+    <!-- 加载中 -->
+    <view wx:if="{{rentalsLoading}}" class="rental-empty">
+      <text class="rental-empty-text">加载中...</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:elif="{{!hasRentals}}" class="rental-empty">
+      <text class="rental-empty-icon">🏠</text>
+      <text class="rental-empty-text">您当前无在租房屋，无法提交维修申请</text>
+    </view>
+
+    <!-- 在租房屋列表 -->
+    <view wx:else class="rental-list">
+      <view
+        wx:for="{{rentals}}"
+        wx:key="rentalId"
+        class="rental-item {{selectedRentalId == item.rentalId ? 'rental-item-active' : ''}}"
+        data-id="{{item.rentalId}}"
+        bindtap="onSelectRental"
+      >
+        <view class="rental-item-header">
+          <text class="rental-house-title">{{item.houseTitle || '未命名房屋'}}</text>
+          <view wx:if="{{selectedRentalId == item.rentalId}}" class="rental-check">✓</view>
+        </view>
+        <view class="rental-item-row">
+          <text class="rental-item-label">小区</text>
+          <text class="rental-item-value">{{item.communityName || '-'}}</text>
+        </view>
+        <view class="rental-item-row">
+          <text class="rental-item-label">地址</text>
+          <text class="rental-item-value">{{item.houseAddress || '-'}}</text>
+        </view>
+        <view class="rental-item-row">
+          <text class="rental-item-label">房东</text>
+          <text class="rental-item-value">{{item.landlordName || '-'}} {{item.landlordPhone ? '· ' + item.landlordPhone : ''}}</text>
+        </view>
+        <view class="rental-item-row">
+          <text class="rental-item-label">租期</text>
+          <text class="rental-item-value">{{item.rentalStart || '-'}} ~ {{item.rentalEnd || '-'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
   <view class="form-card">
     <view class="card-title">维修申请信息</view>
 
@@ -24,18 +72,6 @@
         placeholder-class="form-placeholder"
         value="{{form.contactPhone}}"
         bindinput="onContactPhoneInput"
-      />
-    </view>
-
-    <view class="form-item">
-      <text class="form-label">房屋地址</text>
-      <input
-        class="form-input"
-        type="text"
-        placeholder="请输入房屋地址"
-        placeholder-class="form-placeholder"
-        value="{{form.houseAddress}}"
-        bindinput="onHouseAddressInput"
       />
     </view>
 
@@ -80,7 +116,10 @@
 
   <view class="bottom-placeholder"></view>
   <view class="action-bar">
-    <view class="submit-btn {{submitting ? 'disabled' : ''}}" bindtap="handleSubmit">
+    <view
+      class="submit-btn {{submitting || !hasRentals || !selectedRentalId ? 'disabled' : ''}}"
+      bindtap="handleSubmit"
+    >
       {{submitting ? '提交中...' : '提交申请'}}
     </view>
   </view>

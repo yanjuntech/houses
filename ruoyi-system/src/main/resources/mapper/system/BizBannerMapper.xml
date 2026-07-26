@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="contactPhone"    column="contact_phone"     />
 		<result property="sort"            column="sort"               />
 		<result property="status"          column="status"             />
+		<result property="jumpUrl"         column="jump_url"           />
 		<result property="createBy"        column="create_by"          />
 		<result property="createTime"      column="create_time"        />
 		<result property="updateBy"        column="update_by"          />
@@ -22,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 
 	<sql id="selectBizBannerVo">
-		select banner_id, image, title, content, valid_start, valid_end, contact_phone, sort, status,
+		select banner_id, image, title, content, valid_start, valid_end, contact_phone, sort, status, jump_url,
 		       create_by, create_time, update_by, update_time, remark
 		from biz_banner
 	</sql>
@@ -63,6 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="contactPhone != null and contactPhone != ''">contact_phone,</if>
 			<if test="sort != null">sort,</if>
 			<if test="status != null and status != ''">status,</if>
+			<if test="jumpUrl != null">jump_url,</if>
 			<if test="createBy != null and createBy != ''">create_by,</if>
 			<if test="remark != null and remark != ''">remark,</if>
 			create_time
@@ -75,6 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="contactPhone != null and contactPhone != ''">#{contactPhone},</if>
 			<if test="sort != null">#{sort},</if>
 			<if test="status != null and status != ''">#{status},</if>
+			<if test="jumpUrl != null">#{jumpUrl},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="remark != null and remark != ''">#{remark},</if>
 			sysdate()
@@ -92,6 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="contactPhone != null">contact_phone = #{contactPhone},</if>
  			<if test="sort != null">sort = #{sort},</if>
  			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="jumpUrl != null">jump_url = #{jumpUrl},</if>
  			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
  			<if test="remark != null">remark = #{remark},</if>
  			update_time = sysdate()
