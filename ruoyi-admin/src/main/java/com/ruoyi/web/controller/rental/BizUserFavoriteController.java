@@ -47,6 +47,7 @@ public class BizUserFavoriteController extends BaseController
     /**
      * 查询某用户的收藏列表
      */
+    @Anonymous
     @PreAuthorize("@ss.hasPermi('biz:rental:favorite:list')")
     @GetMapping("/userFavorite/{userId}")
     public AjaxResult userFavorite(@PathVariable Long userId)

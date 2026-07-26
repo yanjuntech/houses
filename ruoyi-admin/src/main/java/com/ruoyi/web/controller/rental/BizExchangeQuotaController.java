@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -40,6 +41,7 @@ public class BizExchangeQuotaController extends BaseController
     /**
      * 查询指定用户的所有配额
      */
+    @Anonymous
     @GetMapping("/userQuota/{userId}")
     public AjaxResult userQuota(@PathVariable Long userId)
     {

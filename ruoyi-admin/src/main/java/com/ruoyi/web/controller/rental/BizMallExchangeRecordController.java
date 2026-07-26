@@ -83,6 +83,7 @@ public class BizMallExchangeRecordController extends BaseController
     /**
      * 查询某用户的兑换记录
      */
+    @Anonymous
     @GetMapping("/userRecord/{userId}")
     public AjaxResult userRecord(@PathVariable Long userId)
     {

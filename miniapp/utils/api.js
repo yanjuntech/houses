@@ -90,7 +90,7 @@ const houseApi = {
    */
   list(params = {}) {
     const { pageNum = 1, pageSize = 10, ...rest } = params
-    return get('/rental/house/list', { pageNum, pageSize, ...rest })
+    return get('/rental/house/miniapp/list', { pageNum, pageSize, ...rest })
   },
 
   /**
@@ -98,7 +98,7 @@ const houseApi = {
    * @param {string|number} houseId 房屋ID
    */
   detail(houseId) {
-    return get(`/rental/house/${houseId}`)
+    return get(`/rental/house/miniapp/${houseId}`)
   },
 
   /**
@@ -106,7 +106,7 @@ const houseApi = {
    * @param {Object} data BizHouse 对象
    */
   add(data) {
-    return post('/rental/house', data)
+    return post('/rental/house/miniapp/publish', data)
   }
 }
 
@@ -193,7 +193,7 @@ const repairApi = {
    */
   list(params = {}) {
     const { pageNum = 1, pageSize = 10, ...rest } = params
-    return get('/rental/repair/list', { pageNum, pageSize, ...rest })
+    return get('/rental/repair/miniapp/list', { pageNum, pageSize, ...rest })
   }
 }
 
@@ -212,7 +212,7 @@ const inviteApi = {
    * @param {string|number} inviterId 邀请人ID
    */
   statistics(inviterId) {
-    return get(`/rental/invite/statistics/${inviterId}`)
+    return get(`/rental/invite/miniapp/statistics/${inviterId}`)
   },
 
   /**
@@ -220,7 +220,7 @@ const inviteApi = {
    * @param {string|number} inviterId 邀请人ID
    */
   inviteList(inviterId) {
-    return get(`/rental/invite/inviteList/${inviterId}`)
+    return get(`/rental/invite/miniapp/inviteList/${inviterId}`)
   }
 }
 

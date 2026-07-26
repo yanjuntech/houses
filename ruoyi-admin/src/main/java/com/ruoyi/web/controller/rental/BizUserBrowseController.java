@@ -45,6 +45,7 @@ public class BizUserBrowseController extends BaseController
     /**
      * 查询某用户的浏览记录
      */
+    @Anonymous
     @PreAuthorize("@ss.hasPermi('biz:rental:browse:list')")
     @GetMapping("/userBrowse/{userId}")
     public AjaxResult userBrowse(@PathVariable Long userId)

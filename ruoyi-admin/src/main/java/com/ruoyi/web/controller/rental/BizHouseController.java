@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -420,5 +421,66 @@ public class BizHouseController extends BaseController
         }
         // 退而取第一条 LIKE 命中
         return list.get(0);
+    }
+
+    /**
+     * 小程序房屋列表公开接口
+     */
+    @Anonymous
+    @GetMapping("/miniapp/list")
+    public TableDataInfo miniappList(BizHouse bizHouse)
+    {
+        startPage();
+        bizHouse.setStatus("1");
+        List<BizHouse> list = bizHouseService.selectBizHouseList(bizHouse);
+        return getDataTable(list);
+    }
+
+    /**
+     * 小程序房屋详情公开接口
+     */
+    @Anonymous
+    @GetMapping("/miniapp/{houseId}")
+    public AjaxResult miniappDetail(@PathVariable Long houseId)
+    {
+        return success(bizHouseService.selectBizHouseByHouseId(houseId));
+    }
+
+    /**
+     * 小程序发布房屋公开接口
+     */
+    @Anonymous
+    @Log(title = "房屋发布", businessType = BusinessType.INSERT)
+    @PostMapping("/miniapp/publish")
+    public AjaxResult miniappPublish(@RequestBody BizHouse bizHouse)
+    {
+        Long userId = bizHouse.getPublishUserId();
+        if (userId == null)
+        {
+            return error("发布用户ID不能为空");
+        }
+        BizExchangeQuota quota = bizExchangeQuotaService.selectByUserIdAndType(userId, QUOTA_TYPE_HOUSE_PUBLISH);
+        if (quota == null || quota.getRemainingCount() == null || quota.getRemainingCount() <= 0)
+        {
+            return error("发布配额不足，请先兑换");
+        }
+        BizMiniappUser publishUser = bizMiniappUserMapper.selectBizMiniappUserByUserId(userId);
+        String publishUserType = "1";
+        if (publishUser != null && StringUtils.isNotEmpty(publishUser.getUserType()))
+        {
+            if ("2".equals(publishUser.getUserType()))
+            {
+                publishUserType = "2";
+            }
+        }
+        bizHouse.setPublishUserType(publishUserType);
+        bizHouse.setStatus("1");
+        bizHouse.setCreateBy("miniapp");
+        int result = bizHouseService.insertBizHouse(bizHouse);
+        if (result > 0)
+        {
+            bizExchangeQuotaService.deductQuota(userId, QUOTA_TYPE_HOUSE_PUBLISH, 1);
+        }
+        return toAjax(result);
     }
 }

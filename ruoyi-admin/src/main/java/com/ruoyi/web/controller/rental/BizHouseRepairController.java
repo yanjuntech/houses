@@ -162,4 +162,21 @@ public class BizHouseRepairController extends BaseController
     {
         return toAjax(bizHouseRepairService.cancelRepair(repairId));
     }
+
+    /**
+     * 小程序维修列表公开接口
+     *
+     * 前端传参说明：
+     * - tenantId: 租客用户ID，用于筛选该租客的维修记录
+     * - landlordId: 房东用户ID，用于筛选该房东的维修记录
+     * - 其他筛选条件同管理后台列表接口
+     */
+    @Anonymous
+    @GetMapping("/miniapp/list")
+    public TableDataInfo miniappList(BizHouseRepair bizHouseRepair)
+    {
+        startPage();
+        List<BizHouseRepair> list = bizHouseRepairService.selectBizHouseRepairList(bizHouseRepair);
+        return getDataTable(list);
+    }
 }

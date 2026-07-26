@@ -183,4 +183,32 @@ public class BizInviteRelationController extends BaseController
     {
         return toAjax(bizInviteRelationService.updateCertified(bizInviteRelation.getInviteeId()));
     }
+
+    /**
+     * 小程序端邀请统计：查询某邀请人的总邀请人数和已认证邀请人数（公开接口）
+     */
+    @Anonymous
+    @GetMapping("/miniapp/statistics/{inviterId}")
+    public AjaxResult miniappStatistics(@PathVariable Long inviterId)
+    {
+        BizInviteRelation query = new BizInviteRelation();
+        query.setInviterId(inviterId);
+        List<BizInviteRelation> allList = bizInviteRelationService.selectBizInviteRelationList(query);
+        int totalCount = allList.size();
+        int certifiedCount = bizInviteRelationService.selectInviteCountByInviter(inviterId);
+        Map<String, Object> data = new HashMap<>();
+        data.put("totalCount", totalCount);
+        data.put("certifiedCount", certifiedCount);
+        return success(data);
+    }
+
+    /**
+     * 小程序端查询某邀请人的邀请列表（公开接口）
+     */
+    @Anonymous
+    @GetMapping("/miniapp/inviteList/{inviterId}")
+    public AjaxResult miniappInviteList(@PathVariable Long inviterId)
+    {
+        return success(bizInviteRelationService.selectInviteListByInviter(inviterId));
+    }
 }
