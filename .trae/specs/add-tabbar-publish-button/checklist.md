@@ -1,0 +1,15 @@
+- [x] Checkpoint 1: 创建 `pages/publish/index.js`，包含弹窗显示、权限校验、跳转逻辑
+- [x] Checkpoint 2: 创建 `pages/publish/index.wxml`，包含遮罩层和底部操作菜单
+- [x] Checkpoint 3: 创建 `pages/publish/index.wxss`，包含弹窗样式和动画效果
+- [x] Checkpoint 4: 创建 `pages/publish/index.json`，配置页面标题
+- [x] Checkpoint 5: `app.json` 中注册 `pages/publish/index` 路由
+- [x] Checkpoint 6: `app.json` tabBar.list 中在"房屋"和"电话簿"之间增加发布按钮配置
+- [x] Checkpoint 7: 发布按钮图标资源存在（publish.png 和 publish-active.png）
+- [x] Checkpoint 8: tabBar 中间显示圆形发布按钮
+- [x] Checkpoint 9: 点击发布按钮弹出操作菜单
+- [x] Checkpoint 10: 点击遮罩层关闭菜单
+- [x] Checkpoint 11: 选择"发布房屋"未登录时跳转登录页
+- [x] Checkpoint 12: 选择"发布房屋"未认证时跳转实名认证页
+- [x] Checkpoint 13: 选择"发布房屋"已认证时跳转发布页
+- [x] Checkpoint 14: 选择"申请电话簿收录"未登录时跳转登录页
+- [x] Checkpoint 15: 选择"申请电话簿收录"已登录时跳转申请页

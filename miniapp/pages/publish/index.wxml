@@ -1,0 +1,26 @@
+<view class="container">
+  <view class="content">
+    <text class="tip">点击下方按钮发布</text>
+  </view>
+</view>
+
+<view class="popup-mask" wx:if="{{showPopup}}" bindtap="closePopup">
+  <view class="popup-content" catchtap="closePopup">
+    <view class="popup-header">
+      <text class="popup-title">选择发布类型</text>
+    </view>
+    <view class="popup-body">
+      <view class="publish-btn" bindtap="handlePublishHouse">
+        <text class="btn-icon">🏠</text>
+        <text class="btn-text">发布房屋</text>
+      </view>
+      <view class="publish-btn" bindtap="handleApplyPhonebook">
+        <text class="btn-icon">📞</text>
+        <text class="btn-text">申请电话簿收录</text>
+      </view>
+    </view>
+    <view class="popup-footer">
+      <view class="cancel-btn" bindtap="closePopup">取消</view>
+    </view>
+  </view>
+</view>
