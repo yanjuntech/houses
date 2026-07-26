@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信小程序预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 720px;
+            background: #f5f5f5;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+            border: 10px solid #1a1a1a;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            z-index: 100;
+        }
+
+        .nav-bar {
+            height: 44px;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 17px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            z-index: 100;
+        }
+
+        .page-container {
+            height: calc(100% - 44px - 44px - 50px);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* 首页样式 */
+        .index-page {
+            display: block;
+        }
+
+        .index-page .header {
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 60px;
+        }
+
+        .index-page .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
+            border-radius: 0 0 30px 30px;
+        }
+
+        .index-page .header-content {
+            position: relative;
+            z-index: 1;
+            padding: 0 15px;
+        }
+
+        .index-page .greeting {
+            margin-bottom: 15px;
+        }
+
+        .index-page .greeting-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .index-page .search-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 12px 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .index-page .search-icon {
+            font-size: 16px;
+            margin-right: 8px;
+        }
+
+        .index-page .search-placeholder {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .index-page .quick-actions {
+            display: flex;
+            justify-content: space-around;
+            background: #ffffff;
+            margin: -30px 10px 10px;
+            padding: 15px 10px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            position: relative;
+            z-index: 2;
+        }
+
+        .index-page .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 50px;
+        }
+
+        .index-page .action-icon {
+            width: 40px;
+            height: 40px;
+            background: #f0f5ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .index-page .action-name {
+            font-size: 12px;
+            color: #333;
+        }
+
+        .index-page .section {
+            padding: 0 10px;
+            margin-bottom: 15px;
+        }
+
+        .index-page .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .index-page .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .index-page .section-more {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .index-page .service-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .index-page .service-card {
+            width: calc(50% - 5px);
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .index-page .service-image {
+            width: 100%;
+            height: 90px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .index-page .service-info {
+            padding: 10px;
+        }
+
+        .index-page .service-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .index-page .service-desc {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 6px;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .index-page .service-tags {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .index-page .tag {
+            font-size: 10px;
+            color: #4080ff;
+            background: #f0f5ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 4px;
+            margin-bottom: 2px;
+        }
+
+        .index-page .news-list {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .index-page .news-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .index-page .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .index-page .news-content {
+            flex: 1;
+        }
+
+        .index-page .news-title {
+            font-size: 14px;
+            color: #333;
+            display: block;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .index-page .news-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .index-page .news-arrow {
+            width: 16px;
+            height: 16px;
+            margin-left: 10px;
+            color: #ccc;
+        }
+
+        /* 个人中心样式 */
+        .profile-page {
+            display: none;
+        }
+
+        .profile-page .user-header {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .profile-page .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 180px;
+            background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
+        }
+
+        .profile-page .user-info {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            padding: 40px 15px 15px;
+        }
+
+        .profile-page .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .profile-page .user-detail {
+            flex: 1;
+            margin-left: 12px;
+        }
+
+        .profile-page .nickname {
+            font-size: 17px;
+            font-weight: 600;
+            color: #ffffff;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .profile-page .phone {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .profile-page .edit-btn {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .profile-page .user-stats {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #ffffff;
+            margin: 0 10px;
+            padding: 15px 0;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .profile-page .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-page .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .profile-page .stat-label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .profile-page .stat-divider {
+            width: 1px;
+            height: 30px;
+            background: #f0f0f0;
+        }
+
+        .profile-page .menu-section {
+            background: #ffffff;
+            margin: 10px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .profile-page .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 15px;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+        }
+
+        .profile-page .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .profile-page .menu-icon {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .profile-page .menu-text {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .profile-page .menu-badge {
+            font-size: 11px;
+            color: #ffffff;
+            background: #f56c6c;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-right: 8px;
+        }
+
+        .profile-page .menu-arrow {
+            width: 14px;
+            height: 14px;
+            opacity: 0.4;
+            color: #999;
+        }
+
+        .profile-page .footer {
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        .profile-page .version {
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        /* tabBar */
+        .tab-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: #ffffff;
+            display: flex;
+            border-top: 1px solid #f0f0f0;
+            z-index: 1000;
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+        }
+
+        .tab-item.active {
+            color: #4080ff;
+        }
+
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .tab-text {
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>📶 🔋</span>
+        </div>
+
+        <div class="nav-bar" id="navTitle">首页</div>
+
+        <div class="page-container">
+            <!-- 首页 -->
+            <div class="index-page" id="indexPage">
+                <div class="header">
+                    <div class="header-bg"></div>
+                    <div class="header-content">
+                        <div class="greeting">
+                            <span class="greeting-text">上午好，欢迎回来</span>
+                        </div>
+                        <div class="search-bar">
+                            <span class="search-icon">🔍</span>
+                            <span class="search-placeholder">搜索服务</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="action-item">
+                        <div class="action-icon">🏠</div>
+                        <span class="action-name">房屋租赁</span>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-icon">🔧</div>
+                        <span class="action-name">维修服务</span>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-icon">📋</div>
+                        <span class="action-name">合同管理</span>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-icon">💬</div>
+                        <span class="action-name">社区互动</span>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-icon">📞</div>
+                        <span class="action-name">联系客服</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">热门服务</span>
+                        <span class="section-more">查看更多 ›</span>
+                    </div>
+                    <div class="service-list">
+                        <div class="service-card">
+                            <div class="service-image">🛠</div>
+                            <div class="service-info">
+                                <span class="service-name">在线报修</span>
+                                <span class="service-desc">一键提交维修申请</span>
+                                <div class="service-tags">
+                                    <span class="tag">快捷</span>
+                                    <span class="tag">高效</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-image">🏡</div>
+                            <div class="service-info">
+                                <span class="service-name">房屋租售</span>
+                                <span class="service-desc">优质房源推荐</span>
+                                <div class="service-tags">
+                                    <span class="tag">优质</span>
+                                    <span class="tag">推荐</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-image">💳</div>
+                            <div class="service-info">
+                                <span class="service-name">费用缴纳</span>
+                                <span class="service-desc">水电费在线缴纳</span>
+                                <div class="service-tags">
+                                    <span class="tag">便捷</span>
+                                    <span class="tag">安全</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-image">📢</div>
+                            <div class="service-info">
+                                <span class="service-name">社区公告</span>
+                                <span class="service-desc">最新通知消息</span>
+                                <div class="service-tags">
+                                    <span class="tag">最新</span>
+                                    <span class="tag">官方</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">最新动态</span>
+                    </div>
+                    <div class="news-list">
+                        <div class="news-item">
+                            <div class="news-content">
+                                <span class="news-title">小区垃圾分类新规定实施通知</span>
+                                <span class="news-time">2小时前</span>
+                            </div>
+                            <span class="news-arrow">›</span>
+                        </div>
+                        <div class="news-item">
+                            <div class="news-content">
+                                <span class="news-title">暑期儿童安全知识讲座报名开始</span>
+                                <span class="news-time">5小时前</span>
+                            </div>
+                            <span class="news-arrow">›</span>
+                        </div>
+                        <div class="news-item">
+                            <div class="news-content">
+                                <span class="news-title">停车场系统升级维护公告</span>
+                                <span class="news-time">1天前</span>
+                            </div>
+                            <span class="news-arrow">›</span>
+                        </div>
+                        <div class="news-item">
+                            <div class="news-content">
+                                <span class="news-title">业主大会会议纪要发布</span>
+                                <span class="news-time">2天前</span>
+                            </div>
+                            <span class="news-arrow">›</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 个人中心 -->
+            <div class="profile-page" id="profilePage">
+                <div class="user-header">
+                    <div class="header-bg"></div>
+                    <div class="user-info">
+                        <div class="avatar">👤</div>
+                        <div class="user-detail">
+                            <span class="nickname">用户昵称</span>
+                            <span class="phone">138****8888</span>
+                        </div>
+                        <div class="edit-btn">✏️</div>
+                    </div>
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">5</span>
+                            <span class="stat-label">我的订单</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <span class="stat-value">2</span>
+                            <span class="stat-label">优惠券</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <span class="stat-value">1280</span>
+                            <span class="stat-label">积分</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-item">
+                        <span class="menu-icon">📋</span>
+                        <span class="menu-text">我的订单</span>
+                        <span class="menu-badge">2</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">🎫</span>
+                        <span class="menu-text">优惠券</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">🏠</span>
+                        <span class="menu-text">我的房屋</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">❤️</span>
+                        <span class="menu-text">我的收藏</span>
+                        <span class="menu-badge">5</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">📝</span>
+                        <span class="menu-text">报修记录</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">💬</span>
+                        <span class="menu-text">消息通知</span>
+                        <span class="menu-badge">3</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-item">
+                        <span class="menu-icon">🔔</span>
+                        <span class="menu-text">通知设置</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">🔒</span>
+                        <span class="menu-text">账号安全</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">❓</span>
+                        <span class="menu-text">帮助中心</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">📞</span>
+                        <span class="menu-text">联系客服</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                    <div class="menu-item">
+                        <span class="menu-icon">ℹ️</span>
+                        <span class="menu-text">关于我们</span>
+                        <span class="menu-arrow">›</span>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <span class="version">版本号：1.0.0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-bar">
+            <div class="tab-item active" data-page="index">
+                <span class="tab-icon">🏠</span>
+                <span class="tab-text">首页</span>
+            </div>
+            <div class="tab-item" data-page="profile">
+                <span class="tab-icon">👤</span>
+                <span class="tab-text">我的</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab-item');
+        const indexPage = document.getElementById('indexPage');
+        const profilePage = document.getElementById('profilePage');
+        const navTitle = document.getElementById('navTitle');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const page = tab.dataset.page;
+
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                if (page === 'index') {
+                    indexPage.style.display = 'block';
+                    profilePage.style.display = 'none';
+                    navTitle.textContent = '首页';
+                } else {
+                    indexPage.style.display = 'none';
+                    profilePage.style.display = 'block';
+                    navTitle.textContent = '我的';
+                }
+            });
+        });
+
+        document.querySelectorAll('.menu-item, .service-card, .news-item, .action-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const toast = document.createElement('div');
+                toast.textContent = '功能开发中';
+                toast.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0, 0, 0, 0.7);
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    z-index: 9999;
+                `;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 1500);
+            });
+        });
+    </script>
+</body>
+</html>
