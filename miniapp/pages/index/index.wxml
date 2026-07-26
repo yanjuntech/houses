@@ -1,0 +1,55 @@
+<view class="container">
+  <view class="header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <view class="greeting">
+        <text class="greeting-text">{{greeting}}，欢迎回来</text>
+      </view>
+      <view class="search-bar" bindtap="handleSearch">
+        <text class="search-icon">🔍</text>
+        <text class="search-placeholder">搜索服务</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="quick-actions">
+    <view class="action-item" wx:for="{{quickActions}}" wx:key="id" bindtap="handleAction" data-id="{{item.id}}">
+      <view class="action-icon">{{item.icon}}</view>
+      <text class="action-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">热门服务</text>
+      <text class="section-more" bindtap="viewMore">查看更多 ›</text>
+    </view>
+    <view class="service-list">
+      <view class="service-card" wx:for="{{services}}" wx:key="id" bindtap="handleService" data-id="{{item.id}}">
+        <image class="service-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="service-info">
+          <text class="service-name">{{item.name}}</text>
+          <text class="service-desc">{{item.desc}}</text>
+          <view class="service-tags">
+            <text class="tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">最新动态</text>
+    </view>
+    <view class="news-list">
+      <view class="news-item" wx:for="{{news}}" wx:key="id" bindtap="handleNews" data-id="{{item.id}}">
+        <view class="news-content">
+          <text class="news-title">{{item.title}}</text>
+          <text class="news-time">{{item.time}}</text>
+        </view>
+        <image class="news-arrow" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAABqklEQVR4nO2ZzU7DMBCFP2gHkAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAOgAZgB2ATYAON8AKdU2xQv8g4AAAAASUVORK5CYII=" mode="aspectFit" />
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,8 @@
+- [x] Checkpoint 1: 项目目录结构完整（miniapp/pages、miniapp/components、miniapp/utils、miniapp/images、miniapp/styles 目录均存在）
+- [x] Checkpoint 2: 核心配置文件存在且格式正确（app.js、app.json、app.wxss、project.config.json）
+- [x] Checkpoint 3: 首页文件完整（pages/index/index.wxml、index.wxss、index.js、index.json）
+- [x] Checkpoint 4: 个人中心页面文件完整（pages/profile/profile.wxml、profile.wxss、profile.js、profile.json）
+- [x] Checkpoint 5: 工具函数和公共组件文件存在（utils/index.js、components/common/）
+- [x] Checkpoint 6: app.json 配置包含页面路由和 tabBar 配置
+- [x] Checkpoint 7: JSON 文件格式验证通过（可被 JSON.parse 解析）
+- [ ] Checkpoint 8: 在微信开发者工具中项目可正常打开和编译

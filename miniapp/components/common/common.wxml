@@ -1,0 +1,20 @@
+<view class="common-loading" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+  <text class="loading-text">{{loadingText}}</text>
+</view>
+
+<view class="common-empty" wx:if="{{empty}}">
+  <text class="empty-icon">{{emptyIcon}}</text>
+  <text class="empty-text">{{emptyText}}</text>
+  <view class="empty-btn" wx:if="{{emptyBtnText}}" bindtap="handleEmptyBtn">
+    <text class="empty-btn-text">{{emptyBtnText}}</text>
+  </view>
+</view>
+
+<view class="common-error" wx:if="{{error}}">
+  <text class="error-icon">{{errorIcon}}</text>
+  <text class="error-text">{{errorText}}</text>
+  <view class="error-btn" bindtap="handleRetry">
+    <text class="error-btn-text">重试</text>
+  </view>
+</view>
