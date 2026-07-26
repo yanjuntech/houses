@@ -51,6 +51,14 @@ export function inviteStatistics(inviterId) {
   })
 }
 
+// 查询全局邀请统计数据
+export function inviteTotalStatistics() {
+  return request({
+    url: '/rental/invite/statistics/total',
+    method: 'get'
+  })
+}
+
 // 查询邀请人发出的邀请列表
 export function inviteListByInviter(inviterId) {
   return request({

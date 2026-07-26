@@ -249,7 +249,7 @@
 </template>
 
 <script>
-import { listInvite, getInvite, delInvite, inviteStatistics } from "@/api/rental/invite"
+import { listInvite, getInvite, delInvite, inviteStatistics, inviteTotalStatistics } from "@/api/rental/invite"
 
 export default {
   name: "RentalInvite",
@@ -366,7 +366,7 @@ export default {
       })
     },
     loadTotalStatistics() {
-      inviteStatistics().then(response => {
+      inviteTotalStatistics().then(response => {
         this.totalStatistics = response.data || { totalCount: 0, certifiedCount: 0 }
       }).catch(() => {
         this.totalStatistics = { totalCount: 0, certifiedCount: 0 }

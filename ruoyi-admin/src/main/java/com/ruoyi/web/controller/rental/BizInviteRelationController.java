@@ -127,6 +127,31 @@ public class BizInviteRelationController extends BaseController
     }
 
     /**
+     * 邀请全局统计：查询总邀请人数和已认证邀请人数
+     */
+    @PreAuthorize("@ss.hasPermi('biz:rental:invite:query')")
+    @GetMapping("/statistics/total")
+    public AjaxResult totalStatistics()
+    {
+        // 总邀请人数
+        List<BizInviteRelation> allList = bizInviteRelationService.selectBizInviteRelationList(new BizInviteRelation());
+        int totalCount = allList.size();
+        // 已认证邀请人数（invite_status = '1' 表示已认证）
+        int certifiedCount = 0;
+        for (BizInviteRelation relation : allList)
+        {
+            if ("1".equals(relation.getInviteStatus()))
+            {
+                certifiedCount++;
+            }
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("totalCount", totalCount);
+        data.put("certifiedCount", certifiedCount);
+        return success(data);
+    }
+
+    /**
      * 查询某邀请人的邀请列表
      */
     @PreAuthorize("@ss.hasPermi('biz:rental:invite:query')")
