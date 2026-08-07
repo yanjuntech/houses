@@ -1,14 +1,14 @@
 .page {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #FAF8F5;
   padding-bottom: 30rpx;
 }
 
 /* ===================== 顶部 tab 栏 ===================== */
 .tab-bar {
   display: flex;
-  background-color: #ffffff;
-  border-bottom: 1rpx solid #eeeeee;
+  background-color: #FFFFFF;
+  border-bottom: 1rpx solid #EDE8E1;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -19,13 +19,13 @@
   text-align: center;
   padding: 24rpx 0;
   font-size: 28rpx;
-  color: #666666;
+  color: #6B6B6B;
   position: relative;
 }
 
 .tab-item.active {
-  color: #4080ff;
-  font-weight: 600;
+  color: #C45B3F;
+  font-weight: 700;
 }
 
 .tab-item.active::after {
@@ -36,7 +36,7 @@
   transform: translateX(-50%);
   width: 60rpx;
   height: 6rpx;
-  background-color: #4080ff;
+  background-color: #C45B3F;
   border-radius: 3rpx;
 }
 
@@ -46,11 +46,11 @@
 }
 
 .repair-card {
-  background: #ffffff;
-  border-radius: 16rpx;
+  background: #FFFFFF;
+  border-radius: 20rpx;
   padding: 24rpx;
   margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border: 1rpx solid #EDE8E1;
 }
 
 .repair-card:active {
@@ -66,7 +66,7 @@
 
 .repair-no {
   font-size: 24rpx;
-  color: #999999;
+  color: #A0A0A0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -83,23 +83,23 @@
 }
 
 .status-pending {
-  color: #ff9500;
-  background: rgba(255, 149, 0, 0.1);
+  color: #D4943B;
+  background: #FBF3E8;
 }
 
 .status-processing {
-  color: #4080ff;
-  background: rgba(64, 128, 255, 0.1);
+  color: #C45B3F;
+  background: #FDF0EB;
 }
 
 .status-done {
-  color: #4caf50;
-  background: rgba(76, 175, 80, 0.1);
+  color: #5B8C5A;
+  background: #EFF5EF;
 }
 
 .status-cancelled {
-  color: #999999;
-  background: rgba(153, 153, 153, 0.1);
+  color: #A0A0A0;
+  background: #F2F0EC;
 }
 
 /* 信息行 */
@@ -118,7 +118,7 @@
 .row-text {
   flex: 1;
   font-size: 26rpx;
-  color: #666666;
+  color: #6B6B6B;
   line-height: 1.5;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -139,17 +139,17 @@
   align-items: center;
   margin-top: 8rpx;
   padding-top: 16rpx;
-  border-top: 1rpx solid #f5f5f5;
+  border-top: 1rpx solid #EDE8E1;
 }
 
 .create-time {
   font-size: 22rpx;
-  color: #999999;
+  color: #A0A0A0;
 }
 
 .arrow {
   font-size: 36rpx;
-  color: #cccccc;
+  color: #C4C0BA;
 }
 
 /* ===================== 空状态 ===================== */
@@ -163,13 +163,13 @@
 
 .empty-icon {
   font-size: 120rpx;
-  color: #c0c4cc;
+  color: #A0A0A0;
   margin-bottom: 24rpx;
 }
 
 .empty-text {
   font-size: 28rpx;
-  color: #999999;
+  color: #A0A0A0;
 }
 
 /* ===================== 加载更多 ===================== */
@@ -180,5 +180,5 @@
 
 .loadmore-text {
   font-size: 24rpx;
-  color: #999999;
+  color: #A0A0A0;
 }

@@ -1,261 +1,165 @@
-.header {
-  position: relative;
-  padding-top: 40rpx;
-  padding-bottom: 60rpx;
+/* ===================== 首页 ===================== */
+.page-index {
+  min-height: 100vh;
+  background: #FAF8F5;
 }
 
-.header-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 320rpx;
-  background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
-  border-radius: 0 0 40rpx 40rpx;
+/* ---- 顶部区域 ---- */
+.hero {
+  padding: 40rpx 32rpx 32rpx;
 }
 
-.header-content {
-  position: relative;
-  z-index: 1;
-  padding: 0 30rpx;
+.hero-greeting {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24rpx;
 }
 
-.greeting {
-  margin-bottom: 30rpx;
+.hero-greeting-text {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: 1rpx;
 }
 
-.greeting-text {
-  font-size: 36rpx;
-  font-weight: 600;
-  color: #ffffff;
+.hero-subtitle {
+  font-size: 24rpx;
+  color: #A0A0A0;
+  margin-top: 8rpx;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 40rpx;
-  padding: 20rpx 30rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+  background: #FFFFFF;
+  border: 1rpx solid #EDE8E1;
+  border-radius: 16rpx;
+  padding: 22rpx 28rpx;
 }
 
 .search-icon {
-  font-size: 32rpx;
-  margin-right: 16rpx;
+  font-size: 30rpx;
+  margin-right: 14rpx;
 }
 
 .search-placeholder {
-  font-size: 28rpx;
-  color: #999999;
-}
-
-.quick-actions {
-  display: flex;
-  justify-content: space-around;
-  background: #ffffff;
-  margin: -30rpx 20rpx 20rpx;
-  padding: 30rpx 20rpx;
-  border-radius: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
-  position: relative;
-  z-index: 2;
-}
-
-.action-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100rpx;
-}
-
-.action-icon {
-  width: 80rpx;
-  height: 80rpx;
-  background: #f0f5ff;
-  border-radius: 20rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 40rpx;
-  margin-bottom: 12rpx;
-}
-
-.action-name {
-  font-size: 24rpx;
-  color: #333333;
-}
-
-.section {
-  padding: 0 20rpx;
-  margin-bottom: 30rpx;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20rpx;
-}
-
-.section-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #333333;
-}
-
-.section-more {
   font-size: 26rpx;
-  color: #999999;
+  color: #C4C0BA;
 }
 
-.service-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.service-card {
-  width: calc(50% - 10rpx);
-  background: #ffffff;
-  border-radius: 16rpx;
-  overflow: hidden;
-  margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
-}
-
-.service-image {
-  width: 100%;
-  height: 180rpx;
-}
-
-.service-info {
-  padding: 20rpx;
-}
-
-.service-name {
-  font-size: 28rpx;
-  font-weight: 500;
-  color: #333333;
-  margin-bottom: 8rpx;
-  display: block;
-}
-
-.service-desc {
-  font-size: 24rpx;
-  color: #999999;
-  margin-bottom: 12rpx;
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.service-tags {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.tag {
-  font-size: 20rpx;
-  color: #4080ff;
-  background: #f0f5ff;
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
-  margin-right: 8rpx;
-  margin-bottom: 4rpx;
-}
-
-.news-list {
-  background: #ffffff;
-  border-radius: 16rpx;
-  overflow: hidden;
-}
-
-.news-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24rpx;
-  border-bottom: 1rpx solid #f5f5f5;
-}
-
-.news-item:last-child {
-  border-bottom: none;
-}
-
-.news-content {
-  flex: 1;
-}
-
-.news-title {
-  font-size: 28rpx;
-  color: #333333;
-  display: block;
-  margin-bottom: 8rpx;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.news-time {
-  font-size: 24rpx;
-  color: #999999;
-}
-
-.news-arrow {
-  width: 32rpx;
-  height: 32rpx;
-  margin-left: 20rpx;
-}
-
-/* ============ 轮播图 ============ */
-.banner-wrap {
-  padding: 0 20rpx;
-  margin-bottom: 30rpx;
+/* ---- 轮播图 ---- */
+.banner-section {
+  padding: 0 32rpx;
+  margin-bottom: 40rpx;
 }
 
 .banner-swiper {
   width: 100%;
-  height: 300rpx;
+  height: 320rpx;
   border-radius: 20rpx;
   overflow: hidden;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
 }
 
 .banner-image {
   width: 100%;
   height: 100%;
-  border-radius: 20rpx;
 }
 
 .banner-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
+  background: linear-gradient(135deg, #C45B3F 0%, #D9714E 100%);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .banner-placeholder-text {
-  color: #ffffff;
-  font-size: 32rpx;
+  color: #FFFFFF;
+  font-size: 34rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+}
+
+/* ---- 快捷入口 ---- */
+.quick-actions {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 20rpx 40rpx;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120rpx;
+}
+
+.action-item:active {
+  opacity: 0.7;
+}
+
+.action-icon {
+  width: 88rpx;
+  height: 88rpx;
+  background: #FDF0EB;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+  margin-bottom: 12rpx;
+}
+
+.action-name {
+  font-size: 22rpx;
+  color: #6B6B6B;
   font-weight: 500;
 }
 
-/* ============ 热门房源 ============ */
+/* ---- 区块通用 ---- */
+.section {
+  padding: 0 32rpx;
+  margin-bottom: 48rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: 1rpx;
+}
+
+.section-more {
+  font-size: 24rpx;
+  color: #C45B3F;
+  font-weight: 500;
+}
+
+/* ---- 房源卡片 ---- */
 .house-list {
   display: flex;
   flex-direction: column;
 }
 
 .house-card {
-  background: #ffffff;
-  border-radius: 16rpx;
+  background: #FFFFFF;
+  border: 1rpx solid #EDE8E1;
+  border-radius: 20rpx;
   margin-bottom: 20rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
-  border-left: 6rpx solid #4080ff;
+  padding: 28rpx;
+  border-left: 6rpx solid #C45B3F;
+}
+
+.house-card:active {
+  opacity: 0.85;
 }
 
 .house-info {
@@ -264,9 +168,9 @@
 }
 
 .house-title {
-  font-size: 30rpx;
+  font-size: 32rpx;
   font-weight: 600;
-  color: #333333;
+  color: #1A1A1A;
   margin-bottom: 12rpx;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -280,41 +184,44 @@
 }
 
 .house-tag {
-  font-size: 22rpx;
-  color: #4080ff;
-  background: #f0f5ff;
+  font-size: 20rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+  color: #C45B3F;
+  border: 1rpx solid #C45B3F;
   padding: 4rpx 14rpx;
-  border-radius: 8rpx;
+  border-radius: 6rpx;
   margin-right: 12rpx;
 }
 
 .house-community {
   font-size: 24rpx;
-  color: #666666;
+  color: #6B6B6B;
   margin-bottom: 12rpx;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .house-price {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #ff4d4f;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #C4453F;
 }
 
-/* ============ 商家推荐 ============ */
+/* ---- 商家列表 ---- */
 .merchant-list {
   display: flex;
   flex-direction: column;
 }
 
-.merchant-card {
-  background: #ffffff;
-  border-radius: 16rpx;
+.merchant-item {
+  background: #FFFFFF;
+  border: 1rpx solid #EDE8E1;
+  border-radius: 20rpx;
   margin-bottom: 20rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  padding: 28rpx;
+}
+
+.merchant-item:active {
+  opacity: 0.85;
 }
 
 .merchant-info {
@@ -330,9 +237,9 @@
 }
 
 .merchant-name {
-  font-size: 30rpx;
+  font-size: 32rpx;
   font-weight: 600;
-  color: #333333;
+  color: #1A1A1A;
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -340,22 +247,21 @@
 }
 
 .merchant-category {
-  font-size: 22rpx;
-  color: #ff8c1a;
-  background: #fff5e6;
+  font-size: 20rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+  color: #D4943B;
+  border: 1rpx solid #D4943B;
   padding: 4rpx 14rpx;
-  border-radius: 8rpx;
+  border-radius: 6rpx;
   margin-left: 16rpx;
   flex-shrink: 0;
 }
 
 .merchant-address {
   font-size: 24rpx;
-  color: #666666;
+  color: #6B6B6B;
   margin-bottom: 12rpx;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .merchant-phone-row {
@@ -366,51 +272,51 @@
 
 .merchant-phone {
   font-size: 26rpx;
-  color: #4080ff;
+  color: #C45B3F;
 }
 
 .merchant-call-btn {
   font-size: 24rpx;
-  color: #ffffff;
-  background: #4080ff;
-  padding: 6rpx 24rpx;
-  border-radius: 24rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: #C45B3F;
+  padding: 8rpx 28rpx;
+  border-radius: 8rpx;
 }
 
-/* ============ 空状态 ============ */
+.merchant-call-btn:active {
+  opacity: 0.82;
+}
+
+/* ---- 空状态 ---- */
 .empty-state {
-  background: #ffffff;
-  border-radius: 16rpx;
-  padding: 60rpx 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
+  padding: 80rpx 40rpx;
 }
 
 .empty-text {
   font-size: 26rpx;
-  color: #999999;
+  color: #A0A0A0;
 }
 
-/* ============ 欢迎信息 ============ */
-.welcome-card {
-  background: #ffffff;
-  border-radius: 16rpx;
-  padding: 30rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
+/* ---- 社区公告 ---- */
+.notice-card {
+  background: #FFFFFF;
+  border: 1rpx solid #EDE8E1;
+  border-radius: 20rpx;
+  padding: 32rpx;
 }
 
-.welcome-title {
+.notice-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333333;
+  color: #1A1A1A;
   margin-bottom: 16rpx;
+  display: block;
 }
 
-.welcome-desc {
+.notice-desc {
   font-size: 26rpx;
-  color: #666666;
-  line-height: 1.6;
+  color: #6B6B6B;
+  line-height: 1.7;
 }

@@ -1,20 +1,18 @@
-<view class="container">
-  <!-- 顶部欢迎区 -->
-  <view class="header">
-    <view class="header-bg"></view>
-    <view class="header-content">
-      <view class="greeting">
-        <text class="greeting-text">{{greeting}}，欢迎回来</text>
-      </view>
-      <view class="search-bar" bindtap="handleSearch">
-        <text class="search-icon">🔍</text>
-        <text class="search-placeholder">搜索房源</text>
-      </view>
+<view class="page-index">
+  <!-- 顶部区域：问候语 + 搜索 -->
+  <view class="hero">
+    <view class="hero-greeting">
+      <text class="hero-greeting-text">{{greeting}}，欢迎回来</text>
+      <text class="hero-subtitle" wx:if="{{!isLoggedIn}}">登录后体验更多功能</text>
+    </view>
+    <view class="search-bar" bindtap="handleSearch">
+      <text class="search-icon">🔍</text>
+      <text class="search-placeholder">搜索房源、服务</text>
     </view>
   </view>
 
-  <!-- 轮播图：始终展示，无数据时使用占位图 -->
-  <view class="banner-wrap">
+  <!-- 轮播图 -->
+  <view class="banner-section">
     <swiper
       class="banner-swiper"
       autoplay="{{true}}"
@@ -22,8 +20,8 @@
       duration="500"
       circular="{{true}}"
       indicator-dots="{{true}}"
-      indicator-color="rgba(255,255,255,0.4)"
-      indicator-active-color="#ffffff">
+      indicator-color="rgba(196,91,63,0.2)"
+      indicator-active-color="#C45B3F">
       <swiper-item wx:for="{{banners}}" wx:key="bannerId" data-url="{{item.jumpUrl}}" bindtap="handleBannerTap">
         <image wx:if="{{item.image}}" class="banner-image" src="{{item.image}}" mode="aspectFill" />
         <view wx:else class="banner-placeholder">
@@ -78,7 +76,7 @@
     </view>
     <view class="merchant-list" wx:if="{{merchants.length > 0}}">
       <view
-        class="merchant-card"
+        class="merchant-item"
         wx:for="{{merchants}}"
         wx:key="id"
         bindtap="handleMerchant"
@@ -101,14 +99,14 @@
     </view>
   </view>
 
-  <!-- 底部静态欢迎信息 -->
+  <!-- 社区公告 -->
   <view class="section">
     <view class="section-header">
-      <text class="section-title">最新动态</text>
+      <text class="section-title">社区公告</text>
     </view>
-    <view class="welcome-card">
-      <text class="welcome-title">欢迎使用社区租赁服务</text>
-      <text class="welcome-desc">我们致力于为您提供便捷的房屋租赁、维修服务和商家查询体验。如有任何问题，请通过「联系客服」与我们沟通，祝您生活愉快！</text>
+    <view class="notice-card">
+      <text class="notice-title">欢迎使用社区租赁服务</text>
+      <text class="notice-desc">我们致力于为您提供便捷的房屋租赁、维修服务和商家查询体验。如有任何问题，请通过「联系客服」与我们沟通，祝您生活愉快！</text>
     </view>
   </view>
 </view>

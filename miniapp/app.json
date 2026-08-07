@@ -22,16 +22,16 @@
     "pages/profile/verify"
   ],
   "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#ffffff",
-    "navigationBarTitleText": "小程序",
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#FAF8F5",
+    "navigationBarTitleText": "社区租赁",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#f5f5f5"
+    "backgroundColor": "#FAF8F5"
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#4080ff",
-    "borderStyle": "black",
+    "color": "#A0A0A0",
+    "selectedColor": "#C45B3F",
+    "borderStyle": "white",
     "backgroundColor": "#ffffff",
     "list": [
       {

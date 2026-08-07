@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #FAF8F5;
   padding-bottom: 30rpx;
 }
 
@@ -9,43 +9,45 @@
   display: flex;
   align-items: center;
   padding: 20rpx 24rpx;
-  background: #ffffff;
+  background: #FFFFFF;
   position: sticky;
   top: 0;
   z-index: 10;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  border-bottom: 1rpx solid #EDE8E1;
 }
 
 .search-input-wrap {
   flex: 1;
   display: flex;
   align-items: center;
-  background: #f5f5f5;
+  background: #FAF8F5;
   border-radius: 32rpx;
   padding: 14rpx 24rpx;
+  border: 1rpx solid #EDE8E1;
 }
 
 .search-icon {
   font-size: 28rpx;
   margin-right: 12rpx;
+  color: #A0A0A0;
 }
 
 .search-input {
   flex: 1;
   font-size: 28rpx;
-  color: #333333;
+  color: #1A1A1A;
 }
 
 .search-placeholder {
-  color: #999999;
+  color: #A0A0A0;
   font-size: 28rpx;
 }
 
 .search-btn {
   margin-left: 20rpx;
   padding: 12rpx 28rpx;
-  background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
-  color: #ffffff;
+  background: #C45B3F;
+  color: #FFFFFF;
   font-size: 28rpx;
   border-radius: 32rpx;
 }
@@ -59,8 +61,8 @@
   display: flex;
   align-items: center;
   padding: 20rpx 24rpx;
-  background: #ffffff;
-  border-bottom: 1rpx solid #f0f0f0;
+  background: #FFFFFF;
+  border-bottom: 1rpx solid #EDE8E1;
 }
 
 .filter-item {
@@ -73,31 +75,33 @@
   align-items: center;
   justify-content: center;
   padding: 12rpx 8rpx;
-  background: #f5f5f5;
+  background: #FAF8F5;
   border-radius: 24rpx;
   font-size: 24rpx;
-  color: #666666;
+  color: #6B6B6B;
+  border: 1rpx solid #EDE8E1;
 }
 
 .filter-text-active {
-  color: #4080ff;
-  background: #f0f5ff;
+  color: #C45B3F;
+  background: #FDF0EB;
+  border-color: #C45B3F;
 }
 
 .filter-arrow {
   margin-left: 6rpx;
   font-size: 20rpx;
-  color: #999999;
+  color: #A0A0A0;
 }
 
 .filter-reset {
   padding: 12rpx 20rpx;
   font-size: 24rpx;
-  color: #999999;
+  color: #A0A0A0;
 }
 
 .filter-reset:active {
-  color: #4080ff;
+  color: #C45B3F;
 }
 
 /* ===================== 房源列表 ===================== */
@@ -107,11 +111,11 @@
 
 .house-card {
   display: flex;
-  background: #ffffff;
-  border-radius: 16rpx;
+  background: #FFFFFF;
+  border-radius: 20rpx;
   overflow: hidden;
   margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border: 1rpx solid #EDE8E1;
 }
 
 .house-card:active {
@@ -123,7 +127,7 @@
   width: 240rpx;
   height: 200rpx;
   flex-shrink: 0;
-  background: #f0f0f0;
+  background: #EDE8E1;
 }
 
 .cover-image {
@@ -138,17 +142,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f5f7fa;
+  background: #F5F2EE;
 }
 
 .placeholder-icon {
   font-size: 56rpx;
-  color: #c0c4cc;
+  color: #A0A0A0;
 }
 
 .placeholder-text {
   font-size: 22rpx;
-  color: #c0c4cc;
+  color: #A0A0A0;
   margin-top: 8rpx;
 }
 
@@ -156,8 +160,8 @@
   position: absolute;
   top: 12rpx;
   left: 12rpx;
-  background: rgba(64, 128, 255, 0.9);
-  color: #ffffff;
+  background: #C45B3F;
+  color: #FFFFFF;
   font-size: 20rpx;
   padding: 4rpx 12rpx;
   border-radius: 8rpx;
@@ -175,7 +179,7 @@
 .house-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333333;
+  color: #1A1A1A;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -190,12 +194,12 @@
 .house-price {
   font-size: 36rpx;
   font-weight: 700;
-  color: #f56c6c;
+  color: #C4453F;
 }
 
 .price-unit {
   font-size: 22rpx;
-  color: #f56c6c;
+  color: #C4453F;
   margin-left: 4rpx;
 }
 
@@ -203,17 +207,17 @@
   display: flex;
   align-items: center;
   font-size: 24rpx;
-  color: #666666;
+  color: #6B6B6B;
   margin-top: 8rpx;
 }
 
 .meta-item {
-  color: #666666;
+  color: #6B6B6B;
 }
 
 .meta-divider {
   margin: 0 12rpx;
-  color: #dddddd;
+  color: #C4C0BA;
 }
 
 .house-community {
@@ -222,7 +226,7 @@
 
 .community-name {
   font-size: 24rpx;
-  color: #4080ff;
+  color: #C45B3F;
 }
 
 .house-address {
@@ -238,7 +242,7 @@
 
 .address-text {
   font-size: 22rpx;
-  color: #999999;
+  color: #A0A0A0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -255,20 +259,20 @@
 
 .empty-icon {
   font-size: 120rpx;
-  color: #c0c4cc;
+  color: #A0A0A0;
 }
 
 .empty-text {
   font-size: 28rpx;
-  color: #999999;
+  color: #A0A0A0;
   margin-top: 20rpx;
 }
 
 .empty-btn {
   margin-top: 30rpx;
   padding: 16rpx 48rpx;
-  background: #f0f5ff;
-  color: #4080ff;
+  background: #FDF0EB;
+  color: #C45B3F;
   font-size: 26rpx;
   border-radius: 32rpx;
 }
@@ -281,7 +285,7 @@
 
 .loadmore-text {
   font-size: 24rpx;
-  color: #999999;
+  color: #A0A0A0;
 }
 
 /* ===================== 发布浮动按钮 ===================== */
@@ -291,13 +295,12 @@
   bottom: calc(120rpx + env(safe-area-inset-bottom));
   width: 110rpx;
   height: 110rpx;
-  background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
+  background: #C45B3F;
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(64, 128, 255, 0.4);
   z-index: 100;
 }
 
@@ -307,12 +310,12 @@
 
 .publish-fab-icon {
   font-size: 36rpx;
-  color: #ffffff;
+  color: #FFFFFF;
   line-height: 1;
 }
 
 .publish-fab-text {
   font-size: 20rpx;
-  color: #ffffff;
+  color: #FFFFFF;
   margin-top: 4rpx;
 }

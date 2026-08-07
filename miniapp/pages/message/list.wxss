@@ -1,14 +1,14 @@
 /* 消息中心 - 消息列表页样式 */
 .message-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #FAF8F5;
 }
 
 /* 顶部标签栏 */
 .tab-bar {
   display: flex;
-  background-color: #ffffff;
-  border-bottom: 1rpx solid #eee;
+  background-color: #FFFFFF;
+  border-bottom: 1rpx solid #EDE8E1;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -19,13 +19,13 @@
   text-align: center;
   padding: 24rpx 0;
   font-size: 28rpx;
-  color: #666;
+  color: #6B6B6B;
   position: relative;
 }
 
 .tab-item.active {
-  color: #4080ff;
-  font-weight: 600;
+  color: #C45B3F;
+  font-weight: 700;
 }
 
 .tab-item.active::after {
@@ -36,7 +36,7 @@
   transform: translateX(-50%);
   width: 60rpx;
   height: 6rpx;
-  background-color: #4080ff;
+  background-color: #C45B3F;
   border-radius: 3rpx;
 }
 
@@ -48,8 +48,8 @@
   line-height: 32rpx;
   padding: 0 8rpx;
   margin-left: 6rpx;
-  background-color: #ff4d4f;
-  color: #ffffff;
+  background-color: #C4453F;
+  color: #FFFFFF;
   font-size: 20rpx;
   border-radius: 16rpx;
   text-align: center;
@@ -64,12 +64,12 @@
 .message-item {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
-  border-radius: 12rpx;
+  background-color: #FFFFFF;
+  border-radius: 20rpx;
   padding: 28rpx 24rpx;
   margin-bottom: 16rpx;
   position: relative;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  border: 1rpx solid #EDE8E1;
 }
 
 /* 未读红点 */
@@ -79,7 +79,7 @@
   left: 16rpx;
   width: 16rpx;
   height: 16rpx;
-  background-color: #ff4d4f;
+  background-color: #C45B3F;
   border-radius: 50%;
 }
 
@@ -98,8 +98,8 @@
 
 .item-title {
   font-size: 30rpx;
-  color: #333;
-  font-weight: 600;
+  color: #1A1A1A;
+  font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -108,13 +108,13 @@
 
 .item-time {
   font-size: 22rpx;
-  color: #999;
+  color: #A0A0A0;
   flex-shrink: 0;
 }
 
 .item-preview {
   font-size: 26rpx;
-  color: #888;
+  color: #6B6B6B;
   line-height: 1.5;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -125,7 +125,7 @@
 
 .item-arrow {
   font-size: 40rpx;
-  color: #ccc;
+  color: #C4C0BA;
   margin-left: 16rpx;
 }
 
@@ -145,7 +145,7 @@
 
 .empty-text {
   font-size: 28rpx;
-  color: #999;
+  color: #A0A0A0;
 }
 
 /* 加载提示 */
@@ -153,5 +153,5 @@
   text-align: center;
   padding: 32rpx 0;
   font-size: 24rpx;
-  color: #999;
+  color: #A0A0A0;
 }

@@ -1,16 +1,14 @@
 <!-- 登录页 -->
 <view class="login-page">
-
-  <!-- 顶部 Logo 区域 -->
-  <view class="logo-wrap">
+  <!-- Logo 区域 -->
+  <view class="logo-section">
     <view class="logo-icon">🏠</view>
-    <view class="logo-title">租房小助手</view>
-    <view class="logo-subtitle">欢迎登录，开启美好生活</view>
+    <view class="logo-title">社区租赁</view>
+    <view class="logo-subtitle">您的智慧生活管家</view>
   </view>
 
   <!-- 登录卡片 -->
   <view class="login-card">
-
     <!-- 手机号登录表单 -->
     <view class="form-item">
       <input
@@ -37,11 +35,7 @@
     </view>
 
     <!-- 微信一键登录按钮 -->
-    <button
-      class="btn-wechat"
-      bindtap="handleWechatLogin"
-      loading="{{loading}}"
-    >
+    <button class="btn-wechat" bindtap="handleWechatLogin" loading="{{loading}}">
       <text class="btn-wechat-icon">💬</text>
       <text>微信一键登录</text>
     </button>
@@ -64,6 +58,5 @@
         <text class="agreement-link" bindtap="showPrivacyPolicy">《隐私政策》</text>
       </text>
     </view>
-
   </view>
 </view>

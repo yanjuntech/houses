@@ -8,24 +8,24 @@
         /* ============================================================
            Premium App UI — Design System
            Visual thesis: 一个冷静、自信的生活服务伴侣
-           温暖中性表面 · 自信蓝色强调 · 慷慨间距 · 安静动效
+           温暖中性表面 · 陶土色强调 · 慷慨间距 · 安静动效
            ============================================================ */
 
         :root {
-            --bg-page: #F7F7F5;          /* 温暖灰白，非纯白 */
+            --bg-page: #FAF8F5;          /* 温暖米白页面背景 */
             --bg-card: #FFFFFF;            /* 卡片/浮起表面 */
-            --bg-soft: #FAFAFA;             /* 极浅背景 */
-            --bg-subtle: #FAFAF8;           /* 首页 header 浅色 */
-            --text-primary: #111827;       /* 近黑主文字 */
-            --text-secondary: #6B7280;     /* 中灰次文字 */
-            --text-tertiary: #9CA3AF;      /* 浅灰辅助 */
-            --accent: #2563EB;             /* 唯一强调蓝 */
-            --accent-soft: #EFF6FF;        /* 强调蓝浅色背景 */
-            --border: #E5E7EB;             /* 极浅灰边框 */
-            --border-soft: #F3F4F6;        /* 更浅分割线 */
-            --success: #059669;
-            --warning: #D97706;
-            --danger: #DC2626;
+            --bg-soft: #FAF8F5;             /* 极浅背景 */
+            --bg-subtle: #FAF8F5;           /* 首页 header 浅色 */
+            --text-primary: #1A1A1A;       /* 近黑主文字 */
+            --text-secondary: #6B6B6B;     /* 中灰次文字 */
+            --text-tertiary: #A0A0A0;      /* 浅灰辅助 */
+            --accent: #C45B3F;             /* 陶土强调色 */
+            --accent-soft: #FDF0EB;        /* 陶土浅色背景 */
+            --border: #EDE8E1;             /* 卡片边框色 */
+            --border-soft: #F3EFE8;        /* 更浅分割线 */
+            --success: #5B8C5A;
+            --warning: #D4943B;
+            --danger: #C4453F;
             --wechat: #07C160;
         }
 
@@ -37,7 +37,7 @@
 
         html, body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #ECECE8;
+            background: #ECEAE5;
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
@@ -303,7 +303,7 @@
         /* === 卡片（仅用于可交互项） === */
         .card {
             background: var(--bg-card);
-            border-radius: 12px;
+            border-radius: 20px;
             padding: 16px;
             margin: 12px 16px;
             border: 1px solid var(--border);
@@ -381,29 +381,29 @@
         }
 
         .status-pending {
-            background: #FEF3C7;
+            background: #FAF1E6;
             color: var(--warning);
         }
 
         .status-processing {
-            background: #DBEAFE;
+            background: #FDF0EB;
             color: var(--accent);
         }
 
         .status-done {
-            background: #D1FAE5;
+            background: #EAF2EA;
             color: var(--success);
         }
 
         .status-cancel {
-            background: #FEE2E2;
+            background: #FBEAE9;
             color: var(--danger);
         }
 
         /* === 表单 === */
         .form-card {
             background: var(--bg-card);
-            border-radius: 12px;
+            border-radius: 20px;
             margin: 16px;
             padding: 4px 16px;
             border: 1px solid var(--border);
@@ -582,15 +582,15 @@
         }
 
         .banner-slide-1 {
-            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+            background: #C45B3F;
         }
 
         .banner-slide-2 {
-            background: linear-gradient(135deg, #075985 0%, #0EA5E9 100%);
+            background: #D9714E;
         }
 
         .banner-slide-3 {
-            background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%);
+            background: #A04A33;
         }
 
         .banner-dots {
@@ -917,7 +917,7 @@
         }
 
         .menu-badge {
-            background: #FEE2E2;
+            background: #FBEAE9;
             color: var(--danger);
             font-size: 11px;
             padding: 2px 8px;
@@ -1134,7 +1134,7 @@
         .detail-swiper {
             width: 100%;
             height: 200px;
-            background: linear-gradient(135deg, #DBEAFE 0%, #EFF6FF 100%);
+            background: #FDF0EB;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1474,7 +1474,7 @@
             margin: 16px;
             padding: 20px 16px;
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 20px;
         }
 
         .msg-detail-title {
@@ -1672,7 +1672,7 @@
         .timeline-node.active .node-dot {
             background: #FFFFFF;
             border: 2px solid var(--accent);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+            box-shadow: 0 0 0 4px rgba(196, 91, 63, 0.15);
         }
 
         .node-info {
@@ -1729,7 +1729,7 @@
             margin: 16px;
             padding: 20px 16px;
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 20px;
         }
 
         .invite-code-row {
@@ -1839,7 +1839,7 @@
             margin: 16px;
             padding: 16px;
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             position: relative;
@@ -1888,7 +1888,7 @@
         .goods-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 20px;
             padding: 16px 12px;
             display: flex;
             flex-direction: column;
@@ -1993,7 +1993,7 @@
             padding: 6px 12px;
             background: var(--bg-card);
             color: var(--danger);
-            border: 1px solid #FEE2E2;
+            border: 1px solid #FBEAE9;
             border-radius: 6px;
             font-size: 12px;
             cursor: pointer;

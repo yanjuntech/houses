@@ -1,58 +1,205 @@
+/* ============================================
+   全局样式系统 — Warm Editorial Design
+   色彩：暖陶土 + 米白 + 炭灰
+   排版：强标题层次 + 疏朗正文
+   ============================================ */
+
 page {
-  background-color: #f5f5f5;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #FAF8F5;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
   font-size: 28rpx;
-  color: #333333;
+  color: #1A1A1A;
+  line-height: 1.6;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+view, text, image, input, textarea, picker, button {
   box-sizing: border-box;
 }
 
-view, text, image {
-  box-sizing: border-box;
-}
-
+/* ===================== 布局 ===================== */
 .container {
-  padding: 20rpx;
   min-height: 100vh;
+  padding: 0;
 }
 
+/* ===================== 卡片（仅用于可交互项） ===================== */
 .card {
-  background: #ffffff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  margin-bottom: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  border: 1rpx solid #EDE8E1;
 }
 
+/* ===================== 按钮 ===================== */
 .btn-primary {
-  background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
-  color: #ffffff;
-  border-radius: 40rpx;
-  padding: 20rpx 40rpx;
+  background: #C45B3F;
+  color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx 0;
   text-align: center;
-  font-size: 28rpx;
-  font-weight: 500;
+  font-size: 30rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
 }
 
 .btn-primary:active {
-  opacity: 0.8;
+  opacity: 0.82;
 }
 
+.btn-outline {
+  background: transparent;
+  color: #C45B3F;
+  border: 2rpx solid #C45B3F;
+  border-radius: 16rpx;
+  padding: 22rpx 0;
+  text-align: center;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.btn-outline:active {
+  background: #FDF0EB;
+}
+
+/* ===================== 文字颜色 ===================== */
 .text-primary {
-  color: #4080ff;
+  color: #C45B3F;
 }
 
 .text-secondary {
-  color: #999999;
+  color: #6B6B6B;
+}
+
+.text-tertiary {
+  color: #A0A0A0;
 }
 
 .text-success {
-  color: #67c23a;
+  color: #5B8C5A;
 }
 
 .text-warning {
-  color: #e6a23c;
+  color: #D4943B;
 }
 
 .text-danger {
-  color: #f56c6c;
+  color: #C4453F;
+}
+
+/* ===================== 标签 ===================== */
+.tag {
+  display: inline-block;
+  font-size: 20rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+  color: #C45B3F;
+  border: 1rpx solid #C45B3F;
+  padding: 4rpx 14rpx;
+  border-radius: 6rpx;
+  margin-right: 12rpx;
+  text-transform: uppercase;
+}
+
+/* ===================== 状态标签 ===================== */
+.status-tag {
+  font-size: 22rpx;
+  font-weight: 600;
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+  display: inline-block;
+}
+
+.status-pending {
+  color: #D4943B;
+  background: #FBF3E8;
+}
+
+.status-processing {
+  color: #C45B3F;
+  background: #FDF0EB;
+}
+
+.status-done {
+  color: #5B8C5A;
+  background: #EFF5EF;
+}
+
+.status-cancelled {
+  color: #A0A0A0;
+  background: #F2F0EC;
+}
+
+/* ===================== 表单 ===================== */
+.form-card {
+  background: #FFFFFF;
+  margin: 0;
+  padding: 8rpx 32rpx;
+  border-bottom: 1rpx solid #EDE8E1;
+}
+
+.form-group {
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #F5F2EE;
+  display: flex;
+  align-items: center;
+}
+
+.form-group:last-child {
+  border-bottom: none;
+}
+
+.form-group label {
+  width: 180rpx;
+  font-size: 28rpx;
+  color: #1A1A1A;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.form-group input,
+.form-group textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 28rpx;
+  color: #1A1A1A;
+  background: transparent;
+  font-family: inherit;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #C4C0BA;
+}
+
+/* ===================== 空状态 ===================== */
+.empty-state {
+  text-align: center;
+  padding: 80rpx 40rpx;
+  color: #A0A0A0;
+  font-size: 26rpx;
+}
+
+/* ===================== 分割线 ===================== */
+.divider {
+  height: 1rpx;
+  background: #EDE8E1;
+  margin: 0 32rpx;
+}
+
+/* ===================== 区块标题 ===================== */
+.section-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: 1rpx;
+}
+
+.section-subtitle {
+  font-size: 24rpx;
+  color: #A0A0A0;
+  margin-top: 4rpx;
 }

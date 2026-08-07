@@ -1,14 +1,17 @@
 .page {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #FAF8F5;
   padding-bottom: 40rpx;
 }
 
 /* ===================== 顶部图片轮播 ===================== */
 .image-section {
-  width: 100%;
+  width: calc(100% - 40rpx);
+  margin: 20rpx;
   height: 480rpx;
-  background: #f0f0f0;
+  background: #EDE8E1;
+  border-radius: 20rpx;
+  overflow: hidden;
 }
 
 .image-swiper {
@@ -28,50 +31,50 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f5f7fa;
+  background: #F5F2EE;
 }
 
 .placeholder-icon {
   font-size: 120rpx;
-  color: #c0c4cc;
+  color: #A0A0A0;
 }
 
 .placeholder-text {
   font-size: 28rpx;
-  color: #c0c4cc;
+  color: #A0A0A0;
   margin-top: 16rpx;
 }
 
 /* ===================== 信息卡片通用样式 ===================== */
 .info-card {
-  background: #ffffff;
+  background: #FFFFFF;
   margin: 20rpx;
   padding: 28rpx 24rpx;
-  border-radius: 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border-radius: 20rpx;
+  border: 1rpx solid #EDE8E1;
 }
 
 .base-info {
   margin-top: -40rpx;
   position: relative;
   z-index: 2;
-  border-radius: 24rpx 24rpx 16rpx 16rpx;
+  border-radius: 20rpx;
 }
 
 .card-title {
   font-size: 30rpx;
-  font-weight: 600;
-  color: #333333;
+  font-weight: 700;
+  color: #1A1A1A;
   margin-bottom: 20rpx;
   padding-bottom: 16rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #EDE8E1;
 }
 
 /* ===================== 基本信息 ===================== */
 .house-title {
   font-size: 36rpx;
-  font-weight: 600;
-  color: #333333;
+  font-weight: 700;
+  color: #1A1A1A;
   line-height: 1.4;
   margin-bottom: 16rpx;
 }
@@ -85,12 +88,12 @@
 .price {
   font-size: 48rpx;
   font-weight: 700;
-  color: #f56c6c;
+  color: #C4453F;
 }
 
 .price-unit {
   font-size: 24rpx;
-  color: #f56c6c;
+  color: #C4453F;
   margin-left: 6rpx;
 }
 
@@ -101,8 +104,8 @@
 
 .tag {
   font-size: 22rpx;
-  color: #4080ff;
-  background: #f0f5ff;
+  color: #C45B3F;
+  background: #FDF0EB;
   padding: 6rpx 16rpx;
   border-radius: 8rpx;
   margin-right: 12rpx;
@@ -119,14 +122,14 @@
 .detail-label {
   width: 120rpx;
   font-size: 28rpx;
-  color: #999999;
+  color: #A0A0A0;
   flex-shrink: 0;
 }
 
 .detail-value {
   flex: 1;
   font-size: 28rpx;
-  color: #333333;
+  color: #1A1A1A;
 }
 
 .address-item {
@@ -152,7 +155,7 @@
 .contact-avatar {
   width: 80rpx;
   height: 80rpx;
-  background: #f0f5ff;
+  background: #FDF0EB;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -168,20 +171,20 @@
 
 .contact-name {
   font-size: 28rpx;
-  color: #333333;
+  color: #1A1A1A;
   font-weight: 500;
 }
 
 .contact-phone {
   font-size: 24rpx;
-  color: #999999;
+  color: #A0A0A0;
   margin-top: 6rpx;
 }
 
 .contact-call-btn {
   padding: 14rpx 32rpx;
-  background: #f0f5ff;
-  color: #4080ff;
+  background: #FDF0EB;
+  color: #C45B3F;
   font-size: 26rpx;
   border-radius: 32rpx;
 }
@@ -202,10 +205,10 @@
   bottom: 0;
   display: flex;
   align-items: center;
-  background: #ffffff;
+  background: #FFFFFF;
   padding: 16rpx 24rpx;
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
-  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.06);
+  border-top: 1rpx solid #EDE8E1;
   z-index: 100;
 }
 
@@ -223,12 +226,12 @@
 
 .favorite-text {
   font-size: 22rpx;
-  color: #666666;
+  color: #6B6B6B;
   margin-top: 4rpx;
 }
 
 .action-favorite.favorited .favorite-text {
-  color: #f56c6c;
+  color: #C45B3F;
 }
 
 .action-contact {
@@ -237,8 +240,8 @@
   height: 80rpx;
   line-height: 80rpx;
   text-align: center;
-  background: linear-gradient(135deg, #4080ff 0%, #609cff 100%);
-  color: #ffffff;
+  background: #C45B3F;
+  color: #FFFFFF;
   font-size: 30rpx;
   font-weight: 500;
   border-radius: 40rpx;
@@ -258,5 +261,5 @@
 
 .loading-text {
   font-size: 28rpx;
-  color: #999999;
+  color: #A0A0A0;
 }

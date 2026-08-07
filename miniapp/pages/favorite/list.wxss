@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #FAF8F5;
   padding-bottom: 30rpx;
 }
 
@@ -10,11 +10,11 @@
 }
 
 .favorite-card {
-  background: #ffffff;
-  border-radius: 12rpx;
+  background: #FFFFFF;
+  border-radius: 20rpx;
   margin-bottom: 20rpx;
   padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  border: 1rpx solid #EDE8E1;
   overflow: hidden;
 }
 
@@ -31,7 +31,7 @@
   width: 200rpx;
   height: 200rpx;
   flex-shrink: 0;
-  background: #f0f0f0;
+  background: #EDE8E1;
   border-radius: 8rpx;
   overflow: hidden;
 }
@@ -48,17 +48,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f5f7fa;
+  background: #F5F2EE;
 }
 
 .placeholder-icon {
   font-size: 56rpx;
-  color: #c0c4cc;
+  color: #A0A0A0;
 }
 
 .placeholder-text {
   font-size: 22rpx;
-  color: #c0c4cc;
+  color: #A0A0A0;
   margin-top: 8rpx;
 }
 
@@ -66,8 +66,8 @@
   position: absolute;
   top: 12rpx;
   left: 12rpx;
-  background: rgba(64, 128, 255, 0.9);
-  color: #ffffff;
+  background: #C45B3F;
+  color: #FFFFFF;
   font-size: 20rpx;
   padding: 4rpx 12rpx;
   border-radius: 8rpx;
@@ -85,7 +85,7 @@
 .house-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333333;
+  color: #1A1A1A;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -95,17 +95,17 @@
   display: flex;
   align-items: center;
   font-size: 24rpx;
-  color: #666666;
+  color: #6B6B6B;
   margin-top: 8rpx;
 }
 
 .meta-item {
-  color: #666666;
+  color: #6B6B6B;
 }
 
 .meta-divider {
   margin: 0 12rpx;
-  color: #dddddd;
+  color: #C4C0BA;
 }
 
 .house-community {
@@ -114,7 +114,7 @@
 
 .community-name {
   font-size: 24rpx;
-  color: #4080ff;
+  color: #C45B3F;
 }
 
 .house-price-row {
@@ -126,12 +126,12 @@
 .house-price {
   font-size: 36rpx;
   font-weight: 700;
-  color: #f56c6c;
+  color: #C4453F;
 }
 
 .price-unit {
   font-size: 22rpx;
-  color: #f56c6c;
+  color: #C4453F;
   margin-left: 4rpx;
 }
 
@@ -148,7 +148,7 @@
 
 .time-text {
   font-size: 22rpx;
-  color: #999999;
+  color: #A0A0A0;
 }
 
 /* ===================== 卡片底部操作区 ===================== */
@@ -157,13 +157,13 @@
   justify-content: flex-end;
   margin-top: 16rpx;
   padding-top: 16rpx;
-  border-top: 1rpx solid #f0f0f0;
+  border-top: 1rpx solid #EDE8E1;
 }
 
 .cancel-btn {
   padding: 10rpx 28rpx;
-  border: 1rpx solid #f56c6c;
-  color: #f56c6c;
+  border: 1rpx solid #C4453F;
+  color: #C4453F;
   font-size: 24rpx;
   border-radius: 24rpx;
   line-height: 1.4;
@@ -171,7 +171,7 @@
 
 .cancel-btn:active {
   opacity: 0.7;
-  background: #fef0f0;
+  background: #FDF0EB;
 }
 
 /* ===================== 空状态 ===================== */
@@ -184,20 +184,20 @@
 
 .empty-icon {
   font-size: 120rpx;
-  color: #c0c4cc;
+  color: #A0A0A0;
 }
 
 .empty-text {
   font-size: 28rpx;
-  color: #999999;
+  color: #A0A0A0;
   margin-top: 20rpx;
 }
 
 .empty-btn {
   margin-top: 30rpx;
   padding: 16rpx 48rpx;
-  background: #f0f5ff;
-  color: #4080ff;
+  background: #FDF0EB;
+  color: #C45B3F;
   font-size: 26rpx;
   border-radius: 32rpx;
 }
