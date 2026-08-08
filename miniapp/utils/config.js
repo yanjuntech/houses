@@ -5,7 +5,7 @@ const ENV = 'development'
 // 各环境配置
 const envConfig = {
   development: {
-    baseUrl: 'http://localhost:8080',
+    baseUrl: 'http://127.0.0.1:8080',
     servicePhone: '400-888-8888',
     defaultAvatar: '/images/default-avatar.png'
   },
